@@ -1,16 +1,20 @@
-import { createSignal } from "solid-js";
+import { For } from "solid-js";
+
+const rankings = useSettings(items.rankings);
 
 function App() {
-  const [count, setCount] = createSignal(0);
+  const ranksEntries = createMemo(() => Object.entries(rankings() ?? {}));
 
   return (
-    <>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count()}
-        </button>
-      </div>
-    </>
+    <div>
+      <For each={ranksEntries()}>
+        {([domain, rank]) => (
+          <div>
+            {domain}: {rank}
+          </div>
+        )}
+      </For>
+    </div>
   );
 }
 
