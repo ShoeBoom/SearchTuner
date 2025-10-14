@@ -25,10 +25,19 @@ jobs:
       - name: Build Firefox zip
         run: pnpm zip:firefox
 
-      - name: Upload artifact
+      - name: Upload Chrome artifact
         uses: actions/upload-artifact@v4
         with:
-          name: searchtuner
+          name: searchtuner-chrome
           include-hidden-files: true
-          path: .output/searchtuner-*.zip
+          path: .output/searchtuner-*-chrome.zip
           if-no-files-found: error
+
+      - name: Upload Firefox artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: searchtuner-firefox
+          include-hidden-files: true
+          path: .output/searchtuner-*-firefox.zip
+          if-no-files-found: error
+      
