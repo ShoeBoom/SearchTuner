@@ -81,7 +81,7 @@ function addPopupContainers(searches: Results) {
   const isDark = isPageDark();
   searches.forEach((search) => {
     const container = document.createElement("div");
-    container.className = "searchtuner-popup-container";
+    container.className = "searchtuner-container";
     container.setAttribute("data-theme", isDark ? "dark" : "light");
 
     // Ensure the parent is positioned relatively so absolute works

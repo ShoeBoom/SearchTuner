@@ -1,7 +1,7 @@
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
 
-:where(.searchtuner-popup-container[data-theme="dark"]) {
+:where(.searchtuner-container[data-theme="dark"]) {
   --searchtuner-foreground: oklch(98.5% 0.001 106.423);
   --searchtuner-background: oklch(21.41% 0.009 272.675);
 }
@@ -20,8 +20,8 @@
 
 @layer base {
 
-  .searchtuner-popup-container,
-  .searchtuner-popup-container * {
+  .searchtuner-container,
+  .searchtuner-container * {
     @import "tailwindcss/preflight.css" layer(base);
   }
 }
