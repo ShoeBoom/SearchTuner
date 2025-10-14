@@ -112,7 +112,8 @@ export default defineContentScript({
     const style = document.createElement("style");
     style.id = "searchtuner-hide-main";
     style.textContent = "#main{display:none !important;}";
-    document.head.appendChild(style);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    (document.head || document.documentElement).appendChild(style);
     document.addEventListener("DOMContentLoaded", () => {
       // Use MutationObserver to detect when div#rso becomes available
       const observer = new MutationObserver((mutations, obs) => {
