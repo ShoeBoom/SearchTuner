@@ -1,0 +1,34 @@
+name: Build WXT ZIP
+
+on:
+  push:
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build Chrome zip
+        run: pnpm zip
+
+      - name: Build Firefox zip
+        run: pnpm zip:firefox
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: searchtuner
+          include-hidden-files: true
+          path: .output/searchtuner-*.zip
+          if-no-files-found: error
