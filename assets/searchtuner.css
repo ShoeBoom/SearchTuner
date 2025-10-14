@@ -1,0 +1,7 @@
+.searchtuner-popup-container {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  /* 128 is used by the pinned google search bar while scrolling $(.CvDJxb) */
+  z-index: 127;
+}

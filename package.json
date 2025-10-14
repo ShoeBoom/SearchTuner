@@ -1,0 +1,49 @@
+{
+  "name": "SearchTuner",
+  "description": "Rerank your Google Search results",
+  "private": true,
+  "version": "0.0.2",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint --fix .",
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "submit": "wxt submit",
+    "compile": "tsc --noEmit",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.14",
+    "jquery": "^3.7.1",
+    "lodash": "^4.17.21",
+    "lucide-solid": "^0.545.0",
+    "neverthrow": "^8.2.0",
+    "solid-js": "^1.9.9",
+    "tailwindcss": "^4.1.14",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@types/jquery": "^3.5.33",
+    "@types/lodash": "^4.17.20",
+    "@wxt-dev/auto-icons": "^1.1.0",
+    "@wxt-dev/module-solid": "^1.1.4",
+    "eslint": "^9.37.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.46.1",
+    "wxt": "^0.20.11"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  }
+}
