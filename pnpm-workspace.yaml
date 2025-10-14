@@ -1,2 +1,7 @@
+ignoredBuiltDependencies:
+  - spawn-sync
+
 onlyBuiltDependencies:
-  - "@tailwindcss/oxide"
+  - '@tailwindcss/oxide'
+  - esbuild
+  - sharp
