@@ -1,8 +1,19 @@
-import { render } from "solid-js/web";
-import App from "./app";
+import { getSystemTheme } from "@/utils/theme";
+import { renderToBody } from "@/utils/render";
 
-const root = document.createElement("div");
-root.id = "root";
-document.body.appendChild(root);
+function App() {
+  const theme = getSystemTheme();
+  return (
+    <div data-theme={theme} class="searchtuner-container">
+      <div class="bg-background text-foreground flex h-full w-full min-w-[320px] flex-row gap-2 p-4">
+        <a href={browser.runtime.getURL("/pages.html")} target="_blank">
+          Rankings
+        </a>
+      </div>
+    </div>
+  );
+}
 
-render(() => <App />, root);
+export default App;
+
+renderToBody(<App />);

@@ -1,8 +1,15 @@
-import { render } from "solid-js/web";
-import App from "./router";
+import { getSystemTheme } from "@/utils/theme";
+import { renderToBody } from "@/utils/render";
 
-const root = document.createElement("div");
-root.id = "root";
-document.body.appendChild(root);
+function App() {
+  const theme = getSystemTheme();
 
-render(() => <App />, root);
+  return (
+    <div
+      data-theme={theme}
+      class="bg-background text-foreground searchtuner-container h-full w-full min-w-[320px] p-4"
+    ></div>
+  );
+}
+
+renderToBody(<App />);
