@@ -1,12 +1,28 @@
 import { renderToBody } from "@/utils/render";
+import { For } from "solid-js";
 import { Route, HashRouter } from "@solidjs/router";
+import { items, useSettings } from "@/utils/storage";
 
 function Home() {
-  return <div>Home</div>;
+  return (
+    <div>
+      <h1>Home</h1>
+    </div>
+  );
 }
-
+const rankings = useSettings(items.rankings);
 function Rankings() {
-  return <div>Rankings</div>;
+  return (
+    <div>
+      <For each={Object.entries(rankings() ?? {})}>
+        {([domain, rank]) => (
+          <div>
+            {domain}: {rank}
+          </div>
+        )}
+      </For>
+    </div>
+  );
 }
 
 function App() {
