@@ -6,7 +6,7 @@ function App() {
   return (
     <div
       data-theme={theme}
-      class="tw:bg-background tw:w-full tw:p-4 tw:h-full tw:text-foreground tw:min-w-[320px] searchtuner-container"
+      class="bg-background text-foreground searchtuner-container h-full w-full min-w-[320px] p-4"
     ></div>
   );
 }

@@ -1,20 +1,27 @@
 @layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@layer theme {
+  :where([data-theme="dark"]) {
+    --searchtuner-foreground: oklch(98.5% 0.001 106.423);
+    --searchtuner-background: oklch(21.41% 0.009 272.675);
+  }
 
-:where(.searchtuner-container[data-theme="dark"]) {
-  --searchtuner-foreground: oklch(98.5% 0.001 106.423);
-  --searchtuner-background: oklch(21.41% 0.009 272.675);
+  :root {
+    --searchtuner-foreground: oklch(21.6% 0.006 56.043);
+    --searchtuner-background: oklch(98.5% 0.001 106.423);
+  }
+
+  @theme inline {
+    --color-foreground: var(--searchtuner-foreground);
+    --color-background: var(--searchtuner-background);
+  }
+  .searchtuner-container,
+  .searchtuner-container * {
+    @import "tailwindcss/theme.css";
+  }
 }
 
-:root {
-  --searchtuner-foreground: oklch(21.6% 0.006 56.043);
-  --searchtuner-background: oklch(98.5% 0.001 106.423);
-}
 
-@theme inline {
-  --color-foreground: var(--searchtuner-foreground);
-  --color-background: var(--searchtuner-background);
-}
+
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -22,9 +29,13 @@
 
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/preflight.css" layer(base);
+    @import "tailwindcss/preflight.css";
   }
 }
 
-
-@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+@layer utilities {
+  .searchtuner-container,
+  .searchtuner-container * {
+    @import "tailwindcss/utilities.css";
+  }
+}

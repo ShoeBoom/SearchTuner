@@ -5,9 +5,9 @@ function App() {
   return (
     <div
       data-theme={theme}
-      class="tw:bg-background tw:w-full tw:p-4 tw:h-full tw:text-foreground tw:min-w-[320px] searchtuner-container"
+      class="bg-background text-foreground searchtuner-container h-full w-full min-w-[320px] p-4"
     >
-      <div class="tw:flex tw:flex-row tw:gap-2">
+      <div class="flex flex-row gap-2">
         <a href={browser.runtime.getURL("/pages.html")} target="_blank">
           Rankings
         </a>
