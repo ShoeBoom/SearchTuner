@@ -16,7 +16,7 @@
   }
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/theme.css" layer(theme);
+    @import "tailwindcss/theme.css";
   }
 }
 
@@ -29,13 +29,13 @@
 
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/preflight.css" layer(base);
+    @import "tailwindcss/preflight.css";
   }
 }
 
 @layer utilities {
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/utilities.css" layer(utilities);
+    @import "tailwindcss/utilities.css";
   }
 }
