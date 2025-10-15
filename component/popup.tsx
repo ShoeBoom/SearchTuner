@@ -1,4 +1,3 @@
-import "@/assets/searchtuner.css";
 import "@/assets/tailwind.css";
 import { type JSX, Show } from "solid-js";
 import { useSettings, items } from "@/utils/storage";
@@ -102,36 +101,40 @@ function RankIcon(props: { rank: 2 | 1 | 0 | -1 | -2 }) {
 const rankings = useSettings(items.rankings);
 
 function Popup(props: Results[number]) {
+  const theme = getPageTheme();
   const { isOpen, toggle, setContainerRef } = usePopup();
+
   const rank = createMemo(() => rankings()?.[props.domain] ?? 0);
   const setRank = (rank: 2 | 1 | 0 | -1 | -2) => {
     void items.rankings.setValue({ ...rankings(), [props.domain]: rank });
   };
   return (
-    <div class="relative inline-block" ref={setContainerRef}>
-      <button class="flex items-center justify-center" onClick={toggle}>
-        <RankIcon rank={rank()} />
-      </button>
-      <Show when={isOpen()}>
-        <div class="bg-background text-foreground border-foreground absolute top-0 left-full w-64 rounded-md border-2 p-3">
-          <div class="flex flex-col gap-2">
-            <div>Domain: {props.domain}</div>
-            <div>Text: {props.text}</div>
-            <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
-              {Array.from(rankIcons.entries()).map(([value, opt]) => (
-                <>
-                  <button
-                    class={`flex h-10 w-14 items-center justify-center ${rank() === value ? `${opt.color.background} text-white` : ""}`}
-                    onClick={() => setRank(value)}
-                  >
-                    <opt.icon size={18} />
-                  </button>
-                </>
-              ))}
+    <div class="searchtuner-container" data-theme={theme}>
+      <div class="absolute top-0 left-full z-[127]" ref={setContainerRef}>
+        <button class="flex items-center justify-center" onClick={toggle}>
+          <RankIcon rank={rank()} />
+        </button>
+        <Show when={isOpen()}>
+          <div class="bg-background text-foreground border-foreground absolute top-0 left-full w-64 rounded-md border-2 p-3">
+            <div class="flex flex-col gap-2">
+              <div>Domain: {props.domain}</div>
+              <div>Text: {props.text}</div>
+              <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
+                {Array.from(rankIcons.entries()).map(([value, opt]) => (
+                  <>
+                    <button
+                      class={`flex h-10 w-14 items-center justify-center ${rank() === value ? `${opt.color.background} text-white` : ""}`}
+                      onClick={() => setRank(value)}
+                    >
+                      <opt.icon size={18} />
+                    </button>
+                  </>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </Show>
+        </Show>
+      </div>
     </div>
   );
 }

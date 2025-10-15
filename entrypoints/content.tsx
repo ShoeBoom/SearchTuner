@@ -4,7 +4,6 @@ import { render } from "solid-js/web";
 import Popup from "@/component/popup";
 import { items } from "@/utils/storage";
 import googledomains from "@/assets/googledomains";
-import { getPageTheme } from "@/utils/theme";
 
 const RERANK_WEIGHT = 3;
 
@@ -70,18 +69,15 @@ async function sortResults(results: Results) {
 }
 
 function addPopupContainers(searches: Results) {
-  const theme = getPageTheme();
+  // const theme = getPageTheme();
   searches.forEach((search) => {
-    const container = document.createElement("div");
-    container.className = "searchtuner-container";
-    container.setAttribute("data-theme", theme);
-
     // Ensure the parent is positioned relatively so absolute works
     const parent = search.element[0];
     if (getComputedStyle(parent).position === "static") {
       parent.style.position = "relative";
     }
 
+    const container = document.createElement("div");
     parent.appendChild(container);
     render(() => <Popup {...search} />, container);
   });

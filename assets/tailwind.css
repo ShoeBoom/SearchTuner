@@ -1,6 +1,6 @@
 @layer theme, base, components, utilities;
 @layer theme {
-  :where([data-theme="dark"]) {
+  :where(.searchtuner-container[data-theme="dark"]) {
     --searchtuner-foreground: oklch(98.5% 0.001 106.423);
     --searchtuner-background: oklch(21.41% 0.009 272.675);
   }
@@ -16,7 +16,7 @@
   }
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/theme.css";
+    @import "tailwindcss/theme.css" layer(theme);
   }
 }
 
@@ -29,13 +29,13 @@
 
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/preflight.css";
+    @import "tailwindcss/preflight.css" layer(base);
   }
 }
 
 @layer utilities {
   .searchtuner-container,
   .searchtuner-container * {
-    @import "tailwindcss/utilities.css";
+    @import "tailwindcss/utilities.css" layer(utilities);
   }
 }
