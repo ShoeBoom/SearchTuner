@@ -24,8 +24,8 @@ function App() {
       root={(props) => (
         <div class="bg-background text-foreground min-h-screen w-screen min-w-[320px] p-4">
           <header class="justify-left flex items-center gap-4 p-4 text-xl *:hover:underline">
-            <A href="/settings">Settings</A>
             <A href="/rankings">Rankings</A>
+            <A href="/settings">Settings</A>
           </header>
           {props.children}
         </div>
