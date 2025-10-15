@@ -32,8 +32,6 @@ export function usePopup() {
   return { isOpen, toggle, setContainerRef };
 }
 
-const rankings = useSettings(items.rankings);
-
 const rankIcons: ReadonlyMap<
   -2 | -1 | 0 | 1 | 2,
   {
@@ -100,6 +98,8 @@ function RankIcon(props: { rank: 2 | 1 | 0 | -1 | -2 }) {
   };
   return <>{icon()}</>;
 }
+
+const rankings = useSettings(items.rankings);
 
 function Popup(props: Results[number]) {
   const { isOpen, toggle, setContainerRef } = usePopup();
