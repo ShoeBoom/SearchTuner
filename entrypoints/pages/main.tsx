@@ -11,7 +11,7 @@ function Rankings() {
 
 function App() {
   return (
-    <div class="bg-background text-foreground h-screen w-screen min-w-[320px] p-4">
+    <div class="bg-background text-foreground min-h-screen w-screen min-w-[320px] p-4">
       <header>
         <a href="/rankings">Rankings</a>
         <a href="/">Home</a>
