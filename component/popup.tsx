@@ -32,7 +32,6 @@ export function usePopup() {
 const rankings = useSettings(items.rankings);
 
 function Popup(props: Results[number]) {
-  const theme = getPageTheme();
   const { isOpen, toggle, setContainerRef } = usePopup();
 
   const rank = createMemo(() => rankings()?.[props.domain] ?? 0);
@@ -40,7 +39,7 @@ function Popup(props: Results[number]) {
     void items.rankings.setValue({ ...rankings(), [props.domain]: rank });
   };
   return (
-    <div class="searchtuner-container" data-theme={theme}>
+    <div>
       <div class="absolute top-0 left-full z-[127]" ref={setContainerRef}>
         <button class="flex items-center justify-center" onClick={toggle}>
           <RankIcon rank={rank()} />

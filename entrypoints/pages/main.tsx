@@ -1,4 +1,4 @@
-import { renderToBody } from "@/utils/render";
+import { renderTo } from "@/utils/render";
 import { Route, HashRouter, A, useNavigate } from "@solidjs/router";
 import logo from "@/assets/icon.png";
 import { Settings, ArrowUpDown } from "lucide-solid";
@@ -39,4 +39,4 @@ function App() {
   );
 }
 
-renderToBody(<App />);
+renderTo(<App />);

@@ -1,6 +1,6 @@
 import { getResults, type Results } from "@/utils/filter";
 import $ from "jquery";
-import { render } from "solid-js/web";
+import { renderTo } from "@/utils/render";
 import Popup from "@/component/popup";
 import { items } from "@/utils/storage";
 import googledomains from "@/assets/googledomains";
@@ -69,7 +69,7 @@ async function sortResults(results: Results) {
 }
 
 function addPopupContainers(searches: Results) {
-  // const theme = getPageTheme();
+  const theme = getPageTheme();
   searches.forEach((search) => {
     // Ensure the parent is positioned relatively so absolute works
     const parent = search.element[0];
@@ -79,7 +79,7 @@ function addPopupContainers(searches: Results) {
 
     const container = document.createElement("div");
     parent.appendChild(container);
-    render(() => <Popup {...search} />, container);
+    renderTo(<Popup {...search} />, container, theme);
   });
 }
 

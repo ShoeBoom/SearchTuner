@@ -1,4 +1,4 @@
-import { renderToBody } from "@/utils/render";
+import { renderTo } from "@/utils/render";
 
 function App() {
   return (
@@ -13,4 +13,4 @@ function App() {
   );
 }
 
-renderToBody(<App />);
+renderTo(<App />);
