@@ -42,7 +42,7 @@ type StorageItem<T, F extends Record<string, unknown> = {}> = ReturnType<
   typeof storage.defineItem<T, F>
 >;
 
-export const useSettings = <T>(itemDef: StorageItem<T>) => {
+const useSettings = <T>(itemDef: StorageItem<T>) => {
   const [value, setValue] = createSignal<T | null>(null);
   onMount(async () => {
     const value = await itemDef.getValue();
@@ -56,3 +56,5 @@ export const useSettings = <T>(itemDef: StorageItem<T>) => {
 
   return value;
 };
+
+export const useRankings = useSettings(items.rankings);
