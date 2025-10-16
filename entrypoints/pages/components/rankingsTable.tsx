@@ -1,11 +1,11 @@
 import { For } from "solid-js";
-import { items, RankingsV2, useRankings } from "@/utils/storage";
+import { items, RankingsV2, syncedRankings } from "@/utils/storage";
 import { RankEditor } from "@/component/rank";
 import { Trash2 } from "lucide-solid";
 
 function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
   const deleteRank = () => {
-    const newRankings = { ...useRankings() };
+    const newRankings = { ...syncedRankings() };
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete newRankings[props.domain];
     void items.rankings.setValue(newRankings);
@@ -34,7 +34,7 @@ export function RankingsTable() {
           </tr>
         </thead>
         <tbody>
-          <For each={Object.entries(useRankings() ?? {})}>
+          <For each={Object.entries(syncedRankings() ?? {})}>
             {([domain, rank]) => <RankingRow domain={domain} rank={rank} />}
           </For>
         </tbody>

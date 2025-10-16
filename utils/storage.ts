@@ -57,4 +57,4 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
   return value;
 };
 
-export const useRankings = useSettings(items.rankings);
+export const syncedRankings = useSettings(items.rankings);

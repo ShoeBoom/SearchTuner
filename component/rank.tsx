@@ -7,7 +7,7 @@ import {
   Pin,
   type LucideProps,
 } from "lucide-solid";
-import { RankingsV2, useRankings } from "@/utils/storage";
+import { RankingsV2, syncedRankings } from "@/utils/storage";
 
 const rankIcons: ReadonlyMap<
   RankingsV2[string]["type"],
@@ -81,7 +81,7 @@ export const RankEditor = (props: {
   domain: string;
 }) => {
   const setRank = (rank: RankingsV2[string]) => {
-    void items.rankings.setValue({ ...useRankings(), [props.domain]: rank });
+    void items.rankings.setValue({ ...syncedRankings(), [props.domain]: rank });
   };
   return (
     <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
