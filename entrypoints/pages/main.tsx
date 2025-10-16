@@ -1,24 +1,8 @@
 import { renderToBody } from "@/utils/render";
-import { For } from "solid-js";
 import { Route, HashRouter, A, useNavigate } from "@solidjs/router";
-import { items, useSettings } from "@/utils/storage";
 import logo from "@/assets/icon.png";
 import { Settings, ArrowUpDown } from "lucide-solid";
-
-const rankings = useSettings(items.rankings);
-function Rankings() {
-  return (
-    <div>
-      <For each={Object.entries(rankings() ?? {})}>
-        {([domain, rank]) => (
-          <div>
-            {domain}: {rank}
-          </div>
-        )}
-      </For>
-    </div>
-  );
-}
+import { RankingsTable } from "@/entrypoints/pages/rankingsTable";
 
 function App() {
   return (
@@ -50,7 +34,7 @@ function App() {
         }}
       />
       <Route path="/settings" component={() => <div>Settings</div>} />
-      <Route path="/rankings" component={Rankings} />
+      <Route path="/rankings" component={RankingsTable} />
     </HashRouter>
   );
 }
