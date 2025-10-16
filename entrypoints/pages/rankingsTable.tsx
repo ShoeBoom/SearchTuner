@@ -15,22 +15,34 @@ function RankingRow(props: { domain: string; rank: 2 | 1 | 0 | -1 | -2 }) {
     void items.rankings.setValue(newRankings);
   };
   return (
-    <div class="flex items-center gap-2">
-      <div class="text-lg">{props.domain}</div>
-      <RankEditor rank={props.rank} setRank={setRank} />
-      <button class="text-red-500" onClick={deleteRank}>
-        <Trash2 />
-      </button>
-    </div>
+    <tr>
+      <td class="text-center text-lg">{props.domain}</td>
+      <td class="flex justify-center gap-5">
+        <RankEditor rank={props.rank} setRank={setRank} />
+        <button class="text-red-500" onClick={deleteRank}>
+          <Trash2 />
+        </button>
+      </td>
+    </tr>
   );
 }
 
 export function RankingsTable() {
   return (
     <div>
-      <For each={Object.entries(rankings() ?? {})}>
-        {([domain, rank]) => <RankingRow domain={domain} rank={rank} />}
-      </For>
+      <table class="w-full table-auto">
+        <thead>
+          <tr>
+            <th>Domain</th>
+            <th>Rank</th>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={Object.entries(rankings() ?? {})}>
+            {([domain, rank]) => <RankingRow domain={domain} rank={rank} />}
+          </For>
+        </tbody>
+      </table>
     </div>
   );
 }
