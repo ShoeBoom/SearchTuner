@@ -6,7 +6,7 @@ import {
   onCleanup,
   createMemo,
 } from "solid-js";
-import { useSettings, items, RankingsV2 } from "@/utils/storage";
+import { useSettings, items } from "@/utils/storage";
 import { RankEditor, RankIcon } from "../../../component/rank";
 
 export function usePopup() {
@@ -40,9 +40,7 @@ function Popup(props: Results[number]) {
         type: "none" as const,
       },
   );
-  const setRank = (rank: RankingsV2[string]) => {
-    void items.rankings.setValue({ ...rankings(), [props.domain]: rank });
-  };
+
   return (
     <div>
       <div class="absolute top-0 left-full z-[127]" ref={setContainerRef}>
@@ -54,7 +52,7 @@ function Popup(props: Results[number]) {
             <div class="flex flex-col gap-2">
               <div>Domain: {props.domain}</div>
               <div>Text: {props.text}</div>
-              <RankEditor rank={rank()} setRank={setRank} />
+              <RankEditor rank={rank()} domain={props.domain} />
             </div>
           </div>
         </Show>

@@ -76,10 +76,15 @@ export function RankIcon(props: { rank: RankingsV2[string] }) {
   return <>{icon()}</>;
 }
 
+const rankings = useSettings(items.rankings);
+
 export const RankEditor = (props: {
   rank: RankingsV2[string];
-  setRank: (rank: RankingsV2[string]) => void;
+  domain: string;
 }) => {
+  const setRank = (rank: RankingsV2[string]) => {
+    void items.rankings.setValue({ ...rankings(), [props.domain]: rank });
+  };
   return (
     <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
@@ -87,7 +92,7 @@ export const RankEditor = (props: {
           <button
             class={`flex h-10 w-14 items-center justify-center ${props.rank.type === value ? `${opt.color.background} text-white` : ""}`}
             onClick={() =>
-              props.setRank({ type: value, strength: props.rank.strength })
+              setRank({ type: value, strength: props.rank.strength })
             }
           >
             <opt.icon size={18} />
