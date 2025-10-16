@@ -1,7 +1,7 @@
 import { getResults, type Results } from "@/utils/filter";
 import $ from "jquery";
 import { renderTo } from "@/utils/render";
-import Popup from "@/component/popup";
+import Popup from "@/entrypoints/content/components/popup";
 import { items } from "@/utils/storage";
 import googledomains from "@/assets/googledomains";
 

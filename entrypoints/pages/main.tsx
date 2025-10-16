@@ -2,7 +2,7 @@ import { renderTo } from "@/utils/render";
 import { Route, HashRouter, A, useNavigate } from "@solidjs/router";
 import logo from "@/assets/icon.png";
 import { Settings, ArrowUpDown } from "lucide-solid";
-import { RankingsTable } from "@/entrypoints/pages/rankingsTable";
+import { RankingsTable } from "@/entrypoints/pages/components/rankingsTable";
 
 function App() {
   return (

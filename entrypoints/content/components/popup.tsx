@@ -7,7 +7,7 @@ import {
   createMemo,
 } from "solid-js";
 import { useSettings, items } from "@/utils/storage";
-import { RankEditor, RankIcon } from "./rank";
+import { RankEditor, RankIcon } from "../../../component/rank";
 
 export function usePopup() {
   const [isOpen, setIsOpen] = createSignal(false);
