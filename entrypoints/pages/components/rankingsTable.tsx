@@ -1,15 +1,11 @@
 import { For } from "solid-js";
-import { items, useSettings } from "@/utils/storage";
+import { items, RankingsV2, syncedRankings } from "@/utils/storage";
 import { RankEditor } from "@/component/rank";
 import { Trash2 } from "lucide-solid";
 
-const rankings = useSettings(items.rankings);
-function RankingRow(props: { domain: string; rank: 2 | 1 | 0 | -1 | -2 }) {
-  const setRank = (rank: 2 | 1 | 0 | -1 | -2) => {
-    void items.rankings.setValue({ ...rankings(), [props.domain]: rank });
-  };
+function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
   const deleteRank = () => {
-    const newRankings = { ...rankings() };
+    const newRankings = { ...syncedRankings() };
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete newRankings[props.domain];
     void items.rankings.setValue(newRankings);
@@ -18,7 +14,7 @@ function RankingRow(props: { domain: string; rank: 2 | 1 | 0 | -1 | -2 }) {
     <tr>
       <td class="text-center text-lg">{props.domain}</td>
       <td class="flex justify-center gap-5">
-        <RankEditor rank={props.rank} setRank={setRank} />
+        <RankEditor rank={props.rank} domain={props.domain} />
         <button class="text-red-500" onClick={deleteRank}>
           <Trash2 />
         </button>
@@ -38,7 +34,7 @@ export function RankingsTable() {
           </tr>
         </thead>
         <tbody>
-          <For each={Object.entries(rankings() ?? {})}>
+          <For each={Object.entries(syncedRankings() ?? {})}>
             {([domain, rank]) => <RankingRow domain={domain} rank={rank} />}
           </For>
         </tbody>

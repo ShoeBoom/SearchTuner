@@ -7,16 +7,17 @@ import {
   Pin,
   type LucideProps,
 } from "lucide-solid";
+import { RankingsV2, syncedRankings } from "@/utils/storage";
 
 const rankIcons: ReadonlyMap<
-  -2 | -1 | 0 | 1 | 2,
+  RankingsV2[string]["type"],
   {
     icon: (props: LucideProps) => JSX.Element;
     color: { background: string; text: string };
   }
 > = new Map([
   [
-    -2,
+    "block",
     {
       icon: Ban,
       color: {
@@ -26,7 +27,7 @@ const rankIcons: ReadonlyMap<
     },
   ],
   [
-    -1,
+    "lower",
     {
       icon: ShieldMinus,
       color: {
@@ -36,7 +37,7 @@ const rankIcons: ReadonlyMap<
     },
   ],
   [
-    0,
+    "none",
     {
       icon: Shield,
       color: {
@@ -46,7 +47,7 @@ const rankIcons: ReadonlyMap<
     },
   ],
   [
-    1,
+    "raise",
     {
       icon: ShieldPlus,
       color: {
@@ -56,7 +57,7 @@ const rankIcons: ReadonlyMap<
     },
   ],
   [
-    2,
+    "pin",
     {
       icon: Pin,
       color: {
@@ -67,25 +68,30 @@ const rankIcons: ReadonlyMap<
   ],
 ]);
 
-export function RankIcon(props: { rank: 2 | 1 | 0 | -1 | -2 }) {
+export function RankIcon(props: { rank: RankingsV2[string] }) {
   const icon = () => {
-    const opt = rankIcons.get(props.rank);
+    const opt = rankIcons.get(props.rank.type);
     return opt?.icon({ size: 18, class: opt.color.text });
   };
   return <>{icon()}</>;
 }
 
 export const RankEditor = (props: {
-  rank: 2 | 1 | 0 | -1 | -2;
-  setRank: (rank: 2 | 1 | 0 | -1 | -2) => void;
+  rank: RankingsV2[string];
+  domain: string;
 }) => {
+  const setRank = (rank: RankingsV2[string]) => {
+    void items.rankings.setValue({ ...syncedRankings(), [props.domain]: rank });
+  };
   return (
     <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
-            class={`flex h-10 w-14 items-center justify-center ${props.rank === value ? `${opt.color.background} text-white` : ""}`}
-            onClick={() => props.setRank(value)}
+            class={`flex h-10 w-14 items-center justify-center ${props.rank.type === value ? `${opt.color.background} text-white` : ""}`}
+            onClick={() =>
+              setRank({ type: value, strength: props.rank.strength })
+            }
           >
             <opt.icon size={18} />
           </button>

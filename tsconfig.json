@@ -7,7 +7,8 @@
     "strictNullChecks": true,
     "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,
+    "allowJs": true,
   },
   "files": ["./eslint.config.mjs"],
-  "allowJs": true,
+
 }
