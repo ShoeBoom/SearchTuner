@@ -75,10 +75,7 @@ export function RankIcon(props: { rank: 2 | 1 | 0 | -1 | -2 }) {
   return <>{icon()}</>;
 }
 
-export const RankEditor = ({
-  rank,
-  setRank,
-}: {
+export const RankEditor = (props: {
   rank: 2 | 1 | 0 | -1 | -2;
   setRank: (rank: 2 | 1 | 0 | -1 | -2) => void;
 }) => {
@@ -87,8 +84,8 @@ export const RankEditor = ({
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
-            class={`flex h-10 w-14 items-center justify-center ${rank === value ? `${opt.color.background} text-white` : ""}`}
-            onClick={() => setRank(value)}
+            class={`flex h-10 w-14 items-center justify-center ${props.rank === value ? `${opt.color.background} text-white` : ""}`}
+            onClick={() => props.setRank(value)}
           >
             <opt.icon size={18} />
           </button>
