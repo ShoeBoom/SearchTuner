@@ -12,7 +12,7 @@ export type RankingsV2 = Record<
 >;
 
 const rankings = storage.defineItem<RankingsV2>("sync:rankings", {
-  fallback: {},
+  init: () => ({}),
   version: 2,
   migrations: {
     2: (rankings: RankingsV1): RankingsV2 => {

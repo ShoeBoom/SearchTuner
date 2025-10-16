@@ -12,7 +12,7 @@ async function orderedResults(results: Results) {
   const totalResults = results.length;
 
   return results.map((result, index) => {
-    const rank = rankings[result.domain] ?? { type: "none" as const };
+    const rank = rankings?.[result.domain] ?? { type: "none" as const };
     const order = totalResults - index;
 
     switch (rank.type) {
