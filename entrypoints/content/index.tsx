@@ -12,22 +12,25 @@ async function orderedResults(results: Results) {
   const totalResults = results.length;
 
   return results.map((result, index) => {
-    const rank = rankings[result.domain] ?? 0;
+    const rank = rankings[result.domain] ?? { type: "none" as const };
     const order = totalResults - index;
 
-    switch (rank) {
-      case 2:
+    switch (rank.type) {
+      case "pin":
         return { ...result, ord: order + 9999, rank };
-      case 1:
+      case "raise":
         return { ...result, ord: order + RERANK_WEIGHT, rank };
-      case 0:
+      case "none":
         return { ...result, ord: order, rank };
-      case -1:
+      case "lower":
         return { ...result, ord: order - RERANK_WEIGHT, rank };
-      case -2:
+      case "block":
         // result.element.remove();
         // return null;
         return { ...result, ord: order - 9999, rank };
+      default:
+        rank.type satisfies never;
+        throw new Error("Invalid rank type");
     }
   });
 }
