@@ -46,13 +46,13 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
 export function RankingsTable() {
   return (
     <div>
-      <table class="w-full max-w-4xl min-w-3xl table-auto">
-        <thead>
+      <table class="w-full max-w-4xl table-auto">
+        <thead class="border-b">
           <tr>
-            <th>Domain</th>
-            <th>Rank</th>
-            <th>Strength</th>
-            <th>Delete</th>
+            <th class="pb-2 text-sm font-semibold">Domain</th>
+            <th class="pb-2 text-sm font-semibold">Rank</th>
+            <th class="pb-2 text-sm font-semibold">Strength</th>
+            <th class="pb-2 text-sm font-semibold">Delete</th>
           </tr>
         </thead>
         <tbody>
