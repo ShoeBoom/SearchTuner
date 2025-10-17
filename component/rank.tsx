@@ -129,7 +129,15 @@ export const StrengthSlider = (props: {
   class?: string;
 }) => {
   return (
-    <div class={clsx("flex flex-col justify-center", props.class)}>
+    <div
+      class={clsx(
+        "flex flex-col justify-center",
+        props.class,
+        props.rank.type !== "raise" &&
+          props.rank.type !== "lower" &&
+          "opacity-20",
+      )}
+    >
       <div class="flex flex-1 justify-between">
         <span>Weak</span>
         <span>Normal</span>
@@ -137,12 +145,7 @@ export const StrengthSlider = (props: {
       </div>
       <input
         disabled={props.rank.type !== "raise" && props.rank.type !== "lower"}
-        class={clsx(
-          "flex-1",
-          props.rank.type !== "raise" &&
-            props.rank.type !== "lower" &&
-            "opacity-50",
-        )}
+        class="flex-1"
         type="range"
         min="0"
         max="2"
