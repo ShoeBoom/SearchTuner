@@ -2,7 +2,6 @@ import { renderTo } from "@/utils/render";
 import { ArrowUpDown, Settings, Info, Hash } from "lucide-solid";
 import logo from "@/assets/icon.png";
 import { type JSX } from "solid-js";
-import { clsx } from "clsx";
 
 const basePagesUrl = browser.runtime.getURL("/pages.html") + "#";
 const Button = (props: {
@@ -14,10 +13,10 @@ const Button = (props: {
   <a
     href={basePagesUrl + props.path}
     target="_blank"
-    class="group flex items-center gap-3 rounded-lg transition-all hover:underline"
+    class="group flex items-center gap-3 rounded-lg hover:underline"
   >
     <div
-      class={`bg-foreground/10 rounded-md p-1.5 ${props.hoverColor} group-hover:text-white`}
+      class={`bg-foreground/10 rounded-md p-1.5 transition-colors ${props.hoverColor} group-hover:text-white`}
     >
       {props.icon}
     </div>
@@ -45,26 +44,27 @@ function App() {
           text="View Rankings"
           hoverColor="group-hover:bg-red-500"
         />
-        <Button
-          path="/settings"
-          icon={<Hash size={18} />}
-          // disabled
-          text="Bangs (coming soon)"
-          hoverColor="group-hover:bg-blue-500"
-        />
+        <div class="pointer-events-none opacity-50">
+          <Button
+            path="/settings"
+            icon={<Hash size={18} />}
+            text="Bangs (coming soon)"
+            hoverColor="group-hover:bg-yellow-500"
+          />
+        </div>
 
         <Button
           path="/settings"
           icon={<Settings size={18} />}
           text="Settings"
-          hoverColor="group-hover:bg-blue-500"
+          hoverColor="group-hover:bg-green-600"
         />
 
         <Button
           path="/about"
           icon={<Info size={18} />}
           text="About"
-          hoverColor="group-hover:bg-green-500"
+          hoverColor="group-hover:bg-blue-500"
         />
       </div>
     </div>
