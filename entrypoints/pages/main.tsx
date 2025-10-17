@@ -1,14 +1,15 @@
 import { Route, HashRouter, A, useNavigate } from "@solidjs/router";
 import logo from "@/assets/icon.png";
-import { Settings, ArrowUpDown } from "lucide-solid";
+import { Settings, ArrowUpDown, Info } from "lucide-solid";
 import { RankingsTable } from "@/entrypoints/pages/components/rankingsTable";
+import About from "./components/About";
 
 function App() {
   return (
     <HashRouter
       root={(props) => (
         <div class="min-h-screen w-screen min-w-[320px] p-4">
-          <header class="justify-left flex items-center gap-4 p-4 text-xl *:hover:underline">
+          <header class="flex items-center gap-4 p-4 text-xl [&>a]:hover:underline">
             <img src={logo} class="h-6 w-6" />
             <A href="/rankings" class="flex items-center gap-2">
               <ArrowUpDown />
@@ -17,6 +18,11 @@ function App() {
             <A href="/settings" class="flex items-center gap-2">
               <Settings />
               Settings
+            </A>
+            <div class="flex-1" />
+            <A href="/about" class="flex items-center gap-2">
+              <Info />
+              About
             </A>
           </header>
           {props.children}
@@ -34,6 +40,7 @@ function App() {
       />
       <Route path="/settings" component={() => <div>Settings</div>} />
       <Route path="/rankings" component={RankingsTable} />
+      <Route path="/about" component={About} />
     </HashRouter>
   );
 }
