@@ -85,7 +85,7 @@ export const RankEditor = (props: {
   domain: string;
 }) => {
   return (
-    <div class="divide-foreground border-foreground flex w-max items-center divide-x-2 overflow-hidden rounded-full border-2">
+    <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
