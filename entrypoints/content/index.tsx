@@ -5,7 +5,11 @@ import Popup from "@/entrypoints/content/components/popup";
 import { items } from "@/utils/storage";
 import googledomains from "@/assets/googledomains";
 
-const RERANK_WEIGHT = 3;
+const RERANK_WEIGHTS = {
+  weak: 1,
+  normal: 3,
+  strong: 5,
+};
 
 async function orderedResults(results: Results) {
   const rankings = await items.rankings.getValue();
@@ -15,15 +19,17 @@ async function orderedResults(results: Results) {
     const rank = rankings?.[result.domain] ?? { type: "none" as const };
     const order = totalResults - index;
 
+    const weight = RERANK_WEIGHTS[rank.strength ?? "normal"];
+
     switch (rank.type) {
       case "pin":
         return { ...result, ord: order + 9999, rank };
       case "raise":
-        return { ...result, ord: order + RERANK_WEIGHT, rank };
+        return { ...result, ord: order + weight, rank };
       case "none":
         return { ...result, ord: order, rank };
       case "lower":
-        return { ...result, ord: order - RERANK_WEIGHT, rank };
+        return { ...result, ord: order - weight, rank };
       case "block":
         // result.element.remove();
         // return null;
