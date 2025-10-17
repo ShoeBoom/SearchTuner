@@ -131,7 +131,7 @@ export const StrengthSlider = (props: {
   return (
     <div
       class={clsx(
-        "flex flex-col justify-center",
+        "flex flex-col justify-center transition-all",
         props.class,
         props.rank.type !== "raise" &&
           props.rank.type !== "lower" &&
