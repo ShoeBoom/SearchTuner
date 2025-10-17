@@ -84,13 +84,22 @@ const setRank = (rank: RankingsV2[string], domain: string) => {
 export const RankEditor = (props: {
   rank: RankingsV2[string];
   domain: string;
+  class?: string;
 }) => {
   return (
-    <div class="divide-foreground border-foreground flex w-fit divide-x-2 overflow-hidden rounded-full border-2">
+    <div
+      class={clsx(
+        "divide-foreground border-foreground flex divide-x-2 overflow-hidden rounded-full border-2",
+        props.class,
+      )}
+    >
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
-            class={`flex h-10 w-14 items-center justify-center ${props.rank.type === value ? `${opt.color.background} text-white` : ""}`}
+            class={clsx(
+              "flex h-10 w-14 items-center justify-center",
+              props.rank.type === value && [opt.color.background, "text-white"],
+            )}
             onClick={() =>
               setRank(
                 { type: value, strength: props.rank.strength },
@@ -117,10 +126,11 @@ const strengthKeys = Object.keys(strengthMap) as (keyof typeof strengthMap)[];
 export const StrengthSlider = (props: {
   rank: RankingsV2[string];
   domain: string;
+  class?: string;
 }) => {
   return (
-    <div class="flex flex-col justify-center">
-      <div class="flex w-full justify-between">
+    <div class={clsx("flex flex-col justify-center", props.class)}>
+      <div class="flex flex-1 justify-between">
         <span>Weak</span>
         <span>Normal</span>
         <span>Strong</span>
@@ -128,7 +138,7 @@ export const StrengthSlider = (props: {
       <input
         disabled={props.rank.type !== "raise" && props.rank.type !== "lower"}
         class={clsx(
-          "w-full",
+          "flex-1",
           props.rank.type !== "raise" &&
             props.rank.type !== "lower" &&
             "opacity-50",

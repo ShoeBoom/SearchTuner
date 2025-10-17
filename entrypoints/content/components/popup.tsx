@@ -50,10 +50,7 @@ function Popup(props: Results[number]) {
             <div class="flex flex-col gap-2">
               <div>Domain: {props.domain}</div>
               <div>Text: {props.text}</div>
-              <div class="flex justify-center">
-                <RankEditor rank={rank()} domain={props.domain} />
-              </div>
-
+              <RankEditor rank={rank()} domain={props.domain} />
               <StrengthSlider rank={rank()} domain={props.domain} />
             </div>
           </div>

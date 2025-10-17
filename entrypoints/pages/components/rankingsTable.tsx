@@ -15,13 +15,21 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
       <td class="text-center text-lg">{props.domain}</td>
       <td>
         <div class="flex justify-center">
-          <RankEditor rank={props.rank} domain={props.domain} />
+          <RankEditor
+            class="flex-none"
+            rank={props.rank}
+            domain={props.domain}
+          />
         </div>
       </td>
 
       <td>
         <div class="flex justify-center">
-          <StrengthSlider rank={props.rank} domain={props.domain} />
+          <StrengthSlider
+            class="flex-1"
+            rank={props.rank}
+            domain={props.domain}
+          />
         </div>
       </td>
       <td>
