@@ -2,6 +2,8 @@ name: Build WXT ZIP
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   build-zip:
