@@ -9,7 +9,7 @@ const RERANK_WEIGHTS = {
   weak: 1,
   normal: 3,
   strong: 5,
-};
+} as const;
 
 async function orderedResults(results: Results) {
   const rankings = await items.rankings.getValue();
