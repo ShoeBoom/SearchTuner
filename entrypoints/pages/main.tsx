@@ -38,7 +38,10 @@ function App() {
           return <></>;
         }}
       />
-      <Route path="/settings" component={() => <div>Settings</div>} />
+      <Route
+        path="/settings"
+        component={() => <div class="text-2xl">Settings</div>}
+      />
       <Route path="/rankings" component={RankingsTable} />
       <Route path="/about" component={About} />
     </HashRouter>
