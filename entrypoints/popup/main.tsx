@@ -1,7 +1,8 @@
 import { renderTo } from "@/utils/render";
-import { ArrowUpDown, Settings, Info } from "lucide-solid";
+import { ArrowUpDown, Settings, Info, Hash } from "lucide-solid";
 import logo from "@/assets/icon.png";
 import { type JSX } from "solid-js";
+import { clsx } from "clsx";
 
 const basePagesUrl = browser.runtime.getURL("/pages.html") + "#";
 const Button = (props: {
@@ -43,6 +44,13 @@ function App() {
           icon={<ArrowUpDown size={18} />}
           text="View Rankings"
           hoverColor="group-hover:bg-red-500"
+        />
+        <Button
+          path="/settings"
+          icon={<Hash size={18} />}
+          // disabled
+          text="Bangs (coming soon)"
+          hoverColor="group-hover:bg-blue-500"
         />
 
         <Button
