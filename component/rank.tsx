@@ -8,6 +8,7 @@ import {
   type LucideProps,
 } from "lucide-solid";
 import { RankingsV2, syncedRankings } from "@/utils/storage";
+import { clsx } from "clsx";
 
 const rankIcons: ReadonlyMap<
   RankingsV2[string]["type"],
@@ -85,7 +86,7 @@ export const RankEditor = (props: {
   domain: string;
 }) => {
   return (
-    <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
+    <div class="divide-foreground border-foreground flex w-fit divide-x-2 overflow-hidden rounded-full border-2">
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
@@ -118,7 +119,7 @@ export const StrengthSlider = (props: {
   domain: string;
 }) => {
   return (
-    <div>
+    <div class="flex flex-col justify-center">
       <div class="flex w-full justify-between">
         <span>Weak</span>
         <span>Normal</span>
@@ -126,7 +127,12 @@ export const StrengthSlider = (props: {
       </div>
       <input
         disabled={props.rank.type !== "raise" && props.rank.type !== "lower"}
-        class="w-full"
+        class={clsx(
+          "w-full",
+          props.rank.type !== "raise" &&
+            props.rank.type !== "lower" &&
+            "opacity-50",
+        )}
         type="range"
         min="0"
         max="2"

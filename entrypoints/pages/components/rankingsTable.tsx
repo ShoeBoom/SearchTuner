@@ -20,7 +20,9 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
       </td>
 
       <td>
+        {/* <div class="flex justify-center"> */}
         <StrengthSlider rank={props.rank} domain={props.domain} />
+        {/* </div> */}
       </td>
       <td>
         <div class="flex justify-center">
