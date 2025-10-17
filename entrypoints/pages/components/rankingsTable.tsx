@@ -11,7 +11,7 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
     void items.rankings.setValue(newRankings);
   };
   return (
-    <tr>
+    <tr class="hover:bg-foreground/10 [&>td]:py-2">
       <td class="text-center text-lg">{props.domain}</td>
       <td>
         <div class="flex justify-center">
@@ -38,7 +38,7 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
 export function RankingsTable() {
   return (
     <div>
-      <table class="w-full max-w-4xl table-auto">
+      <table class="w-full max-w-4xl min-w-3xl table-auto">
         <thead>
           <tr>
             <th>Domain</th>
