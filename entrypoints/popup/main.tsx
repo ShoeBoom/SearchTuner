@@ -1,5 +1,5 @@
 import { ArrowUpDown, Settings, Info, Hash } from "lucide-solid";
-import logo from "@/assets/icon.png";
+import logo from "@/assets/icon.webp";
 import { type JSX } from "solid-js";
 
 const basePagesUrl = browser.runtime.getURL("/pages.html") + "#";

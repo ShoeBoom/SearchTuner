@@ -1,5 +1,5 @@
 import { Route, HashRouter, A, useNavigate } from "@solidjs/router";
-import logo from "@/assets/icon.png";
+import logo from "@/assets/icon.webp";
 import { Settings, ArrowUpDown, Info } from "lucide-solid";
 import { RankingsTable } from "@/entrypoints/pages/components/rankingsTable";
 import About from "./components/About";

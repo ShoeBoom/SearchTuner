@@ -14,7 +14,8 @@
     "zip:firefox": "wxt zip -b firefox",
     "submit": "wxt submit",
     "compile": "tsc --noEmit",
-    "postinstall": "wxt prepare"
+    "convert-icon": "tsx scripts/convert_icon_webp.ts",
+    "postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts"
   },
   "dependencies": {
     "@solidjs/router": "^0.15.3",
@@ -39,6 +40,8 @@
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "sharp": "^0.34.4",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.46.1",
     "wxt": "^0.20.11"
