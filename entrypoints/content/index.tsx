@@ -1,6 +1,5 @@
 import { getResults, type Results } from "@/utils/filter";
 import $ from "jquery";
-import { renderTo } from "@/utils/render";
 import Popup from "@/entrypoints/content/components/popup";
 import { items } from "@/utils/storage";
 import googledomains from "@/assets/googledomains";
@@ -87,8 +86,10 @@ function addPopupContainers(searches: Results) {
     }
 
     const container = document.createElement("div");
+    container.classList.add("searchtuner-container");
+    container.setAttribute("data-theme", theme);
     parent.appendChild(container);
-    renderTo(<Popup {...search} />, container, theme);
+    render(() => <Popup {...search} />, container);
   });
 }
 

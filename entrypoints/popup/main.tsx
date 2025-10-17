@@ -1,4 +1,3 @@
-import { renderTo } from "@/utils/render";
 import { ArrowUpDown, Settings, Info, Hash } from "lucide-solid";
 import logo from "@/assets/icon.png";
 import { type JSX } from "solid-js";
@@ -26,7 +25,7 @@ const Button = (props: {
 
 function App() {
   return (
-    <div class="bg-background text-foreground flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
+    <div class="flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
       <div class="flex items-center gap-3">
         <img src={logo} alt="SearchTuner" class="h-10 w-10 rounded-lg" />
         <div class="flex flex-col">
@@ -71,4 +70,4 @@ function App() {
   );
 }
 
-renderTo(<App />);
+render(() => <App />, document.body);
