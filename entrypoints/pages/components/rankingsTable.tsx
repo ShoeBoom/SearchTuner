@@ -1,6 +1,6 @@
 import { For } from "solid-js";
 import { items, RankingsV2, syncedRankings } from "@/utils/storage";
-import { RankEditor } from "@/component/rank";
+import { RankEditor, StrengthSlider } from "@/component/rank";
 import { Trash2 } from "lucide-solid";
 
 function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
@@ -11,13 +11,33 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
     void items.rankings.setValue(newRankings);
   };
   return (
-    <tr>
+    <tr class="hover:bg-foreground/10 [&>td]:py-2">
       <td class="text-center text-lg">{props.domain}</td>
-      <td class="flex justify-center gap-5">
-        <RankEditor rank={props.rank} domain={props.domain} />
-        <button class="text-red-500" onClick={deleteRank}>
-          <Trash2 />
-        </button>
+      <td>
+        <div class="flex justify-center">
+          <RankEditor
+            class="flex-none"
+            rank={props.rank}
+            domain={props.domain}
+          />
+        </div>
+      </td>
+
+      <td>
+        <div class="flex justify-center">
+          <StrengthSlider
+            class="flex-1"
+            rank={props.rank}
+            domain={props.domain}
+          />
+        </div>
+      </td>
+      <td>
+        <div class="flex justify-center">
+          <button class="text-red-500" onClick={deleteRank}>
+            <Trash2 />
+          </button>
+        </div>
       </td>
     </tr>
   );
@@ -26,11 +46,13 @@ function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
 export function RankingsTable() {
   return (
     <div>
-      <table class="w-full table-auto">
+      <table class="w-full max-w-4xl min-w-3xl table-auto">
         <thead>
           <tr>
             <th>Domain</th>
             <th>Rank</th>
+            <th>Strength</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>

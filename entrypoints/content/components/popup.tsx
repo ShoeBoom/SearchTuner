@@ -7,7 +7,7 @@ import {
   createMemo,
 } from "solid-js";
 import { syncedRankings } from "@/utils/storage";
-import { RankEditor, RankIcon } from "../../../component/rank";
+import { RankEditor, RankIcon, StrengthSlider } from "@/component/rank";
 
 export function usePopup() {
   const [isOpen, setIsOpen] = createSignal(false);
@@ -51,6 +51,7 @@ function Popup(props: Results[number]) {
               <div>Domain: {props.domain}</div>
               <div>Text: {props.text}</div>
               <RankEditor rank={rank()} domain={props.domain} />
+              <StrengthSlider rank={rank()} domain={props.domain} />
             </div>
           </div>
         </Show>

@@ -8,6 +8,7 @@ import {
   type LucideProps,
 } from "lucide-solid";
 import { RankingsV2, syncedRankings } from "@/utils/storage";
+import { clsx } from "clsx";
 
 const rankIcons: ReadonlyMap<
   RankingsV2[string]["type"],
@@ -76,27 +77,89 @@ export function RankIcon(props: { rank: RankingsV2[string] }) {
   return <>{icon()}</>;
 }
 
+const setRank = (rank: RankingsV2[string], domain: string) => {
+  void items.rankings.setValue({ ...syncedRankings(), [domain]: rank });
+};
+
 export const RankEditor = (props: {
   rank: RankingsV2[string];
   domain: string;
+  class?: string;
 }) => {
-  const setRank = (rank: RankingsV2[string]) => {
-    void items.rankings.setValue({ ...syncedRankings(), [props.domain]: rank });
-  };
   return (
-    <div class="divide-foreground border-foreground flex items-center divide-x-2 overflow-hidden rounded-full border-2">
+    <div
+      class={clsx(
+        "divide-foreground border-foreground flex divide-x-2 overflow-hidden rounded-full border-2",
+        props.class,
+      )}
+    >
       {Array.from(rankIcons.entries()).map(([value, opt]) => (
         <>
           <button
-            class={`flex h-10 w-14 items-center justify-center ${props.rank.type === value ? `${opt.color.background} text-white` : ""}`}
+            class={clsx(
+              "flex h-10 w-14 items-center justify-center",
+              props.rank.type === value && [opt.color.background, "text-white"],
+            )}
             onClick={() =>
-              setRank({ type: value, strength: props.rank.strength })
+              setRank(
+                { type: value, strength: props.rank.strength },
+                props.domain,
+              )
             }
           >
             <opt.icon size={18} />
           </button>
         </>
       ))}
+    </div>
+  );
+};
+
+const strengthMap = {
+  weak: 0,
+  normal: 1,
+  strong: 2,
+} as const;
+
+const strengthKeys = Object.keys(strengthMap) as (keyof typeof strengthMap)[];
+
+export const StrengthSlider = (props: {
+  rank: RankingsV2[string];
+  domain: string;
+  class?: string;
+}) => {
+  return (
+    <div
+      class={clsx(
+        "flex flex-col justify-center",
+        props.class,
+        props.rank.type !== "raise" &&
+          props.rank.type !== "lower" &&
+          "opacity-20",
+      )}
+    >
+      <div class="flex flex-1 justify-between">
+        <span>Weak</span>
+        <span>Normal</span>
+        <span>Strong</span>
+      </div>
+      <input
+        disabled={props.rank.type !== "raise" && props.rank.type !== "lower"}
+        class="flex-1"
+        type="range"
+        min="0"
+        max="2"
+        value={strengthMap[props.rank.strength ?? "normal"]}
+        onChange={(e) =>
+          setRank(
+            {
+              type: props.rank.type,
+              strength: strengthKeys[Number(e.target.value)],
+            },
+            props.domain,
+          )
+        }
+      />
     </div>
   );
 };
