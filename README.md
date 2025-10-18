@@ -8,6 +8,8 @@
     <img src="pages/public/firefox-store.svg" alt="Firefox Add-ons" width="120" style="vertical-align:middle;" />
   </a>
 </div>
+
+
 ```
 pnpm i
 pnpm zip:firefox
