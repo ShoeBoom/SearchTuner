@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "csstools.postcss",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "astro-build.astro-vscode"
   ]
 }
