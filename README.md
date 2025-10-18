@@ -1,4 +1,6 @@
 # SearchTuner
+
+![image](pages/public/chrome-store.svg) ![image](pages/public/firefox-store.svg)
 ```
 pnpm i
 pnpm zip:firefox
