@@ -96,10 +96,13 @@ function addPopupContainers(searches: Results) {
 }
 
 async function script() {
+  const start = performance.now();
   const searches = getResults();
   const resultsPromise = sortResults(searches);
   addPopupContainers(searches);
   await resultsPromise;
+  const end = performance.now();
+  console.log(`SearchTuner script took ${(end - start).toFixed(2)}ms`);
 }
 const getGoogleDomains = () => {
   return googledomains.map((domain) => `*://*${domain}/search*`);
@@ -118,7 +121,11 @@ export default defineContentScript({
       // Use MutationObserver to detect when div#rso becomes available
       const observer = new MutationObserver((mutations, obs) => {
         if ($("div#rso").length) {
-          void script().finally(() => {
+          void Promise.race([
+            script(),
+            // we close to show results if the script takes too long to complete
+            new Promise((resolve) => setTimeout(resolve, 50)),
+          ]).finally(() => {
             const hideStyle = document.getElementById("searchtuner-hide-main");
             if (hideStyle) hideStyle.remove();
           });
