@@ -24,4 +24,4 @@ web-ext.config.ts
 *.sln
 *.sw?
 
-assets/icon.webp
+src/assets/icon.webp
