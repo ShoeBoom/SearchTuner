@@ -1,8 +1,12 @@
 # SearchTuner
 
 <div style="display: flex; align-items: center; gap: 8px;">
-  <img src="pages/public/chrome-store.svg" alt="Chrome Web Store" width="120" height="40" style="vertical-align:middle;" />
-  <img src="pages/public/firefox-store.svg" alt="Firefox Add-ons" width="120" height="40" style="vertical-align:middle;" />
+  <a href="https://chromewebstore.google.com/detail/searchtuner/fnhmeghaldogkojfjcedfnhnegbnnkfg" target="_blank" rel="noopener noreferrer">
+    <img src="pages/public/chrome-store.svg" alt="Chrome Web Store" width="120" style="vertical-align:middle;" />
+  </a>
+  <a href="https://addons.mozilla.org/en-US/firefox/addon/searchtuner/" target="_blank" rel="noopener noreferrer">
+    <img src="pages/public/firefox-store.svg" alt="Firefox Add-ons" width="120" style="vertical-align:middle;" />
+  </a>
 </div>
 ```
 pnpm i
