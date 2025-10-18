@@ -1,6 +1,7 @@
 # SearchTuner
 
-![image](pages/public/chrome-store.svg) ![image](pages/public/firefox-store.svg)
+<img src="pages/public/chrome-store.svg" alt="Chrome Web Store" width="120" height="40" style="vertical-align:middle;margin-right:8px;" />
+<img src="pages/public/firefox-store.svg" alt="Firefox Add-ons" width="120" height="40" style="vertical-align:middle;" />
 ```
 pnpm i
 pnpm zip:firefox
