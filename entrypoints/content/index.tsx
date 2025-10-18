@@ -14,30 +14,32 @@ async function orderedResults(results: Results) {
   const rankings = await items.rankings.getValue();
   const totalResults = results.length;
 
-  return results.map((result, index) => {
-    const rank = rankings?.[result.domain] ?? { type: "none" as const };
-    const order = totalResults - index;
+  return results
+    .map((result, index) => {
+      const rank = rankings?.[result.domain] ?? { type: "none" as const };
+      const order = totalResults - index;
 
-    const weight = RERANK_WEIGHTS[rank.strength ?? "normal"];
+      const weight = RERANK_WEIGHTS[rank.strength ?? "normal"];
 
-    switch (rank.type) {
-      case "pin":
-        return { ...result, ord: order + 9999, rank };
-      case "raise":
-        return { ...result, ord: order + weight, rank };
-      case "none":
-        return { ...result, ord: order, rank };
-      case "lower":
-        return { ...result, ord: order - weight, rank };
-      case "block":
-        // result.element.remove();
-        // return null;
-        return { ...result, ord: order - 9999, rank };
-      default:
-        rank.type satisfies never;
-        throw new Error("Invalid rank type");
-    }
-  });
+      switch (rank.type) {
+        case "pin":
+          return { ...result, ord: order + 9999, rank };
+        case "raise":
+          return { ...result, ord: order + weight, rank };
+        case "none":
+          return { ...result, ord: order, rank };
+        case "lower":
+          return { ...result, ord: order - weight, rank };
+        case "block":
+          result.element.remove();
+          return null;
+        // return { ...result, ord: order - 9999, rank };
+        default:
+          rank.type satisfies never;
+          throw new Error("Invalid rank type");
+      }
+    })
+    .filter((r) => r !== null);
 }
 function reorderResults(
   rankedResults: Awaited<ReturnType<typeof orderedResults>>,
