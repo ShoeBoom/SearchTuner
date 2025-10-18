@@ -1,4 +1,3 @@
-/* eslint-disable */
 import sharp from "sharp";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -8,8 +7,8 @@ import { existsSync } from "fs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const inputPng = join(__dirname, "..", "assets", "icon.png");
-const outputWebp = join(__dirname, "..", "assets", "icon.webp");
+const inputPng = join(__dirname, "..", "src", "assets", "icon.png");
+const outputWebp = join(__dirname, "..", "src", "assets", "icon.webp");
 
 if (!existsSync(inputPng)) {
   console.error(`Input file not found: ${inputPng}`);

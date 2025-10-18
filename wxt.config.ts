@@ -7,6 +7,7 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
+  srcDir: "src",
   runner: {
     startUrls: ["https://www.google.com/search?q=apple"],
     openDevtools: true,
