@@ -36,6 +36,10 @@ const rankings = storage.defineItem<RankingsV2>("sync:rankings", {
   },
 });
 
+// this will set the version of the storage item. it is only run after all migrations are run.
+// https://github.com/wxt-dev/wxt/issues/1775
+void rankings.setMeta({ v: 2 });
+
 export const items = { rankings };
 
 type StorageItem<T, F extends Record<string, unknown> = {}> = ReturnType<
