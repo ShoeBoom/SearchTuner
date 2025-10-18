@@ -21,18 +21,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build Chrome zip
-        run: pnpm zip
+      - name: Build Chrome
+        run: pnpm build
 
-      - name: Build Firefox zip
-        run: pnpm zip:firefox
+      - name: Build Firefox
+        run: pnpm build:firefox
 
       - name: Upload Chrome artifact
         uses: actions/upload-artifact@v4
         with:
           name: searchtuner-chrome
           include-hidden-files: true
-          path: .output/searchtuner-*-chrome.zip
+          path: .output/chrome-mv3
           if-no-files-found: error
 
       - name: Upload Firefox artifact
@@ -40,6 +40,6 @@ jobs:
         with:
           name: searchtuner-firefox
           include-hidden-files: true
-          path: .output/searchtuner-*-firefox.zip
+          path: .output/firefox-mv2
           if-no-files-found: error
       
