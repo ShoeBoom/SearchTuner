@@ -96,13 +96,10 @@ function addPopupContainers(searches: Results) {
 }
 
 async function script() {
-  const start = performance.now();
   const searches = getResults();
   const resultsPromise = sortResults(searches);
   addPopupContainers(searches);
   await resultsPromise;
-  const end = performance.now();
-  console.log(`SearchTuner script took ${(end - start).toFixed(2)}ms`);
 }
 const getGoogleDomains = () => {
   return googledomains.map((domain) => `*://*${domain}/search*`);
