@@ -14,6 +14,8 @@ async function orderedResults(results: Results) {
   const rankings = await items.rankings.getValue();
   const totalResults = results.length;
 
+  console.log("orderedResults", results, totalResults);
+
   return results
     .map((result, index) => {
       const rank = rankings?.[result.domain] ?? { type: "none" as const };
@@ -44,6 +46,7 @@ async function orderedResults(results: Results) {
 function reorderResults(
   rankedResults: Awaited<ReturnType<typeof orderedResults>>,
 ) {
+  console.log("reorderResults", rankedResults);
   const desiredNodes = rankedResults
     .slice()
     .sort((a, b) => b.ord - a.ord)
@@ -111,7 +114,7 @@ export default defineContentScript({
   main() {
     const style = document.createElement("style");
     style.id = "searchtuner-hide-main";
-    style.textContent = "#main{display:none !important;}";
+    style.textContent = "#main{visibility:hidden !important;}";
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     (document.head || document.documentElement).appendChild(style);
     document.addEventListener("DOMContentLoaded", () => {
