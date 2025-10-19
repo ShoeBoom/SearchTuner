@@ -108,35 +108,42 @@ const getGoogleDomains = () => {
   return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
+function main() {
+  const style = document.createElement("style");
+  style.id = "searchtuner-hide-main";
+  style.textContent = "#main{visibility:hidden !important;}";
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  (document.head || document.documentElement).appendChild(style);
+  document.addEventListener("DOMContentLoaded", () => {
+    // Use MutationObserver to detect when div#rso becomes available
+    const observer = new MutationObserver((mutations, obs) => {
+      if ($("div#rso").length) {
+        void Promise.race([
+          script(),
+          // we close to show results if the script takes too long to complete
+          new Promise((resolve) => setTimeout(resolve, 50)),
+        ]).finally(() => {
+          const hideStyle = document.getElementById("searchtuner-hide-main");
+          if (hideStyle) hideStyle.remove();
+        });
+        obs.disconnect(); // Stop observing once element is found
+      }
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  });
+}
+
 export default defineContentScript({
   matches: getGoogleDomains(),
   runAt: "document_start",
   main() {
-    const style = document.createElement("style");
-    style.id = "searchtuner-hide-main";
-    style.textContent = "#main{visibility:hidden !important;}";
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    (document.head || document.documentElement).appendChild(style);
-    document.addEventListener("DOMContentLoaded", () => {
-      // Use MutationObserver to detect when div#rso becomes available
-      const observer = new MutationObserver((mutations, obs) => {
-        if ($("div#rso").length) {
-          void Promise.race([
-            script(),
-            // we close to show results if the script takes too long to complete
-            new Promise((resolve) => setTimeout(resolve, 50)),
-          ]).finally(() => {
-            const hideStyle = document.getElementById("searchtuner-hide-main");
-            if (hideStyle) hideStyle.remove();
-          });
-          obs.disconnect(); // Stop observing once element is found
-        }
-      });
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
+    void items.active.getValue().then((active) => {
+      if (!active) return;
+      main();
     });
   },
 });
