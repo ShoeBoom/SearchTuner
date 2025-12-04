@@ -82,12 +82,10 @@ function App() {
 						hoverColor="group-hover:bg-red-500"
 					/>
 					<Switch
-						checked={isRankingsActive() ?? true}
+						checked={!isRankingsActive()}
 						onChange={toggleActive}
 						title={
-							(isRankingsActive() ?? true)
-								? "Disable SearchTuner"
-								: "Enable SearchTuner"
+							!isRankingsActive() ? "Disable SearchTuner" : "Enable SearchTuner"
 						}
 					/>
 				</div>
