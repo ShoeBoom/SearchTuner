@@ -1,12 +1,12 @@
 import fs from "node:fs";
-import type { KagiBangsSchema } from "./types";
+import type { KagiBangsSchemaInput } from "./types";
 
 const link =
 	"https://raw.githubusercontent.com/kagisearch/bangs/refs/heads/main/data/bangs.json";
 
 const content = (await fetch(link).then((res) =>
 	res.json(),
-)) as KagiBangsSchema;
+)) as KagiBangsSchemaInput;
 
 const IGNORE_T: ReadonlySet<string> = new Set(["html", "epoch", "diff"]);
 
