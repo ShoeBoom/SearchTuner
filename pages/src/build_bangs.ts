@@ -14,6 +14,8 @@ const IGNORE_T: ReadonlySet<string> = new Set([
 	"tr",
 	"translate",
 	"ktr",
+	"safeon",
+	"safeoff",
 ]);
 
 const bangs = content
@@ -24,10 +26,7 @@ const bangs = content
 	)
 	.map(checkBangsMapper)
 	.map((bang) => {
-		if (bang.url.startsWith("/")) {
-			if (!bang.url.startsWith("/search?q=")) {
-				throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
-			}
+		if (bang.url.startsWith("/search?q=") && bang.domain === "kagi.com") {
 			return {
 				...bang,
 				site: bang.site.replace("Kagi", "Google"),

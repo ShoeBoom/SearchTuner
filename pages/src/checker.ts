@@ -16,19 +16,28 @@ const noNonKagiRelativeUrl = createChecker((bang) => {
 	}
 });
 
-const noRelativeNonSearchUrl = createChecker((bang) => {
+const start = /^\/search\?q=/;
+const templatePart = /\{\{\{s\}\}\}/;
+const filterPart = /(site|inurl|filetype):.*/;
+const joinPart = /\+/;
+const end = /$/;
+const first = `${filterPart.source}${joinPart.source}${templatePart.source}`;
+const second = `${templatePart.source}${joinPart.source}${filterPart.source}`;
+
+const regex = new RegExp(`${start.source}(${first}|${second})${end.source}`);
+
+const checkRelativeSearchUrls = createChecker((bang) => {
 	if (bang.url.startsWith("/")) {
-		const regex1 = /^\/search\?q=site:.*\+\{\{\{s\}\}\}$/;
-		const regex2 = /^\/search\?q=\{\{\{s\}\}\}\+site:.*$/;
-		const regex = new RegExp(`${regex1.source}|${regex2.source}`);
 		const match = regex.exec(bang.url);
 		if (!match) {
-			throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
+			throw new Error(
+				`Bang ${JSON.stringify(bang, null, 2)} is not a valid relative search URL`,
+			);
 		}
 	}
 });
 
-const checkers = [noRegex, noNonKagiRelativeUrl, noRelativeNonSearchUrl];
+const checkers = [noRegex, noNonKagiRelativeUrl, checkRelativeSearchUrls];
 
 export const checkBangsMapper = (bang: KagiBangsSchema[number]) => {
 	checkers.map((checker) => checker(bang));
