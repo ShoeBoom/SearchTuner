@@ -16,7 +16,7 @@
 		"convert-icon": "tsx scripts/convert_icon_webp.ts",
 		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
 		"check": "biome check --fix",
-		"pages:build-bangs": "cd pages && tsx build_bangs.ts"
+		"pages:build-bangs": "cd pages && tsx src/build_bangs.ts"
 	},
 	"dependencies": {
 		"@solidjs/router": "^0.15.3",
