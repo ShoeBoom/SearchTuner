@@ -9,6 +9,4 @@
     "skipLibCheck": true,
     "allowJs": true,
   },
-  "files": ["./eslint.config.mjs"],
-
 }

@@ -6,7 +6,6 @@ import { Trash2 } from "lucide-solid";
 function RankingRow(props: { domain: string; rank: RankingsV2[string] }) {
   const deleteRank = () => {
     const newRankings = { ...syncedRankings() };
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete newRankings[props.domain];
     void items.rankings.setValue(newRankings);
   };
