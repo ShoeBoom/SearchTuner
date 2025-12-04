@@ -57,6 +57,20 @@ function App() {
 	};
 
 	return (
+		<Show when={isRankingsActive() !== null}>
+			<Content
+				toggleActive={toggleActive}
+				isRankingsActive={() => isRankingsActive() ?? true}
+			/>
+		</Show>
+	);
+}
+
+function Content(props: {
+	toggleActive: () => void;
+	isRankingsActive: () => boolean;
+}) {
+	return (
 		<div class="flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
 			<div class="flex items-center gap-3">
 				<img src={logo} alt="SearchTuner" class="h-10 w-10 rounded-lg" />
@@ -72,7 +86,7 @@ function App() {
 				<div
 					class={clsx(
 						"flex items-center justify-between gap-3 transition-opacity",
-						!isRankingsActive() ? "opacity-50" : "",
+						!props.isRankingsActive() ? "opacity-50" : "",
 					)}
 				>
 					<Button
@@ -82,10 +96,12 @@ function App() {
 						hoverColor="group-hover:bg-red-500"
 					/>
 					<Switch
-						checked={!isRankingsActive()}
-						onChange={toggleActive}
+						checked={props.isRankingsActive()}
+						onChange={props.toggleActive}
 						title={
-							!isRankingsActive() ? "Disable SearchTuner" : "Enable SearchTuner"
+							props.isRankingsActive()
+								? "Disable SearchTuner"
+								: "Enable SearchTuner"
 						}
 					/>
 				</div>
