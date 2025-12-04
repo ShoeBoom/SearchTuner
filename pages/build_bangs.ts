@@ -1,31 +1,29 @@
 import fs from "node:fs";
-import type { KagiBangsSchemaInput } from "./types";
+import { schema } from "./types";
 
 const link =
 	"https://raw.githubusercontent.com/kagisearch/bangs/refs/heads/main/data/bangs.json";
 
-const content = (await fetch(link).then((res) =>
-	res.json(),
-)) as KagiBangsSchemaInput;
+const content = schema.parse(await fetch(link).then((res) => res.json()));
 
 const IGNORE_T: ReadonlySet<string> = new Set(["html", "epoch", "diff"]);
 
 const bangs = content
-	.filter((bang) => !IGNORE_T.has(bang.t))
+	.filter((bang) => !IGNORE_T.has(bang.trigger))
 	.map((bang) => {
-		if (bang.u.startsWith("/") && bang.d !== "kagi.com") {
+		if (bang.url.startsWith("/") && bang.domain !== "kagi.com") {
 			throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
 		}
 
-		if (bang.u.startsWith("/")) {
-			if (!bang.u.startsWith("/search?q=")) {
+		if (bang.url.startsWith("/")) {
+			if (!bang.url.startsWith("/search?q=")) {
 				throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
 			}
 			return {
 				...bang,
 			};
 		}
-		if (!bang.u.startsWith("http"))
+		if (!bang.url.startsWith("http"))
 			throw Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
 
 		// return as is

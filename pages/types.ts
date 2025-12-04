@@ -77,7 +77,7 @@ const bangSchemaInput = z
 		x: regexSchema,
 		c: categorySchema,
 		sc: subcategorySchema,
-		format: formatSchema,
+		fmt: formatSchema,
 		skip_tests: skipTestsSchema,
 	})
 	.strict();
@@ -94,7 +94,7 @@ const bangSchemaOutput = z
 		regex: regexSchema,
 		category: categorySchema,
 		subcategory: subcategorySchema,
-		format: formatSchema,
+		fmt: formatSchema,
 		skip_tests: skipTestsSchema,
 	})
 	.strict();
@@ -111,7 +111,7 @@ const bangSchema = z.codec(bangSchemaInput, bangSchemaOutput, {
 		regex: input.x,
 		category: input.c,
 		subcategory: input.sc,
-		format: input.format,
+		fmt: input.fmt,
 		skip_tests: input.skip_tests,
 	}),
 	encode: (output) => ({
@@ -124,7 +124,7 @@ const bangSchema = z.codec(bangSchemaInput, bangSchemaOutput, {
 		x: output.regex,
 		c: output.category,
 		sc: output.subcategory,
-		format: output.format,
+		fmt: output.fmt,
 		skip_tests: output.skip_tests ?? false,
 	}),
 });
