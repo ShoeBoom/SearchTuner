@@ -16,6 +16,12 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"a11y": {
+				"useKeyWithClickEvents": "off",
+				"useSemanticElements": "off",
+				"noStaticElementInteractions": "off",
+				"useAltText": "off"
+			},
 			"correctness": {
 				"noUnusedVariables": "off",
 				"noUnusedImports": {
