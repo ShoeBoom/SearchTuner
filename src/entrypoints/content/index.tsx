@@ -128,7 +128,7 @@ async function main() {
 	await Promise.race([
 		script(),
 		// we close to show results if the script takes too long to complete
-		new Promise((resolve) => setTimeout(resolve, 100)),
+		new Promise((resolve) => setTimeout(resolve, 300)),
 	]);
 	showMain();
 }

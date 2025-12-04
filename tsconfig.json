@@ -8,5 +8,6 @@
 		"exactOptionalPropertyTypes": true,
 		"skipLibCheck": true,
 		"allowJs": true
-	}
+	},
+	"exclude": ["pages/**/*"]
 }
