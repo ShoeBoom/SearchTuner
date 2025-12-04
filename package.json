@@ -15,10 +15,7 @@
 		"compile": "tsc --noEmit",
 		"convert-icon": "tsx scripts/convert_icon_webp.ts",
 		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
-		"format": "biome format --write",
-		"lint": "biome lint --fix",
-		"check": "biome check --fix",
-		"fix": "pnpm format && pnpm lint && pnpm check"
+		"check": "biome check --fix"
 	},
 	"dependencies": {
 		"@solidjs/router": "^0.15.3",

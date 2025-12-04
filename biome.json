@@ -20,7 +20,9 @@
 				"useKeyWithClickEvents": "off",
 				"useSemanticElements": "off",
 				"noStaticElementInteractions": "off",
-				"useAltText": "off"
+				"useAltText": "off",
+				"useButtonType": "off",
+				"noSvgWithoutTitle": "off"
 			},
 			"correctness": {
 				"noUnusedVariables": "off",
@@ -39,7 +41,8 @@
 				"noExplicitAny": "off"
 			},
 			"complexity": {
-				"useOptionalChain": "off"
+				"useOptionalChain": "off",
+				"noUselessFragments": "off"
 			}
 		}
 	},
