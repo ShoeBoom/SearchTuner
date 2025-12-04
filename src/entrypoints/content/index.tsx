@@ -121,26 +121,24 @@ const getGoogleDomains = () => {
 };
 
 function main() {
-	document.addEventListener("DOMContentLoaded", () => {
-		// Use MutationObserver to detect when div#rso becomes available
-		const observer = new MutationObserver((_mutations, obs) => {
-			if ($("div#rso").length) {
-				hideMain();
-				void Promise.race([
-					script(),
-					// we close to show results if the script takes too long to complete
-					new Promise((resolve) => setTimeout(resolve, 100)),
-				]).finally(() => {
-					showMain();
-				});
-				obs.disconnect(); // Stop observing once element is found
-			}
-		});
+	// Use MutationObserver to detect when div#rso becomes available
+	const observer = new MutationObserver((_mutations, obs) => {
+		if ($("div#rso").length) {
+			hideMain();
+			void Promise.race([
+				script(),
+				// we close to show results if the script takes too long to complete
+				new Promise((resolve) => setTimeout(resolve, 100)),
+			]).finally(() => {
+				showMain();
+			});
+			obs.disconnect(); // Stop observing once element is found
+		}
+	});
 
-		observer.observe(document.body, {
-			childList: true,
-			subtree: true,
-		});
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
 	});
 }
 
@@ -148,9 +146,11 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
-		void items.rankings_active.getValue().then((active) => {
-			if (!active) return;
-			main();
+		document.addEventListener("DOMContentLoaded", () => {
+			void items.rankings_active.getValue().then((active) => {
+				if (!active) return;
+				main();
+			});
 		});
 	},
 });
