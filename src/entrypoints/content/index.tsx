@@ -148,7 +148,7 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
-		void items.active.getValue().then((active) => {
+		void items.rankings_active.getValue().then((active) => {
 			if (!active) return;
 			main();
 		});

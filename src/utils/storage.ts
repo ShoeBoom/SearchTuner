@@ -40,13 +40,13 @@ const rankings = storage.defineItem<RankingsV2>("sync:rankings", {
 // https://github.com/wxt-dev/wxt/issues/1775
 void rankings.setMeta({ v: 2 });
 
-const active = storage.defineItem<boolean>("local:active", {
+const rankings_active = storage.defineItem<boolean>("local:rankings_active", {
 	init: () => true,
 	fallback: true,
 	version: 1,
 });
 
-export const items = { rankings, active };
+export const items = { rankings, rankings_active };
 
 type StorageItem<
 	T,
@@ -69,4 +69,4 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 };
 
 export const syncedRankings = useSettings(items.rankings);
-export const isActive = useSettings(items.active);
+export const isRankingsActive = useSettings(items.rankings_active);
