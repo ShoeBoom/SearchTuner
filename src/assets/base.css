@@ -1,10 +1,11 @@
 @import "./tailwind.css";
-html, body {
-  margin: 0;
-  overscroll-behavior: none;
+html,
+body {
+	margin: 0;
+	overscroll-behavior: none;
 }
 
 body {
-  background-color: var(--searchtuner-background);
-  color: var(--searchtuner-foreground);
+	background-color: var(--searchtuner-background);
+	color: var(--searchtuner-foreground);
 }
