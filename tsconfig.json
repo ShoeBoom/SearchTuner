@@ -1,12 +1,12 @@
 {
-  "extends": "./.wxt/tsconfig.json",
-  "compilerOptions": {
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    "strict": true,
-    "strictNullChecks": true,
-    "exactOptionalPropertyTypes": true,
-    "skipLibCheck": true,
-    "allowJs": true,
-  },
+	"extends": "./.wxt/tsconfig.json",
+	"compilerOptions": {
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
+		"strict": true,
+		"strictNullChecks": true,
+		"exactOptionalPropertyTypes": true,
+		"skipLibCheck": true,
+		"allowJs": true
+	}
 }

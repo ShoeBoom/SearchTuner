@@ -1,41 +1,37 @@
 @layer theme, base, components, utilities;
 @layer theme {
-  :where(.searchtuner-container[data-theme="dark"]) {
-    --searchtuner-foreground: oklch(98.5% 0.001 106.423);
-    --searchtuner-background: oklch(21.41% 0.009 272.675);
-  }
+	:where(.searchtuner-container[data-theme="dark"]) {
+		--searchtuner-foreground: oklch(98.5% 0.001 106.423);
+		--searchtuner-background: oklch(21.41% 0.009 272.675);
+	}
 
-  :root {
-    --searchtuner-foreground: oklch(21.6% 0.006 56.043);
-    --searchtuner-background: oklch(98.5% 0.001 106.423);
-  }
+	:root {
+		--searchtuner-foreground: oklch(21.6% 0.006 56.043);
+		--searchtuner-background: oklch(98.5% 0.001 106.423);
+	}
 
-  @theme inline {
-    --color-foreground: var(--searchtuner-foreground);
-    --color-background: var(--searchtuner-background);
-  }
-  .searchtuner-container,
-  .searchtuner-container * {
-    @import "tailwindcss/theme.css";
-  }
+	@theme inline {
+		--color-foreground: var(--searchtuner-foreground);
+		--color-background: var(--searchtuner-background);
+	}
+	.searchtuner-container,
+	.searchtuner-container * {
+		@import "tailwindcss/theme.css";
+	}
 }
 
-
-
-
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @layer base {
-
-  .searchtuner-container,
-  .searchtuner-container * {
-    @import "tailwindcss/preflight.css";
-  }
+	.searchtuner-container,
+	.searchtuner-container * {
+		@import "tailwindcss/preflight.css";
+	}
 }
 
 @layer utilities {
-  .searchtuner-container,
-  .searchtuner-container * {
-    @import "tailwindcss/utilities.css";
-  }
+	.searchtuner-container,
+	.searchtuner-container * {
+		@import "tailwindcss/utilities.css";
+	}
 }

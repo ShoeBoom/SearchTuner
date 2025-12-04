@@ -33,86 +33,86 @@ const JSNAME_LINK_ID = "UWckNb";
 // };
 
 export function getResults() {
-  const searches = extractDomains()
-    .map((s) => {
-      if (s.isErr() || s.value.elementType !== "result") {
-        return null;
-      }
-      return s.value;
-    })
-    .filter((s) => s !== null);
-  return searches;
+	const searches = extractDomains()
+		.map((s) => {
+			if (s.isErr() || s.value.elementType !== "result") {
+				return null;
+			}
+			return s.value;
+		})
+		.filter((s) => s !== null);
+	return searches;
 }
 
 export type Results = ReturnType<typeof getResults>;
 
 function extractDomains() {
-  // Get the main results container
-  const $rso = $("div#rso");
-  if ($rso.length === 0) {
-    console.error("Could not find result container #rso");
-    return [];
-  }
+	// Get the main results container
+	const $rso = $("div#rso");
+	if ($rso.length === 0) {
+		console.error("Could not find result container #rso");
+		return [];
+	}
 
-  // Filter out unwanted sections
-  const blocks = $rso
-    .find(
-      `[jscontroller="${JSCONTROLLER_RESULT}"], .${ITEM_PINNED_RESULT_CLASS}`,
-    )
-    .map((_, element) => $(element))
-    .toArray();
+	// Filter out unwanted sections
+	const blocks = $rso
+		.find(
+			`[jscontroller="${JSCONTROLLER_RESULT}"], .${ITEM_PINNED_RESULT_CLASS}`,
+		)
+		.map((_, element) => $(element))
+		.toArray();
 
-  const results = blocks.map(parseBlock);
+	const results = blocks.map(parseBlock);
 
-  return results;
+	return results;
 }
 
 function parseBlock(element: JQuery) {
-  const href = element
-    .find("a")
-    .filter(`[jsname="${JSNAME_LINK_ID}"]`)
-    .map((_, element) => ({
-      href: $(element).attr("href"),
-      text: $(element).find("h3").text(),
-    }))
-    .get();
+	const href = element
+		.find("a")
+		.filter(`[jsname="${JSNAME_LINK_ID}"]`)
+		.map((_, element) => ({
+			href: $(element).attr("href"),
+			text: $(element).find("h3").text(),
+		}))
+		.get();
 
-  const isResult = element.is(`[jscontroller="${JSCONTROLLER_RESULT}"]`);
-  const isPinnedResult = element.is(`.${ITEM_PINNED_RESULT_CLASS}`);
+	const isResult = element.is(`[jscontroller="${JSCONTROLLER_RESULT}"]`);
+	const isPinnedResult = element.is(`.${ITEM_PINNED_RESULT_CLASS}`);
 
-  if (isResult || isPinnedResult) {
-    if (href[0]?.href === undefined) {
-      return err({
-        error: "could_not_parse_domain" as const,
-        element,
-      });
-    }
-    return ok({
-      domain: getHostnames(href[0].href),
-      text: href[0].text,
-      elementType: "result" as const,
-      element,
-    });
-  } else if (href.length === 0) {
-    return ok({
-      elementType: "empty" as const,
-      element,
-    });
-  } else {
-    return ok({
-      elementType: "special" as const,
-      element,
-    });
-  }
+	if (isResult || isPinnedResult) {
+		if (href[0]?.href === undefined) {
+			return err({
+				error: "could_not_parse_domain" as const,
+				element,
+			});
+		}
+		return ok({
+			domain: getHostnames(href[0].href),
+			text: href[0].text,
+			elementType: "result" as const,
+			element,
+		});
+	} else if (href.length === 0) {
+		return ok({
+			elementType: "empty" as const,
+			element,
+		});
+	} else {
+		return ok({
+			elementType: "special" as const,
+			element,
+		});
+	}
 }
 
 function getHostnames(url: string) {
-  try {
-    if (url.startsWith("/") || url.startsWith("#")) {
-      throw new Error("Invalid URL");
-    }
-    return new URL(url).hostname;
-  } catch {
-    throw new Error("Invalid URL");
-  }
+	try {
+		if (url.startsWith("/") || url.startsWith("#")) {
+			throw new Error("Invalid URL");
+		}
+		return new URL(url).hostname;
+	} catch {
+		throw new Error("Invalid URL");
+	}
 }

@@ -1,7 +1,7 @@
 {
-  "tailwindCSS.experimental.configFile": "assets/tailwind.css",
-  "css.validate": false,
-  "[javascript]": {
+	"tailwindCSS.experimental.configFile": "assets/tailwind.css",
+	"css.validate": false,
+	"[javascript]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
 	"[javascriptreact]": {
