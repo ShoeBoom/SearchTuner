@@ -6,10 +6,20 @@ const link =
 
 const content = schema.parse(await fetch(link).then((res) => res.json()));
 
-const IGNORE_T: ReadonlySet<string> = new Set(["html", "epoch", "diff"]);
+const IGNORE_T: ReadonlySet<string> = new Set([
+	"html",
+	"epoch",
+	"diff",
+	"tr",
+	"translate",
+]);
 
 const bangs = content
-	.filter((bang) => !IGNORE_T.has(bang.trigger))
+	.filter(
+		(bang) =>
+			!IGNORE_T.has(bang.trigger) &&
+			!bang.triggers?.some((v) => IGNORE_T.has(v)),
+	)
 	.map((bang) => {
 		if (bang.url.startsWith("/") && bang.domain !== "kagi.com") {
 			throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
@@ -21,6 +31,9 @@ const bangs = content
 			}
 			return {
 				...bang,
+				site: bang.site.replace("Kagi", "Google"),
+				domain: "google.com",
+				url: `https://google.com${bang.url}`,
 			};
 		}
 		if (!bang.url.startsWith("http"))
@@ -30,4 +43,7 @@ const bangs = content
 		return bang;
 	});
 
-fs.writeFileSync("public/bangs.json", JSON.stringify(schema.encode(bangs)));
+fs.writeFileSync(
+	"public/bangs.json",
+	JSON.stringify(schema.encode(bangs), null, 2),
+);
