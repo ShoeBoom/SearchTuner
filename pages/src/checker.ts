@@ -26,7 +26,7 @@ const second = `${templatePart.source}${joinPart.source}${filterPart.source}`;
 
 const regex = new RegExp(`${start.source}(${first}|${second})${end.source}`);
 
-const checkRelativeSearchUrls = createChecker((bang) => {
+const noRelativeNonSearchUrls = createChecker((bang) => {
 	if (bang.url.startsWith("/")) {
 		const match = regex.exec(bang.url);
 		if (!match) {
@@ -37,7 +37,7 @@ const checkRelativeSearchUrls = createChecker((bang) => {
 	}
 });
 
-const checkers = [noRegex, noNonKagiRelativeUrl, checkRelativeSearchUrls];
+const checkers = [noRegex, noNonKagiRelativeUrl, noRelativeNonSearchUrls];
 
 export const checkBangsMapper = (bang: KagiBangsSchema[number]) => {
 	checkers.map((checker) => checker(bang));

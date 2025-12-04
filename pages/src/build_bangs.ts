@@ -43,4 +43,24 @@ const bangs = content
 		return bang;
 	});
 
-fs.writeFileSync("public/bangs.json", JSON.stringify(schema.encode(bangs)));
+const triggerIndex = new Map<string, number>();
+bangs.forEach((bang, index) => {
+	// if (triggerIndex.has(bang.trigger)) {
+	// 	throw new Error(`Trigger ${bang.trigger} is already defined`);
+	// }
+	triggerIndex.set(bang.trigger, index);
+	bang.triggers?.forEach((trigger) => {
+		// if (triggerIndex.has(trigger)) {
+		// 	throw new Error(`Trigger ${trigger} is already defined`);
+		// }
+		triggerIndex.set(trigger, index);
+	});
+});
+
+fs.writeFileSync(
+	"public/bangs.json",
+	JSON.stringify({
+		bangs: schema.encode(bangs),
+		triggerIndex: Object.fromEntries(triggerIndex.entries()),
+	}),
+);
