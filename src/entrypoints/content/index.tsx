@@ -120,26 +120,17 @@ const getGoogleDomains = () => {
 	return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
-function main() {
+async function main() {
 	// Use MutationObserver to detect when div#rso becomes available
-	const observer = new MutationObserver((_mutations, obs) => {
-		if ($("div#rso").length) {
-			hideMain();
-			void Promise.race([
-				script(),
-				// we close to show results if the script takes too long to complete
-				new Promise((resolve) => setTimeout(resolve, 100)),
-			]).finally(() => {
-				showMain();
-			});
-			obs.disconnect(); // Stop observing once element is found
-		}
-	});
-
-	observer.observe(document.body, {
-		childList: true,
-		subtree: true,
-	});
+	const active = await items.rankings_active.getValue();
+	if (!active) return;
+	hideMain();
+	await Promise.race([
+		script(),
+		// we close to show results if the script takes too long to complete
+		new Promise((resolve) => setTimeout(resolve, 100)),
+	]);
+	showMain();
 }
 
 export default defineContentScript({
@@ -147,9 +138,16 @@ export default defineContentScript({
 	runAt: "document_start",
 	main() {
 		document.addEventListener("DOMContentLoaded", () => {
-			void items.rankings_active.getValue().then((active) => {
-				if (!active) return;
-				main();
+			const observer = new MutationObserver((_mutations, obs) => {
+				if ($("div#rso").length) {
+					obs.disconnect(); // Stop observing once element is found
+					void main();
+				}
+			});
+
+			observer.observe(document.body, {
+				childList: true,
+				subtree: true,
 			});
 		});
 	},
