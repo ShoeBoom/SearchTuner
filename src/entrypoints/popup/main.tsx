@@ -51,7 +51,9 @@ const Switch = (props: {
 
 function App() {
 	const toggleActive = async () => {
-		await items.rankings_active.setValue(!(isRankingsActive() ?? true));
+		await items.rankings_active.setValue(
+			!(await items.rankings_active.getValue()),
+		);
 	};
 
 	return (
