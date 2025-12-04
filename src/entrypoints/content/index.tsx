@@ -120,30 +120,37 @@ const getGoogleDomains = () => {
 	return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
+function main() {
+	document.addEventListener("DOMContentLoaded", () => {
+		// Use MutationObserver to detect when div#rso becomes available
+		const observer = new MutationObserver((_mutations, obs) => {
+			if ($("div#rso").length) {
+				hideMain();
+				void Promise.race([
+					script(),
+					// we close to show results if the script takes too long to complete
+					new Promise((resolve) => setTimeout(resolve, 100)),
+				]).finally(() => {
+					showMain();
+				});
+				obs.disconnect(); // Stop observing once element is found
+			}
+		});
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+	});
+}
+
 export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
-		document.addEventListener("DOMContentLoaded", () => {
-			// Use MutationObserver to detect when div#rso becomes available
-			const observer = new MutationObserver((_mutations, obs) => {
-				if ($("div#rso").length) {
-					hideMain();
-					void Promise.race([
-						script(),
-						// we close to show results if the script takes too long to complete
-						new Promise((resolve) => setTimeout(resolve, 100)),
-					]).finally(() => {
-						showMain();
-					});
-					obs.disconnect(); // Stop observing once element is found
-				}
-			});
-
-			observer.observe(document.body, {
-				childList: true,
-				subtree: true,
-			});
+		void items.active.getValue().then((active) => {
+			if (!active) return;
+			main();
 		});
 	},
 });
