@@ -132,7 +132,7 @@ export default defineContentScript({
           void Promise.race([
             script(),
             // we close to show results if the script takes too long to complete
-            new Promise((resolve) => setTimeout(resolve, 50)),
+            new Promise((resolve) => setTimeout(resolve, 100)),
           ]).finally(() => {
             showMain();
           });
