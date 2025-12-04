@@ -11,9 +11,11 @@ const IGNORE_T: ReadonlySet<string> = new Set([
 	"html",
 	"epoch",
 	"diff",
-	// "tr",
-	// "translate",
+	// Kagi specific triggers that need to be converted to Google equivalents
+	"tr",
+	"translate",
 	"ktr",
+	// these params are not supported by google search
 	"safeon",
 	"safeoff",
 ]);
