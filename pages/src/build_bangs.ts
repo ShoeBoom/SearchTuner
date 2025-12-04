@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { checkBangsMapper } from "./checker";
 import { schema } from "./types";
 
 const link =
@@ -21,16 +22,8 @@ const bangs = content
 			!IGNORE_T.has(bang.trigger) &&
 			!bang.triggers?.some((v) => IGNORE_T.has(v)),
 	)
+	.map(checkBangsMapper)
 	.map((bang) => {
-		if (bang.url.startsWith("/") && bang.domain !== "kagi.com") {
-			throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
-		}
-		if (bang.regex) {
-			throw new Error(
-				`found bang with regex: ${JSON.stringify(bang, null, 2)}`,
-			);
-		}
-
 		if (bang.url.startsWith("/")) {
 			if (!bang.url.startsWith("/search?q=")) {
 				throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
