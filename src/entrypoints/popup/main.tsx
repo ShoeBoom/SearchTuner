@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
 import type { JSX } from "solid-js";
 import logo from "@/assets/icon.webp";
@@ -43,7 +44,10 @@ function App() {
 
 			<div class="flex flex-col gap-2 px-4">
 				<div
-					class={`flex items-center gap-3 transition-opacity ${!isRankingsActive() ? "opacity-50" : ""}`}
+					class={clsx(
+						"flex items-center gap-3 transition-opacity",
+						!isRankingsActive() ? "opacity-50" : "",
+					)}
 				>
 					<Button
 						path="/rankings"
