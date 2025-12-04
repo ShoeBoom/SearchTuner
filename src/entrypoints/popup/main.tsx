@@ -25,9 +25,33 @@ const Button = (props: {
 	</a>
 );
 
+const Switch = (props: {
+	checked: boolean;
+	onChange: () => void;
+	title?: string;
+}) => (
+	<button
+		class={clsx(
+			"relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+			props.checked
+				? "bg-green-500 focus:ring-green-500"
+				: "bg-gray-300 focus:ring-gray-500",
+		)}
+		onClick={props.onChange}
+		title={props.title}
+	>
+		<span
+			class={clsx(
+				"inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+				props.checked ? "translate-x-6" : "translate-x-1",
+			)}
+		></span>
+	</button>
+);
+
 function App() {
 	const toggleActive = async () => {
-		await items.rankings_active.setValue(!isRankingsActive());
+		await items.rankings_active.setValue(!(isRankingsActive() ?? true));
 	};
 
 	return (
@@ -45,7 +69,7 @@ function App() {
 			<div class="flex flex-col gap-2 px-4">
 				<div
 					class={clsx(
-						"flex items-center gap-3 transition-opacity",
+						"flex items-center justify-between gap-3 transition-opacity",
 						!isRankingsActive() ? "opacity-50" : "",
 					)}
 				>
@@ -55,23 +79,15 @@ function App() {
 						text="View Rankings"
 						hoverColor="group-hover:bg-red-500"
 					/>
-					<button
-						class={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-							isRankingsActive()
-								? "bg-green-500 focus:ring-green-500"
-								: "bg-gray-300 focus:ring-gray-500"
-						}`}
-						onClick={toggleActive}
+					<Switch
+						checked={isRankingsActive() ?? true}
+						onChange={toggleActive}
 						title={
-							isRankingsActive() ? "Disable SearchTuner" : "Enable SearchTuner"
+							(isRankingsActive() ?? true)
+								? "Disable SearchTuner"
+								: "Enable SearchTuner"
 						}
-					>
-						<span
-							class={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-								isRankingsActive() ? "translate-x-6" : "translate-x-1"
-							}`}
-						></span>
-					</button>
+					/>
 				</div>
 				<div class="pointer-events-none opacity-50">
 					<Button
