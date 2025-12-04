@@ -31,44 +31,48 @@ function App() {
 
 	return (
 		<div class="flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
-			<div
-				class={`flex items-center justify-between transition-opacity ${!isRankingsActive() ? "opacity-50" : ""}`}
-			>
-				<div class="flex items-center gap-3">
-					<img src={logo} alt="SearchTuner" class="h-10 w-10 rounded-lg" />
-					<div class="flex flex-col">
-						<h1 class="font-semibold text-lg">SearchTuner</h1>
-						<p class="text-foreground/60 text-xs">
-							Customize your search results
-						</p>
-					</div>
+			<div class="flex items-center gap-3">
+				<img src={logo} alt="SearchTuner" class="h-10 w-10 rounded-lg" />
+				<div class="flex flex-col">
+					<h1 class="font-semibold text-lg">SearchTuner</h1>
+					<p class="text-foreground/60 text-xs">
+						Customize your search results
+					</p>
 				</div>
-				<button
-					class={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-						isRankingsActive()
-							? "bg-green-500 focus:ring-green-500"
-							: "bg-gray-300 focus:ring-gray-500"
-					}`}
-					onClick={toggleActive}
-					title={
-						isRankingsActive() ? "Disable SearchTuner" : "Enable SearchTuner"
-					}
-				>
-					<span
-						class={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-							isRankingsActive() ? "translate-x-6" : "translate-x-1"
-						}`}
-					></span>
-				</button>
 			</div>
 
 			<div class="flex flex-col gap-2 px-4">
-				<Button
-					path="/rankings"
-					icon={<ArrowUpDown size={18} />}
-					text="View Rankings"
-					hoverColor="group-hover:bg-red-500"
-				/>
+				<div
+					class={`group flex items-center gap-3 rounded-lg transition-opacity ${!isRankingsActive() ? "opacity-50" : ""}`}
+				>
+					<a
+						href={`${basePagesUrl}/rankings`}
+						target="_blank"
+						class="flex flex-1 items-center gap-3 hover:underline"
+					>
+						<div class="rounded-md bg-foreground/10 p-1.5 transition-colors group-hover:bg-red-500 group-hover:text-white">
+							<ArrowUpDown size={18} />
+						</div>
+						<span class="text-sm">View Rankings</span>
+					</a>
+					<button
+						class={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+							isRankingsActive()
+								? "bg-green-500 focus:ring-green-500"
+								: "bg-gray-300 focus:ring-gray-500"
+						}`}
+						onClick={toggleActive}
+						title={
+							isRankingsActive() ? "Disable SearchTuner" : "Enable SearchTuner"
+						}
+					>
+						<span
+							class={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+								isRankingsActive() ? "translate-x-6" : "translate-x-1"
+							}`}
+						></span>
+					</button>
+				</div>
 				<div class="pointer-events-none opacity-50">
 					<Button
 						path="/settings"
