@@ -30,4 +30,4 @@ const bangs = content
 		return bang;
 	});
 
-fs.writeFileSync("public/bangs.json", JSON.stringify(bangs));
+fs.writeFileSync("public/bangs.json", JSON.stringify(schema.encode(bangs)));
