@@ -43,18 +43,14 @@ function App() {
 
 			<div class="flex flex-col gap-2 px-4">
 				<div
-					class={`group flex items-center gap-3 rounded-lg transition-opacity ${!isRankingsActive() ? "opacity-50" : ""}`}
+					class={`flex items-center gap-3 transition-opacity ${!isRankingsActive() ? "opacity-50" : ""}`}
 				>
-					<a
-						href={`${basePagesUrl}/rankings`}
-						target="_blank"
-						class="flex flex-1 items-center gap-3 hover:underline"
-					>
-						<div class="rounded-md bg-foreground/10 p-1.5 transition-colors group-hover:bg-red-500 group-hover:text-white">
-							<ArrowUpDown size={18} />
-						</div>
-						<span class="text-sm">View Rankings</span>
-					</a>
+					<Button
+						path="/rankings"
+						icon={<ArrowUpDown size={18} />}
+						text="View Rankings"
+						hoverColor="group-hover:bg-red-500"
+					/>
 					<button
 						class={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
 							isRankingsActive()
