@@ -12,6 +12,7 @@ const IGNORE_T: ReadonlySet<string> = new Set([
 	"diff",
 	"tr",
 	"translate",
+	"ktr",
 ]);
 
 const bangs = content
@@ -23,6 +24,11 @@ const bangs = content
 	.map((bang) => {
 		if (bang.url.startsWith("/") && bang.domain !== "kagi.com") {
 			throw new Error(`Bang ${JSON.stringify(bang, null, 2)} is not valid`);
+		}
+		if (bang.regex) {
+			throw new Error(
+				`found bang with regex: ${JSON.stringify(bang, null, 2)}`,
+			);
 		}
 
 		if (bang.url.startsWith("/")) {
