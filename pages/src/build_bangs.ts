@@ -45,14 +45,14 @@ const bangs = content
 
 const triggerIndex = new Map<string, number>();
 bangs.forEach((bang, index) => {
-	// if (triggerIndex.has(bang.trigger)) {
-	// 	throw new Error(`Trigger ${bang.trigger} is already defined`);
-	// }
+	if (triggerIndex.has(bang.trigger)) {
+		throw new Error(`Trigger ${bang.trigger} is defined multiple times`);
+	}
 	triggerIndex.set(bang.trigger, index);
 	bang.triggers?.forEach((trigger) => {
-		// if (triggerIndex.has(trigger)) {
-		// 	throw new Error(`Trigger ${trigger} is already defined`);
-		// }
+		if (triggerIndex.has(trigger)) {
+			throw new Error(`Trigger ${trigger} is defined multiple times`);
+		}
 		triggerIndex.set(trigger, index);
 	});
 });
