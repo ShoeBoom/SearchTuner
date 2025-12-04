@@ -43,7 +43,4 @@ const bangs = content
 		return bang;
 	});
 
-fs.writeFileSync(
-	"public/bangs.json",
-	JSON.stringify(schema.encode(bangs), null, 2),
-);
+fs.writeFileSync("public/bangs.json", JSON.stringify(schema.encode(bangs)));
