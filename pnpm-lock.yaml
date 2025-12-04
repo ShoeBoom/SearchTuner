@@ -13,7 +13,7 @@ importers:
         version: 0.15.3(solid-js@1.9.9)
       '@tailwindcss/vite':
         specifier: ^4.1.14
-        version: 4.1.14(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
+        version: 4.1.14(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -48,12 +48,15 @@ importers:
       '@types/lodash':
         specifier: ^4.17.20
         version: 4.17.20
+      '@types/node':
+        specifier: ^24.10.1
+        version: 24.10.1
       '@wxt-dev/auto-icons':
         specifier: ^1.1.0
-        version: 1.1.0(wxt@0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
+        version: 1.1.0(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
       '@wxt-dev/module-solid':
         specifier: ^1.1.4
-        version: 1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
+        version: 1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
       sharp:
         specifier: ^0.34.4
         version: 0.34.4
@@ -65,7 +68,7 @@ importers:
         version: 5.9.3
       wxt:
         specifier: ^0.20.11
-        version: 0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
+        version: 0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
 
 packages:
 
@@ -808,8 +811,8 @@ packages:
   '@types/minimatch@3.0.5':
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
 
-  '@types/node@24.7.0':
-    resolution: {integrity: sha512-IbKooQVqUBrlzWTi79E8Fw78l8k1RNtlDDNWsFZs7XonuQSJ8oNYfEeclhprUldXISRMLzBpILuKgPlIxm+/Yw==}
+  '@types/node@24.10.1':
+    resolution: {integrity: sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ==}
 
   '@types/sizzle@2.3.10':
     resolution: {integrity: sha512-TC0dmN0K8YcWEAEfiPi5gJP14eJe30TTGjkvek3iM/1NdHHsdCA/Td6GvNndMOo/iSnIsZ4HuuhrYPDAmbxzww==}
@@ -2238,8 +2241,8 @@ packages:
   uhyphen@0.2.0:
     resolution: {integrity: sha512-qz3o9CHXmJJPGBdqzab7qAYuW8kQGKNEuoHFYrBwV6hWIMcpAmxDLXojcHfFr9US1Pe6zUswEIJIbLI610fuqA==}
 
-  undici-types@7.14.0:
-    resolution: {integrity: sha512-QQiYxHuyZ9gQUIrmPo3IA+hUl4KYk8uSA7cHrcKd/l3p1OTpZcM0Tbp9x7FAtXdAYhlasd60ncPpgu6ihG6TOA==}
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
 
   unimport@5.4.1:
     resolution: {integrity: sha512-wMZ2JKUCleCK2zfRHeWcbrUHKXOC3SVBYkyn/wTGzh0THX6sT4hSjuKXxKANN4/WMbT6ZPM4JzcDcnhD2x9Bpg==}
@@ -2984,12 +2987,12 @@ snapshots:
       '@tailwindcss/oxide-win32-arm64-msvc': 4.1.14
       '@tailwindcss/oxide-win32-x64-msvc': 4.1.14
 
-  '@tailwindcss/vite@4.1.14(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))':
+  '@tailwindcss/vite@4.1.14(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))':
     dependencies:
       '@tailwindcss/node': 4.1.14
       '@tailwindcss/oxide': 4.1.14
       tailwindcss: 4.1.14
-      vite: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
 
   '@types/babel__core@7.20.5':
     dependencies:
@@ -3030,15 +3033,15 @@ snapshots:
 
   '@types/minimatch@3.0.5': {}
 
-  '@types/node@24.7.0':
+  '@types/node@24.10.1':
     dependencies:
-      undici-types: 7.14.0
+      undici-types: 7.16.0
 
   '@types/sizzle@2.3.10': {}
 
   '@types/yauzl@2.10.3':
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 24.10.1
     optional: true
 
   '@webext-core/fake-browser@1.3.2':
@@ -3051,22 +3054,22 @@ snapshots:
 
   '@webext-core/match-patterns@1.0.3': {}
 
-  '@wxt-dev/auto-icons@1.1.0(wxt@0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))':
+  '@wxt-dev/auto-icons@1.1.0(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))':
     dependencies:
       defu: 6.1.4
       fs-extra: 11.3.2
       sharp: 0.34.4
-      wxt: 0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
+      wxt: 0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
 
   '@wxt-dev/browser@0.1.4':
     dependencies:
       '@types/filesystem': 0.0.36
       '@types/har-format': 1.2.16
 
-  '@wxt-dev/module-solid@1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))':
+  '@wxt-dev/module-solid@1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))':
     dependencies:
-      vite-plugin-solid: 2.11.9(solid-js@1.9.9)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
-      wxt: 0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
+      vite-plugin-solid: 2.11.9(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
+      wxt: 0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
     transitivePeerDependencies:
       - '@testing-library/jest-dom'
       - solid-js
@@ -3232,7 +3235,7 @@ snapshots:
 
   chrome-launcher@1.2.0:
     dependencies:
-      '@types/node': 24.7.0
+      '@types/node': 24.10.1
       escape-string-regexp: 4.0.0
       is-wsl: 2.2.0
       lighthouse-logger: 2.0.2
@@ -4469,7 +4472,7 @@ snapshots:
 
   uhyphen@0.2.0: {}
 
-  undici-types@7.14.0: {}
+  undici-types@7.16.0: {}
 
   unimport@5.4.1:
     dependencies:
@@ -4527,13 +4530,13 @@ snapshots:
 
   validate-html-nesting@1.2.3: {}
 
-  vite-node@3.2.4(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6):
+  vite-node@3.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -4548,7 +4551,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-solid@2.11.9(solid-js@1.9.9)(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)):
+  vite-plugin-solid@2.11.9(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)):
     dependencies:
       '@babel/core': 7.28.4
       '@types/babel__core': 7.20.5
@@ -4556,12 +4559,12 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.9
       solid-refresh: 0.6.3(solid-js@1.9.9)
-      vite: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
-      vitefu: 1.1.1(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
+      vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vitefu: 1.1.1(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
     transitivePeerDependencies:
       - supports-color
 
-  vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6):
+  vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
@@ -4570,15 +4573,15 @@ snapshots:
       rollup: 4.52.4
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 24.7.0
+      '@types/node': 24.10.1
       fsevents: 2.3.3
       jiti: 2.6.1
       lightningcss: 1.30.1
       tsx: 4.20.6
 
-  vitefu@1.1.1(vite@7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)):
+  vitefu@1.1.1(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)):
     optionalDependencies:
-      vite: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
 
   watchpack@2.4.4:
     dependencies:
@@ -4653,7 +4656,7 @@ snapshots:
     dependencies:
       is-wsl: 3.1.0
 
-  wxt@0.20.11(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6):
+  wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6):
     dependencies:
       '@1natsu/wait-element': 4.1.2
       '@aklinker1/rollup-plugin-visualizer': 5.12.0(rollup@4.52.4)
@@ -4697,8 +4700,8 @@ snapshots:
       publish-browser-extension: 3.0.2
       scule: 1.3.0
       unimport: 5.4.1
-      vite: 7.1.9(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
-      vite-node: 3.2.4(@types/node@24.7.0)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+      vite-node: 3.2.4(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
       web-ext-run: 0.2.4
     transitivePeerDependencies:
       - '@types/node'
