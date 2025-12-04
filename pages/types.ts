@@ -62,8 +62,8 @@ const formatSchema = z
 	.optional();
 const skipTestsSchema = z
 	.boolean()
-	.describe("Whether specs should be run on this bang")
-	.default(false);
+	.optional()
+	.describe("Whether specs should be run on this bang");
 
 // Input schema with shortened field names
 const bangSchemaInput = z
@@ -125,7 +125,7 @@ const bangSchema = z.codec(bangSchemaInput, bangSchemaOutput, {
 		c: output.category,
 		sc: output.subcategory,
 		fmt: output.fmt,
-		skip_tests: output.skip_tests ?? false,
+		skip_tests: output.skip_tests,
 	}),
 });
 const schema = z
