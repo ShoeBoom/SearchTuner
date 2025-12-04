@@ -1,6 +1,8 @@
+import clsx from "clsx";
 import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
 import type { JSX } from "solid-js";
 import logo from "@/assets/icon.webp";
+import { isRankingsActive, items } from "@/utils/storage";
 
 const basePagesUrl = `${browser.runtime.getURL("/pages.html")}#`;
 const Button = (props: {
@@ -23,7 +25,51 @@ const Button = (props: {
 	</a>
 );
 
+const Switch = (props: {
+	checked: boolean;
+	onChange: () => void;
+	title?: string;
+}) => (
+	<button
+		class={clsx(
+			"relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+			props.checked
+				? "bg-green-500 focus:ring-green-500"
+				: "bg-gray-300 focus:ring-gray-500",
+		)}
+		onClick={props.onChange}
+		title={props.title}
+	>
+		<span
+			class={clsx(
+				"inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+				props.checked ? "translate-x-6" : "translate-x-1",
+			)}
+		></span>
+	</button>
+);
+
 function App() {
+	const toggleActive = async () => {
+		await items.rankings_active.setValue(
+			!(await items.rankings_active.getValue()),
+		);
+	};
+
+	return (
+		<Show when={isRankingsActive() !== null}>
+			<Content
+				toggleActive={toggleActive}
+				isRankingsActive={() => isRankingsActive() ?? true}
+			/>
+		</Show>
+	);
+}
+
+function Content(props: {
+	toggleActive: () => void;
+	isRankingsActive: () => boolean;
+}) {
 	return (
 		<div class="flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
 			<div class="flex items-center gap-3">
@@ -37,12 +83,28 @@ function App() {
 			</div>
 
 			<div class="flex flex-col gap-2 px-4">
-				<Button
-					path="/rankings"
-					icon={<ArrowUpDown size={18} />}
-					text="View Rankings"
-					hoverColor="group-hover:bg-red-500"
-				/>
+				<div
+					class={clsx(
+						"flex items-center justify-between gap-3 transition-opacity",
+						!props.isRankingsActive() ? "opacity-50" : "",
+					)}
+				>
+					<Button
+						path="/rankings"
+						icon={<ArrowUpDown size={18} />}
+						text="View Rankings"
+						hoverColor="group-hover:bg-red-500"
+					/>
+					<Switch
+						checked={props.isRankingsActive()}
+						onChange={props.toggleActive}
+						title={
+							props.isRankingsActive()
+								? "Disable SearchTuner"
+								: "Enable SearchTuner"
+						}
+					/>
+				</div>
 				<div class="pointer-events-none opacity-50">
 					<Button
 						path="/settings"
