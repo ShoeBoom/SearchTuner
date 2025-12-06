@@ -115,14 +115,18 @@ const getGoogleDomains = () => {
 	return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
-async function main() {
+const getConfig = async () => {
 	const [active, rankings] = await Promise.all([
 		items.rankings_active.getValue(),
 		items.rankings.getValue(),
 	]);
-	if (!active) return;
+	return { active, rankings };
+};
 
-	script(rankings);
+async function main(config: { active: boolean; rankings: RankingsV2 | null }) {
+	if (!config.active) return;
+
+	script(config.rankings);
 }
 
 export default defineContentScript({
@@ -130,11 +134,14 @@ export default defineContentScript({
 	runAt: "document_start",
 	main() {
 		hideMain();
+		const configPromise = getConfig();
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
-					void main().finally(() => showMain());
+					void configPromise
+						.then((config) => main(config))
+						.finally(() => showMain());
 				}
 			});
 
