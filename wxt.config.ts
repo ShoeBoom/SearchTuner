@@ -8,7 +8,7 @@ export default defineConfig({
 		plugins: [tailwindcss()],
 	}),
 	srcDir: "src",
-	runner: {
+	webExt: {
 		startUrls: ["https://www.google.com/search?q=apple"],
 		openDevtools: true,
 		chromiumArgs: [

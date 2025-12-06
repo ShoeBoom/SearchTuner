@@ -25,3 +25,12 @@ web-ext.config.ts
 *.sw?
 
 src/assets/icon.webp
+
+# direnv
+.direnv
+.env
+.env.*
+
+# env
+.env
+*.env.local
