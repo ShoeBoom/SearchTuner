@@ -10,11 +10,8 @@ const RERANK_WEIGHTS = {
 	strong: 5,
 } as const;
 
-async function orderedResults(results: Results) {
-	const rankings = await items.rankings.getValue();
+function orderedResults(results: Results, rankings: RankingsV2 | null) {
 	const totalResults = results.length;
-
-	console.log("orderedResults", results, totalResults);
 
 	return results
 		.map((result, index) => {
@@ -46,7 +43,6 @@ async function orderedResults(results: Results) {
 function reorderResults(
 	rankedResults: Awaited<ReturnType<typeof orderedResults>>,
 ) {
-	console.log("reorderResults", rankedResults);
 	const desiredNodes = rankedResults
 		.slice()
 		.sort((a, b) => b.ord - a.ord)
@@ -76,8 +72,8 @@ function reorderResults(
 	}
 }
 
-async function sortResults(results: Results) {
-	const rankedResults = await orderedResults(results);
+function sortResults(results: Results, rankings: RankingsV2 | null) {
+	const rankedResults = orderedResults(results, rankings);
 	reorderResults(rankedResults);
 }
 
@@ -110,38 +106,51 @@ function showMain() {
 	if (style) style.remove();
 }
 
-async function script() {
+function script(rankings: RankingsV2 | null) {
 	const searches = getResults();
-	const resultsPromise = sortResults(searches);
+	sortResults(searches, rankings);
 	addPopupContainers(searches);
-	await resultsPromise;
 }
 const getGoogleDomains = () => {
 	return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
-async function main() {
-	// Use MutationObserver to detect when div#rso becomes available
-	const active = await items.rankings_active.getValue();
-	if (!active) return;
-	hideMain();
-	await Promise.race([
-		script(),
-		// we close to show results if the script takes too long to complete
-		new Promise((resolve) => setTimeout(resolve, 500)),
+const getConfig = async () => {
+	const [rankings_active, rankings] = await Promise.all([
+		items.rankings_active.getValue(),
+		items.rankings.getValue(),
 	]);
-	showMain();
+	return { rankings_active, rankings };
+};
+
+function main(config: {
+	rankings_active: boolean;
+	rankings: RankingsV2 | null;
+}) {
+	if (!config.rankings_active) return;
+
+	script(config.rankings);
 }
 
 export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
+		hideMain();
+		const configPromise = getConfig();
+		// backup to show main if the config is not active
+		configPromise.then((config) => {
+			if (!config.rankings_active) showMain();
+		});
+		const timeout = setTimeout(() => showMain(), 2000);
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
-					void main();
+					clearTimeout(timeout);
+					void configPromise
+						.then((config) => main(config))
+						.finally(() => showMain());
 				}
 			});
 
