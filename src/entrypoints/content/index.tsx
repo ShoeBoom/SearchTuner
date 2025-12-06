@@ -121,27 +121,26 @@ const getGoogleDomains = () => {
 };
 
 async function main() {
-	// Use MutationObserver to detect when div#rso becomes available
 	const active = await items.rankings_active.getValue();
 	if (!active) return;
-	hideMain();
+
 	await Promise.race([
 		script(),
 		// we close to show results if the script takes too long to complete
 		new Promise((resolve) => setTimeout(resolve, 500)),
 	]);
-	showMain();
 }
 
 export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
+		hideMain();
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
-					void main();
+					void main().then(() => showMain());
 				}
 			});
 
