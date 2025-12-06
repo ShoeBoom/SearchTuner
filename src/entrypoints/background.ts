@@ -70,16 +70,13 @@ function buildBangUrl(
 	let url = bang.u;
 	let query = searchQuery;
 
-	// Handle format flags
-	const fmt = bang.fmt ?? [];
+	// Format flags: ALL enabled by default if fmt is not specified
+	// If fmt is specified, only those flags are enabled (must be exhaustive)
+	const allFlagsEnabled = bang.fmt === undefined;
+	const hasFlag = (flag: string) =>
+		allFlagsEnabled || (bang.fmt?.includes(flag as never) ?? false);
 
-	// If no query provided, check for open_base_path format
-	if (!query && fmt.includes("open_base_path")) {
-		// Return base domain URL
-		return `https://${bang.d}/`;
-	}
-
-	// Handle regex substitution if present
+	// Handle regex substitution if present (before any encoding)
 	if (bang.x) {
 		try {
 			const regex = new RegExp(bang.x);
@@ -98,17 +95,22 @@ function buildBangUrl(
 		}
 	}
 
-	// Apply URL encoding based on format flags
-	if (fmt.includes("url_encode_space_to_plus")) {
-		query = query.replace(/ /g, "+");
-		// Only encode special chars, not spaces (already converted to +)
-		query = encodeURIComponent(query).replace(/%2B/g, "+");
-	} else if (fmt.includes("url_encode_placeholder")) {
-		query = encodeURIComponent(query);
-	} else {
-		// Default: encode the query
-		query = encodeURIComponent(query);
+	// If no query provided and open_base_path is enabled, return base domain URL
+	if (!query && hasFlag("open_base_path")) {
+		return `https://${bang.d}/`;
 	}
+
+	// Apply URL encoding based on format flags
+	if (hasFlag("url_encode_placeholder")) {
+		if (hasFlag("url_encode_space_to_plus")) {
+			// Encode spaces as + instead of %20
+			query = encodeURIComponent(query).replace(/%20/g, "+");
+		} else {
+			// Standard URL encoding (spaces become %20)
+			query = encodeURIComponent(query);
+		}
+	}
+	// If url_encode_placeholder is disabled, don't encode at all
 
 	// Replace the placeholder with the query
 	url = url.replace("{{{s}}}", query);
