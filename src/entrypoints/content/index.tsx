@@ -116,15 +116,18 @@ const getGoogleDomains = () => {
 };
 
 const getConfig = async () => {
-	const [active, rankings] = await Promise.all([
+	const [rankings_active, rankings] = await Promise.all([
 		items.rankings_active.getValue(),
 		items.rankings.getValue(),
 	]);
-	return { active, rankings };
+	return { rankings_active, rankings };
 };
 
-function main(config: { active: boolean; rankings: RankingsV2 | null }) {
-	if (!config.active) return;
+function main(config: {
+	rankings_active: boolean;
+	rankings: RankingsV2 | null;
+}) {
+	if (!config.rankings_active) return;
 
 	script(config.rankings);
 }
@@ -135,6 +138,10 @@ export default defineContentScript({
 	main() {
 		hideMain();
 		const configPromise = getConfig();
+		// backup to show main if the config is not active
+		configPromise.then((config) => {
+			if (!config.rankings_active) showMain();
+		});
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
