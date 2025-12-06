@@ -10,11 +10,8 @@ const RERANK_WEIGHTS = {
 	strong: 5,
 } as const;
 
-async function orderedResults(results: Results) {
-	const rankings = await items.rankings.getValue();
+function orderedResults(results: Results, rankings: RankingsV2 | null) {
 	const totalResults = results.length;
-
-	console.log("orderedResults", results, totalResults);
 
 	return results
 		.map((result, index) => {
@@ -46,7 +43,6 @@ async function orderedResults(results: Results) {
 function reorderResults(
 	rankedResults: Awaited<ReturnType<typeof orderedResults>>,
 ) {
-	console.log("reorderResults", rankedResults);
 	const desiredNodes = rankedResults
 		.slice()
 		.sort((a, b) => b.ord - a.ord)
@@ -76,8 +72,8 @@ function reorderResults(
 	}
 }
 
-async function sortResults(results: Results) {
-	const rankedResults = await orderedResults(results);
+function sortResults(results: Results, rankings: RankingsV2 | null) {
+	const rankedResults = orderedResults(results, rankings);
 	reorderResults(rankedResults);
 }
 
@@ -110,25 +106,23 @@ function showMain() {
 	if (style) style.remove();
 }
 
-async function script() {
+function script(rankings: RankingsV2 | null) {
 	const searches = getResults();
-	const resultsPromise = sortResults(searches);
+	sortResults(searches, rankings);
 	addPopupContainers(searches);
-	await resultsPromise;
 }
 const getGoogleDomains = () => {
 	return googledomains.map((domain) => `*://*${domain}/search*`);
 };
 
 async function main() {
-	const active = await items.rankings_active.getValue();
+	const [active, rankings] = await Promise.all([
+		items.rankings_active.getValue(),
+		items.rankings.getValue(),
+	]);
 	if (!active) return;
 
-	await Promise.race([
-		script(),
-		// we close to show results if the script takes too long to complete
-		new Promise((resolve) => setTimeout(resolve, 500)),
-	]);
+	script(rankings);
 }
 
 export default defineContentScript({
@@ -140,7 +134,7 @@ export default defineContentScript({
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
-					void main().then(() => showMain());
+					void main().finally(() => showMain());
 				}
 			});
 
