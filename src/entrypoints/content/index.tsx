@@ -127,6 +127,7 @@ function main(config: {
 	rankings_active: boolean;
 	rankings: RankingsV2 | null;
 }) {
+	performance.mark("ST_startScript");
 	if (!config.rankings_active) return;
 
 	script(config.rankings);
