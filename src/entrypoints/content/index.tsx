@@ -142,10 +142,12 @@ export default defineContentScript({
 		configPromise.then((config) => {
 			if (!config.rankings_active) showMain();
 		});
+		const timeout = setTimeout(() => showMain(), 2000);
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
+					clearTimeout(timeout);
 					void configPromise
 						.then((config) => main(config))
 						.finally(() => showMain());
@@ -156,9 +158,6 @@ export default defineContentScript({
 				childList: true,
 				subtree: true,
 			});
-			setTimeout(() => {
-				showMain();
-			}, 2000);
 		});
 	},
 });
