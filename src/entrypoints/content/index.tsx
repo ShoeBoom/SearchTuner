@@ -123,7 +123,7 @@ const getConfig = async () => {
 	return { active, rankings };
 };
 
-async function main(config: { active: boolean; rankings: RankingsV2 | null }) {
+function main(config: { active: boolean; rankings: RankingsV2 | null }) {
 	if (!config.active) return;
 
 	script(config.rankings);
@@ -149,6 +149,9 @@ export default defineContentScript({
 				childList: true,
 				subtree: true,
 			});
+			setTimeout(() => {
+				showMain();
+			}, 2000);
 		});
 	},
 });
