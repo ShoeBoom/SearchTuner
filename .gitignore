@@ -28,6 +28,8 @@ src/assets/icon.webp
 
 # direnv
 .direnv
+.env
+.env.*
 
 # env
 .env
