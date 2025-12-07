@@ -97,7 +97,7 @@ function addPopupContainers(searches: Results) {
 function hideMain() {
 	const style = document.createElement("style");
 	style.id = "searchtuner-hide-main";
-	style.textContent = "#main{visibility:hidden !important;}";
+	style.textContent = "#main{display:none !important;}";
 	(document.head || document.documentElement).appendChild(style);
 }
 
@@ -137,15 +137,17 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
-		hideMain();
+		// hideMain();
 		const configPromise = getConfig();
 		// backup to show main if the config is not active
 		configPromise.then((config) => {
+			performance.mark("ST_configPromise");
 			if (!config.rankings_active) showMain();
 		});
 		const timeout = setTimeout(() => showMain(), 2000);
 		document.addEventListener("DOMContentLoaded", () => {
 			const observer = new MutationObserver((_mutations, obs) => {
+				performance.mark("ST_mutationObserver");
 				if ($("div#rso").length) {
 					obs.disconnect(); // Stop observing once element is found
 					clearTimeout(timeout);
