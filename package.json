@@ -21,6 +21,7 @@
 	"dependencies": {
 		"@solidjs/router": "^0.15.3",
 		"@tailwindcss/vite": "^4.1.14",
+		"@tanstack/pacer-lite": "^0.1.1",
 		"clsx": "^2.1.1",
 		"jquery": "^3.7.1",
 		"lodash": "^4.17.21",
