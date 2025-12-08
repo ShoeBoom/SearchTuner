@@ -99,11 +99,13 @@ function hideMain() {
 	style.id = "searchtuner-hide-main";
 	style.textContent = "#main{display:none !important;}";
 	(document.head || document.documentElement).appendChild(style);
+	performance.mark("ST_hideMain");
 }
 
 function showMain() {
 	const style = document.getElementById("searchtuner-hide-main");
 	if (style) style.remove();
+	performance.mark("ST_showMain");
 }
 
 function script(rankings: RankingsV2 | null) {
@@ -137,7 +139,7 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
-		// hideMain();
+		hideMain();
 		const configPromise = getConfig();
 		// backup to show main if the config is not active
 		configPromise.then((config) => {
