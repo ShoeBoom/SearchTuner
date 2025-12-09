@@ -1,4 +1,4 @@
-import $ from "jquery";
+import { LiteDebouncer } from "@tanstack/pacer-lite";
 import googledomains from "@/assets/googledomains";
 import Popup from "@/entrypoints/content/components/popup";
 import { getResults, type Results } from "@/utils/filter";
@@ -135,23 +135,63 @@ function main(config: {
 	script(config.rankings);
 }
 
-function runOn(condition: () => boolean, callback: () => void) {
+function runOn(
+	condition: () => boolean,
+	callback: (observer: MutationObserver | null) => void,
+	opts?: {
+		element?: HTMLElement;
+		obsOpt?: MutationObserverInit;
+		disconnectOnFound?: boolean;
+	},
+) {
 	if (condition()) {
-		callback();
+		callback(null);
 	} else {
 		const observer = new MutationObserver((_mutations, obs) => {
 			performance.mark("ST_mutationObserver");
 			if (condition()) {
-				obs.disconnect(); // Stop observing once element is found
-				callback();
+				(opts?.disconnectOnFound ?? true) && obs.disconnect(); // Stop observing once element is found
+				callback(obs);
 			}
 		});
-		observer.observe(document.body, {
-			childList: true,
-			subtree: true,
-		});
+		observer.observe(opts?.element ?? document.body, opts?.obsOpt);
 	}
 }
+
+function awaitBody(callback: () => void) {
+	runOn(() => !!document.body, callback, {
+		obsOpt: { childList: true },
+		element: document.documentElement,
+	});
+}
+
+const allTags =
+	".vt6azd:not(.g-blk), .vCUuC, .sHEJob, [data-news-cluster-id], .eejeod";
+
+const observerDebouncer = (
+	condition: () => boolean,
+	callback: (observer: MutationObserver | null) => void,
+) => {
+	let observer: MutationObserver | null = null;
+	const time = performance.now();
+	console.log("observerDebouncer", time);
+	const debouncer = new LiteDebouncer(() => callback(observer), {
+		wait: time,
+	});
+	if (condition()) {
+		debouncer.maybeExecute();
+	}
+	observer = new MutationObserver((_mutations, _obs) => {
+		if (condition()) {
+			debouncer.maybeExecute();
+		}
+	});
+
+	observer.observe(document.body, { childList: true, subtree: true });
+	document.addEventListener("DOMContentLoaded", () => {
+		debouncer.flush();
+	});
+};
 
 export default defineContentScript({
 	matches: getGoogleDomains(),
@@ -165,15 +205,57 @@ export default defineContentScript({
 			if (!config.rankings_active) showMain();
 		});
 		const timeout = setTimeout(() => showMain(), 2000);
-		document.addEventListener("DOMContentLoaded", () => {
-			runOn(
-				() => !!$("div#rso").length,
-				async () => {
+		awaitBody(() => {
+			performance.mark("ST_awaitBody");
+			let count = 0;
+			observerDebouncer(
+				() => {
+					const $rso = document.querySelector("div#rso");
+					if ($rso === null) {
+						console.error("Could not find result container #rso");
+						return false;
+					}
+					const resultsCount = $rso.querySelectorAll(allTags).length;
+					if (count !== resultsCount) {
+						count = resultsCount;
+						return true;
+					}
+					return false;
+				},
+				async (obs) => {
+					obs?.disconnect();
 					clearTimeout(timeout);
 					main(await configPromise);
 					showMain();
 				},
 			);
+			// runOn(
+			// 	() => {
+			// 		const $rso = $("div#rso");
+			// 		if ($rso.length === 0) {
+			// 			console.error("Could not find result container #rso");
+			// 			return false;
+			// 		}
+			// 		const results = $rso.find(allTags);
+			// 		if (count === undefined || count !== results.length) {
+			// 			console.log("results changed", results.length, performance.now());
+			// 			// debouncer.maybeExecute();
+			// 			count = results.length;
+			// 		}
+			// 		return results.length >= 5;
+			// 	},
+			// 	async () => {
+			// 		clearTimeout(timeout);
+			// 		main(await configPromise);
+			// 		showMain();
+			// 	},
+			// 	{
+			// 		obsOpt: {
+			// 			childList: true,
+			// 			subtree: true,
+			// 		},
+			// 	},
+			// );
 		});
 	},
 });
