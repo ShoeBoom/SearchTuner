@@ -135,34 +135,18 @@ function main(config: {
 	script(config.rankings);
 }
 
-function runOn(
-	condition: () => boolean,
-	callback: (observer: MutationObserver | null) => void,
-	opts?: {
-		element?: HTMLElement;
-		obsOpt?: MutationObserverInit;
-		disconnectOnFound?: boolean;
-	},
-) {
-	if (condition()) {
-		callback(null);
+function awaitBody(callback: () => void) {
+	if (document.body) {
+		callback();
 	} else {
-		const observer = new MutationObserver((_mutations, obs) => {
-			performance.mark("ST_mutationObserver");
-			if (condition()) {
-				(opts?.disconnectOnFound ?? true) && obs.disconnect(); // Stop observing once element is found
-				callback(obs);
+		const observer = new MutationObserver(() => {
+			if (document.body) {
+				observer.disconnect();
+				callback();
 			}
 		});
-		observer.observe(opts?.element ?? document.body, opts?.obsOpt);
+		observer.observe(document.documentElement, { childList: true });
 	}
-}
-
-function awaitBody(callback: () => void) {
-	runOn(() => !!document.body, callback, {
-		obsOpt: { childList: true },
-		element: document.documentElement,
-	});
 }
 
 const allTags =
@@ -174,7 +158,6 @@ const observerDebouncer = (
 ) => {
 	let observer: MutationObserver | null = null;
 	const time = performance.now();
-	console.log("observerDebouncer", time);
 	const debouncer = new LiteDebouncer(() => callback(observer), {
 		wait: time,
 	});
@@ -189,6 +172,7 @@ const observerDebouncer = (
 
 	observer.observe(document.body, { childList: true, subtree: true });
 	document.addEventListener("DOMContentLoaded", () => {
+		performance.mark("ST_DOMContentLoaded");
 		debouncer.flush();
 	});
 };
@@ -210,7 +194,11 @@ export default defineContentScript({
 			let count = 0;
 			observerDebouncer(
 				() => {
-					const $rso = document.querySelector("div#rso");
+					let $rso: HTMLElement | null = null;
+					try {
+						$rso = document.querySelector("div#rso");
+					} catch (error) {}
+
 					if ($rso === null) {
 						console.error("Could not find result container #rso");
 						return false;
@@ -229,33 +217,6 @@ export default defineContentScript({
 					showMain();
 				},
 			);
-			// runOn(
-			// 	() => {
-			// 		const $rso = $("div#rso");
-			// 		if ($rso.length === 0) {
-			// 			console.error("Could not find result container #rso");
-			// 			return false;
-			// 		}
-			// 		const results = $rso.find(allTags);
-			// 		if (count === undefined || count !== results.length) {
-			// 			console.log("results changed", results.length, performance.now());
-			// 			// debouncer.maybeExecute();
-			// 			count = results.length;
-			// 		}
-			// 		return results.length >= 5;
-			// 	},
-			// 	async () => {
-			// 		clearTimeout(timeout);
-			// 		main(await configPromise);
-			// 		showMain();
-			// 	},
-			// 	{
-			// 		obsOpt: {
-			// 			childList: true,
-			// 			subtree: true,
-			// 		},
-			// 	},
-			// );
 		});
 	},
 });
