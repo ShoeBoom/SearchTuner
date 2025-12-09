@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
+import type { BangsData } from "../../pages/src/build_bangs";
 
 type RankingsV1 = { [domain: string]: 2 | 1 | 0 | -1 | -2 };
 
@@ -46,6 +47,15 @@ const rankings_active = storage.defineItem<boolean>("local:rankings_active", {
 	version: 1,
 });
 
+const bangs_cache = storage.defineItem<{ value: BangsData; timestamp: number }>(
+	"local:bangs_cache",
+	{
+		version: 1,
+	},
+);
+
+void bangs_cache.setMeta({ v: 1 });
+
 export const items = { rankings, rankings_active };
 
 type StorageItem<
@@ -70,3 +80,15 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
+
+export const getBangs = createResource(async () => {
+	const cached = await bangs_cache.getValue();
+	if (cached === null) {
+		const res = (await fetch(
+			"https://shoeboom.github.io/SearchTuner/bangs.json",
+		).then((res) => res.json())) as BangsData;
+		await bangs_cache.setValue({ value: res, timestamp: Date.now() });
+		return res;
+	}
+	return cached.value;
+});

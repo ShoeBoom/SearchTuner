@@ -57,10 +57,11 @@ bangs.forEach((bang, index) => {
 	});
 });
 
-fs.writeFileSync(
-	"public/bangs.json",
-	JSON.stringify({
-		bangs: schema.encode(bangs),
-		triggerIndex: Object.fromEntries(triggerIndex.entries()),
-	}),
-);
+const data = {
+	bangs: schema.encode(bangs),
+	triggerIndex: Object.fromEntries(triggerIndex.entries()),
+};
+
+export type BangsData = typeof data;
+
+fs.writeFileSync("public/bangs.json", JSON.stringify(data));
