@@ -132,6 +132,24 @@ function main(config: {
 	script(config.rankings);
 }
 
+function runOnBody(condition: () => boolean, callback: () => void) {
+	if (condition()) {
+		callback();
+	} else {
+		const observer = new MutationObserver((_mutations, obs) => {
+			performance.mark("ST_mutationObserver");
+			if (condition()) {
+				obs.disconnect(); // Stop observing once element is found
+				callback();
+			}
+		});
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+		});
+	}
+}
+
 export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
@@ -144,20 +162,15 @@ export default defineContentScript({
 		});
 		const timeout = setTimeout(() => showMain(), 2000);
 		document.addEventListener("DOMContentLoaded", () => {
-			const observer = new MutationObserver((_mutations, obs) => {
-				if ($("div#rso").length) {
-					obs.disconnect(); // Stop observing once element is found
+			runOnBody(
+				() => !!$("div#rso").length,
+				() => {
 					clearTimeout(timeout);
-					void configPromise
+					configPromise
 						.then((config) => main(config))
 						.finally(() => showMain());
-				}
-			});
-
-			observer.observe(document.body, {
-				childList: true,
-				subtree: true,
-			});
+				},
+			);
 		});
 	},
 });
