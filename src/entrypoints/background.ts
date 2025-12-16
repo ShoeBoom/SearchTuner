@@ -20,16 +20,14 @@ function parseBang(query: string, bangsData: BangsData) {
 	const trimmed = query.trim();
 
 	const matches = Array.from(trimmed.matchAll(/(?<=^|\s)!(\S+)(?=\s|$)/g)).map(
-		(match) => match[1],
+		(match) => match[1].toLowerCase(),
 	);
 
-	const firstValid = matches.find(
-		(bang) => bangsData.triggerIndex[bang.toLowerCase()],
-	);
+	const firstValid = matches.find((bang) => bangsData.triggerIndex[bang]);
 	if (!firstValid) return null;
-	const index = bangsData.triggerIndex[firstValid.toLowerCase()];
+	const index = bangsData.triggerIndex[firstValid];
 	return {
-		trigger: firstValid.toLowerCase(),
+		trigger: firstValid,
 		data: bangsData.bangs[index],
 	};
 }
