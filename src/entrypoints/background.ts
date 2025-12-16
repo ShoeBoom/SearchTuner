@@ -95,7 +95,7 @@ const addBangsListener = (props: {
 
 				const redirectUrl = buildBangUrl(
 					bang.data,
-					query.replace(`!${bang.trigger}`, ""),
+					query.replace(`!${bang.trigger}`, "").trim(),
 				);
 				if (redirectUrl) {
 					console.log(
