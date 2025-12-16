@@ -80,15 +80,3 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
-
-export const getBangs = createResource(async () => {
-	const cached = await bangs_cache.getValue();
-	if (cached === null) {
-		const res = (await fetch(
-			"https://shoeboom.github.io/SearchTuner/bangs.json",
-		).then((res) => res.json())) as BangsData;
-		await bangs_cache.setValue({ value: res, timestamp: Date.now() });
-		return res;
-	}
-	return cached.value;
-});
