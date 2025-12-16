@@ -133,7 +133,14 @@ function isGoogleSearchUrl(url: string): boolean {
 
 export default defineBackground(() => {
 	// Pre-fetch bangs data on startup for synchronous access
-	void loadBangsData();
+	items.bangs_active.getValue().then((bangsActive) => {
+		if (!bangsActive) return;
+		void loadBangsData();
+	});
+	items.bangs_active.watch((bangsActive) => {
+		if (!bangsActive) return;
+		void loadBangsData();
+	});
 
 	// Use webNavigation API (works in both MV2 and MV3)
 	browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
