@@ -10,15 +10,9 @@ const googleSearchPatterns = getGoogleDomains();
 
 async function loadBangsData() {
 	console.log("Loading bangs data");
-	try {
-		const res = await fetch(BANGS_URL);
-		const data = (await res.json()) as BangsData;
-		// bangsDataCache = data;
-		return data;
-	} catch (error) {
-		console.error("Failed to fetch bangs data:", error);
-		return null;
-	}
+	const res = await fetch(BANGS_URL);
+	const data = (await res.json()) as BangsData;
+	return data;
 }
 
 // Parse bang from query - supports both "!w query" and "query !w" formats
