@@ -39,10 +39,7 @@ function parseBang(
 }
 
 // Build the redirect URL from a bang and search query
-function buildBangUrl(
-	bang: KagiBangsSchemaInput[number],
-	searchQuery: string,
-): string {
+function buildBangUrl(bang: KagiBangsSchemaInput[number], searchQuery: string) {
 	let url = bang.u;
 	let query = searchQuery;
 
@@ -54,21 +51,7 @@ function buildBangUrl(
 
 	// Handle regex substitution if present (before any encoding)
 	if (bang.x) {
-		try {
-			const regex = new RegExp(bang.x);
-			const match = query.match(regex);
-			if (match) {
-				// Replace $1, $2, etc. with captured groups
-				url = url.replace(
-					/\$(\d+)/g,
-					(_, n) => match[Number.parseInt(n, 10)] ?? "",
-				);
-				// If regex matched, we've handled the query
-				return url;
-			}
-		} catch {
-			// Invalid regex, continue with normal substitution
-		}
+		return undefined;
 	}
 
 	// If no query provided and open_base_path is enabled, return base domain URL
@@ -95,6 +78,7 @@ function buildBangUrl(
 }
 
 function isGoogleSearchUrl(url: string): boolean {
+	console.log("Checking if URL is Google search URL:", url);
 	try {
 		const parsed = new URL(url);
 		return (
@@ -138,10 +122,14 @@ const addBangsListener = async (props: {
 			if (!bang) return;
 
 			const redirectUrl = buildBangUrl(bang, searchQuery);
-			console.log(`[SearchTuner] Bang redirect: !${trigger} -> ${redirectUrl}`);
+			if (redirectUrl) {
+				console.log(
+					`[SearchTuner] Bang redirect: !${trigger} -> ${redirectUrl}`,
+				);
 
-			// Redirect the tab
-			await browser.tabs.update(details.tabId, { url: redirectUrl });
+				// Redirect the tab
+				await browser.tabs.update(details.tabId, { url: redirectUrl });
+			}
 		} catch (error) {
 			console.error("[SearchTuner] Error processing bang:", error);
 		}
