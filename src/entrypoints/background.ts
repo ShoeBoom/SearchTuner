@@ -137,6 +137,8 @@ export default defineBackground(() => {
 
 	// Use webNavigation API (works in both MV2 and MV3)
 	browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
+		const bangsActive = await items.bangs_active.getValue();
+		if (!bangsActive) return;
 		// Only handle top-level navigation
 		if (details.frameId !== 0) return;
 

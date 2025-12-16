@@ -55,7 +55,7 @@ const bangs_active = storage.defineItem<boolean>("local:bangs_active", {
 
 void bangs_active.setMeta({ v: 1 });
 
-export const items = { rankings, rankings_active };
+export const items = { rankings, rankings_active, bangs_active };
 
 type StorageItem<
 	T,
