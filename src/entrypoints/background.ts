@@ -149,12 +149,14 @@ const addBangsListener = async (props: {
 };
 
 export default defineBackground(() => {
-	const active = () => isBangsActive() ?? false;
-	const [bangsData] = createResource(active, async () => {
-		return await loadBangsData();
-	});
-	addBangsListener({
-		bangsData: () => bangsData() ?? null,
-		active,
+	createRoot(() => {
+		const active = () => isBangsActive() ?? false;
+		const [bangsData] = createResource(active, async () => {
+			return await loadBangsData();
+		});
+		addBangsListener({
+			bangsData: () => bangsData() ?? null,
+			active,
+		});
 	});
 });
