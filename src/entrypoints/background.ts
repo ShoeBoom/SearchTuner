@@ -1,4 +1,5 @@
 import googledomains from "@/assets/googledomains";
+import { createAtom } from "@/utils/atom";
 import { items } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
@@ -107,27 +108,19 @@ function isGoogleSearchUrl(url: string): boolean {
 	}
 }
 
-const addBangsListener = async (init: {
-	bangsData: BangsData | null;
-	active: boolean;
+const addBangsListener = async (props: {
+	bangsData: () => BangsData | null;
+	active: () => boolean;
 }) => {
-	let { bangsData, active } = init;
-
-	items.bangs_active.watch((bangsActive) => {
-		active = bangsActive;
-	});
 	return browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
-		if (!active) return;
+		if (props.active() === false) return;
 		// Only handle top-level navigation
 		if (details.frameId !== 0) return;
 
 		try {
 			if (!isGoogleSearchUrl(details.url)) return;
-			if (!bangsData) {
-				// Try to load data if not cached yet
-				bangsData = await loadBangsData();
-				if (!bangsData) return;
-			}
+			const bangsData = props.bangsData();
+			if (!bangsData) return;
 
 			const url = new URL(details.url);
 			const query = url.searchParams.get("q");
@@ -156,13 +149,28 @@ const addBangsListener = async (init: {
 	});
 };
 
-export default defineBackground(() => {
-	Promise.all([loadBangsData(), items.bangs_active.getValue()]).then(
-		([bangsData, active]) => {
-			addBangsListener({
-				bangsData,
-				active,
-			});
-		},
+const script = async () => {
+	const [active, setActive, watchActive] = createAtom<boolean>(
+		await items.bangs_active.getValue(),
 	);
+	items.bangs_active.watch(async (newActive) => {
+		setActive(newActive);
+	});
+	const [bangsData, setBangsData] = createAtom<BangsData | null>(
+		active() === true ? await loadBangsData() : null,
+	);
+
+	watchActive(async (active) => {
+		if (active) {
+			setBangsData(await loadBangsData());
+		}
+	});
+	addBangsListener({
+		bangsData,
+		active,
+	});
+};
+
+export default defineBackground(() => {
+	script();
 });
