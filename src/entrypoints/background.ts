@@ -1,4 +1,7 @@
+import { createResource, createRoot } from "solid-js";
+import { browser, defineBackground } from "#imports";
 import googledomains from "@/assets/googledomains";
+import { isBangsActive } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
