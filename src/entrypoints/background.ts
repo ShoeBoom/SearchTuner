@@ -153,15 +153,16 @@ const script = async () => {
 	const [active, setActive] = createAtom<boolean>(
 		await items.bangs_active.getValue(),
 	);
+	const [bangsData, setBangsData] = createAtom<BangsData | null>(null);
 	items.bangs_active.watch(async (newActive) => {
 		setActive(newActive);
 		if (newActive) {
 			setBangsData(await loadBangsData());
 		}
 	});
-	const [bangsData, setBangsData] = createAtom<BangsData | null>(
-		active() === true ? await loadBangsData() : null,
-	);
+	if (active()) {
+		setBangsData(await loadBangsData());
+	}
 
 	addBangsListener({
 		bangsData,
