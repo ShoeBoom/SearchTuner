@@ -16,22 +16,19 @@ async function loadBangsData() {
 }
 
 // Parse bang from query - supports both "!w query" and "query !w" formats
-function parseBang(query: string) {
+function parseBang(query: string, bangsData: BangsData) {
 	const trimmed = query.trim();
 
-	// Match bang at start: "!w query" or "!wiki query"
-	const startMatch = trimmed.match(/^!(\S+)\s*(.*)/);
-	if (startMatch) {
-		return { trigger: startMatch[1], searchQuery: startMatch[2].trim() };
-	}
+	const matches = Array.from(trimmed.matchAll(/(?<=^|\s)!(\S+)(?=\s|$)/g)).map(
+		(match) => match[1],
+	);
 
-	// Match bang at end: "query !w" or "query !wiki"
-	const endMatch = trimmed.match(/^(.*?)\s+!(\S+)$/);
-	if (endMatch) {
-		return { trigger: endMatch[2], searchQuery: endMatch[1].trim() };
-	}
-
-	return null;
+	const firstValid = matches.find(
+		(bang) => bangsData.triggerIndex[bang.toLowerCase()],
+	);
+	if (!firstValid) return null;
+	const index = bangsData.triggerIndex[firstValid.toLowerCase()];
+	return bangsData.bangs[index];
 }
 
 // Build the redirect URL from a bang and search query
@@ -90,21 +87,13 @@ const addBangsListener = (props: {
 
 				if (!query) return;
 
-				const bangParsed = parseBang(query);
-				if (!bangParsed) return;
-
-				const { trigger, searchQuery } = bangParsed;
-				const bangIndex = bangsData.triggerIndex[trigger.toLowerCase()];
-
-				if (bangIndex === undefined) return;
-
-				const bang = bangsData.bangs[bangIndex];
+				const bang = parseBang(query, bangsData);
 				if (!bang) return;
 
-				const redirectUrl = buildBangUrl(bang, searchQuery);
+				const redirectUrl = buildBangUrl(bang, query.replace(`!${bang.t}`, ""));
 				if (redirectUrl) {
 					console.log(
-						`[SearchTuner] Bang redirect: !${trigger} -> ${redirectUrl}`,
+						`[SearchTuner] Bang redirect: !${bang.t} -> ${redirectUrl}`,
 					);
 
 					// Redirect the tab
