@@ -111,22 +111,22 @@ const addBangsListener = async (init: {
 	bangsData: BangsData | null;
 	active: boolean;
 }) => {
-	let use_bangs = init.active;
+	let { bangsData, active } = init;
 
 	items.bangs_active.watch((bangsActive) => {
-		use_bangs = bangsActive;
+		active = bangsActive;
 	});
 	return browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
-		if (!use_bangs) return;
+		if (!active) return;
 		// Only handle top-level navigation
 		if (details.frameId !== 0) return;
 
 		try {
 			if (!isGoogleSearchUrl(details.url)) return;
-			if (!init.bangsData) {
+			if (!bangsData) {
 				// Try to load data if not cached yet
-				await loadBangsData();
-				if (!init.bangsData) return;
+				bangsData = await loadBangsData();
+				if (!bangsData) return;
 			}
 
 			const url = new URL(details.url);
@@ -138,11 +138,11 @@ const addBangsListener = async (init: {
 			if (!bangParsed) return;
 
 			const { trigger, searchQuery } = bangParsed;
-			const bangIndex = init.bangsData.triggerIndex[trigger.toLowerCase()];
+			const bangIndex = bangsData.triggerIndex[trigger.toLowerCase()];
 
 			if (bangIndex === undefined) return;
 
-			const bang = init.bangsData.bangs[bangIndex];
+			const bang = bangsData.bangs[bangIndex];
 			if (!bang) return;
 
 			const redirectUrl = buildBangUrl(bang, searchQuery);
@@ -156,9 +156,13 @@ const addBangsListener = async (init: {
 	});
 };
 
-export default defineBackground(async () => {
-	addBangsListener({
-		bangsData: await loadBangsData(),
-		active: await items.bangs_active.getValue(),
-	});
+export default defineBackground(() => {
+	Promise.all([loadBangsData(), items.bangs_active.getValue()]).then(
+		([bangsData, active]) => {
+			addBangsListener({
+				bangsData,
+				active,
+			});
+		},
+	);
 });
