@@ -85,7 +85,7 @@ function buildBangUrl(
 				// Replace $1, $2, etc. with captured groups
 				url = url.replace(
 					/\$(\d+)/g,
-					(_, n) => match[Number.parseInt(n)] ?? "",
+					(_, n) => match[Number.parseInt(n, 10)] ?? "",
 				);
 				// If regex matched, we've handled the query
 				return url;
