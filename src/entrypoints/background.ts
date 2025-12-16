@@ -16,9 +16,7 @@ async function loadBangsData() {
 }
 
 // Parse bang from query - supports both "!w query" and "query !w" formats
-function parseBang(
-	query: string,
-): { trigger: string; searchQuery: string } | null {
+function parseBang(query: string) {
 	const trimmed = query.trim();
 
 	// Match bang at start: "!w query" or "!wiki query"
