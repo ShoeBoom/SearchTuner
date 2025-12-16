@@ -118,7 +118,7 @@ function Content(props: {
 					<Button
 						path="/settings"
 						icon={<Hash size={18} />}
-						text="Bangs"
+						text="Bangs (Experimental)"
 						hoverColor="group-hover:bg-yellow-500"
 					/>
 					<Switch
