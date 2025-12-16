@@ -79,3 +79,4 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
+export const isBangsActive = useSettings(items.bangs_active);

@@ -1,4 +1,5 @@
 import googledomains from "@/assets/googledomains";
+import { items } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
@@ -131,22 +132,14 @@ function isGoogleSearchUrl(url: string): boolean {
 	}
 }
 
-export default defineBackground(() => {
-	// Pre-fetch bangs data on startup for synchronous access
-	items.bangs_active.getValue().then((bangsActive) => {
-		if (!bangsActive) return;
-		void loadBangsData();
-	});
-	items.bangs_active.watch((bangsActive, oldBangsActive) => {
-		if (bangsActive === oldBangsActive) return;
-		if (!bangsActive) return;
-		void loadBangsData();
-	});
+const addBangsListener = async () => {
+	let use_bangs = await items.bangs_active.getValue();
 
-	// Use webNavigation API (works in both MV2 and MV3)
-	browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
-		const bangsActive = await items.bangs_active.getValue();
-		if (!bangsActive) return;
+	items.bangs_active.watch((bangsActive) => {
+		use_bangs = bangsActive;
+	});
+	return browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
+		if (!use_bangs) return;
 		// Only handle top-level navigation
 		if (details.frameId !== 0) return;
 
@@ -183,4 +176,10 @@ export default defineBackground(() => {
 			console.error("[SearchTuner] Error processing bang:", error);
 		}
 	});
+};
+
+export default defineBackground(async () => {
+	void loadBangsData();
+
+	addBangsListener();
 });

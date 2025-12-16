@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
 import type { JSX } from "solid-js";
 import logo from "@/assets/icon.webp";
-import { isRankingsActive, items } from "@/utils/storage";
+import { isBangsActive, isRankingsActive, items } from "@/utils/storage";
 
 const basePagesUrl = `${browser.runtime.getURL("/pages.html")}#`;
 const Button = (props: {
@@ -49,26 +49,32 @@ const Switch = (props: {
 	</button>
 );
 
-function App() {
-	const toggleActive = async () => {
-		await items.rankings_active.setValue(
-			!(await items.rankings_active.getValue()),
-		);
-	};
+const toggleRankingsActive = async () => {
+	await items.rankings_active.setValue(
+		!(await items.rankings_active.getValue()),
+	);
+};
 
+const toggleBangsActive = async () => {
+	await items.bangs_active.setValue(!(await items.bangs_active.getValue()));
+};
+
+function App() {
 	return (
-		<Show when={isRankingsActive() !== null}>
+		<Show when={isRankingsActive() !== null && isBangsActive() !== null}>
 			<Content
-				toggleActive={toggleActive}
+				// toggleRankingsActive={toggleRankingsActive}
+				// toggleBangsActive={toggleBangsActive}
 				isRankingsActive={() => isRankingsActive() ?? true}
+				isBangsActive={() => isBangsActive() ?? false}
 			/>
 		</Show>
 	);
 }
 
 function Content(props: {
-	toggleActive: () => void;
 	isRankingsActive: () => boolean;
+	isBangsActive: () => boolean;
 }) {
 	return (
 		<div class="flex h-full w-full min-w-[320px] flex-col gap-4 p-4">
@@ -97,20 +103,28 @@ function Content(props: {
 					/>
 					<Switch
 						checked={props.isRankingsActive()}
-						onChange={props.toggleActive}
+						onChange={toggleRankingsActive}
 						title={
-							props.isRankingsActive()
-								? "Disable SearchTuner"
-								: "Enable SearchTuner"
+							props.isRankingsActive() ? "Disable Rankings" : "Enable Rankings"
 						}
 					/>
 				</div>
-				<div class="pointer-events-none opacity-50">
+				<div
+					class={clsx(
+						"flex items-center justify-between gap-3 transition-opacity",
+						!props.isBangsActive() ? "opacity-50" : "",
+					)}
+				>
 					<Button
 						path="/settings"
 						icon={<Hash size={18} />}
-						text="Bangs (coming soon)"
+						text="Bangs"
 						hoverColor="group-hover:bg-yellow-500"
+					/>
+					<Switch
+						checked={props.isBangsActive()}
+						onChange={toggleBangsActive}
+						title={props.isBangsActive() ? "Disable Bangs" : "Enable Bangs"}
 					/>
 				</div>
 
