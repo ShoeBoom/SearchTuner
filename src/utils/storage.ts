@@ -1,6 +1,5 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
-import type { BangsData } from "../../pages/src/build_bangs";
 
 type RankingsV1 = { [domain: string]: 2 | 1 | 0 | -1 | -2 };
 
@@ -47,14 +46,14 @@ const rankings_active = storage.defineItem<boolean>("local:rankings_active", {
 	version: 1,
 });
 
-const bangs_cache = storage.defineItem<{ value: BangsData; timestamp: number }>(
-	"local:bangs_cache",
-	{
-		version: 1,
-	},
-);
+void rankings_active.setMeta({ v: 1 });
 
-void bangs_cache.setMeta({ v: 1 });
+const bangs_active = storage.defineItem<boolean>("local:bangs_active", {
+	fallback: false,
+	version: 1,
+});
+
+void bangs_active.setMeta({ v: 1 });
 
 export const items = { rankings, rankings_active };
 
