@@ -28,7 +28,10 @@ function parseBang(query: string, bangsData: BangsData) {
 	);
 	if (!firstValid) return null;
 	const index = bangsData.triggerIndex[firstValid.toLowerCase()];
-	return bangsData.bangs[index];
+	return {
+		trigger: firstValid.toLowerCase(),
+		data: bangsData.bangs[index],
+	};
 }
 
 // Build the redirect URL from a bang and search query
@@ -90,10 +93,13 @@ const addBangsListener = (props: {
 				const bang = parseBang(query, bangsData);
 				if (!bang) return;
 
-				const redirectUrl = buildBangUrl(bang, query.replace(`!${bang.t}`, ""));
+				const redirectUrl = buildBangUrl(
+					bang.data,
+					query.replace(`!${bang.trigger}`, ""),
+				);
 				if (redirectUrl) {
 					console.log(
-						`[SearchTuner] Bang redirect: !${bang.t} -> ${redirectUrl}`,
+						`[SearchTuner] Bang redirect: !${bang.trigger} -> ${redirectUrl}`,
 					);
 
 					// Redirect the tab
