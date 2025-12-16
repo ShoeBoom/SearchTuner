@@ -137,7 +137,8 @@ export default defineBackground(() => {
 		if (!bangsActive) return;
 		void loadBangsData();
 	});
-	items.bangs_active.watch((bangsActive) => {
+	items.bangs_active.watch((bangsActive, oldBangsActive) => {
+		if (bangsActive === oldBangsActive) return;
 		if (!bangsActive) return;
 		void loadBangsData();
 	});
