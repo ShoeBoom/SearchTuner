@@ -4,41 +4,16 @@ import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
 const BANGS_URL = "https://shoeboom.github.io/SearchTuner/bangs.json";
-// WXT storage uses the key without prefix (local:/sync: just indicates storage area)
-const CACHE_KEY = "bangs_cache";
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
-type BangsCacheData = { value: BangsData; timestamp: number };
-
-// In-memory cache for synchronous access in webRequest handler
-let bangsDataCache: BangsData | null = null;
-
-async function loadBangsData(): Promise<BangsData | null> {
+async function loadBangsData() {
 	try {
-		const cached = await browser.storage.local.get(CACHE_KEY);
-		const cacheData = cached[CACHE_KEY] as BangsCacheData | undefined;
-
-		if (cacheData && Date.now() - cacheData.timestamp < CACHE_DURATION) {
-			bangsDataCache = cacheData.value;
-			return cacheData.value;
-		}
-
 		const res = await fetch(BANGS_URL);
 		const data = (await res.json()) as BangsData;
-		await browser.storage.local.set({
-			[CACHE_KEY]: { value: data, timestamp: Date.now() },
-		});
-		bangsDataCache = data;
+		// bangsDataCache = data;
 		return data;
 	} catch (error) {
 		console.error("Failed to fetch bangs data:", error);
-		// Try to return cached data even if expired
-		const cached = await browser.storage.local.get(CACHE_KEY);
-		const cacheData = cached[CACHE_KEY] as BangsCacheData | undefined;
-		if (cacheData) {
-			bangsDataCache = cacheData.value;
-		}
-		return cacheData?.value ?? null;
+		return null;
 	}
 }
 
@@ -132,8 +107,11 @@ function isGoogleSearchUrl(url: string): boolean {
 	}
 }
 
-const addBangsListener = async () => {
-	let use_bangs = await items.bangs_active.getValue();
+const addBangsListener = async (init: {
+	bangsData: BangsData | null;
+	active: boolean;
+}) => {
+	let use_bangs = init.active;
 
 	items.bangs_active.watch((bangsActive) => {
 		use_bangs = bangsActive;
@@ -145,10 +123,10 @@ const addBangsListener = async () => {
 
 		try {
 			if (!isGoogleSearchUrl(details.url)) return;
-			if (!bangsDataCache) {
+			if (!init.bangsData) {
 				// Try to load data if not cached yet
 				await loadBangsData();
-				if (!bangsDataCache) return;
+				if (!init.bangsData) return;
 			}
 
 			const url = new URL(details.url);
@@ -160,11 +138,11 @@ const addBangsListener = async () => {
 			if (!bangParsed) return;
 
 			const { trigger, searchQuery } = bangParsed;
-			const bangIndex = bangsDataCache.triggerIndex[trigger.toLowerCase()];
+			const bangIndex = init.bangsData.triggerIndex[trigger.toLowerCase()];
 
 			if (bangIndex === undefined) return;
 
-			const bang = bangsDataCache.bangs[bangIndex];
+			const bang = init.bangsData.bangs[bangIndex];
 			if (!bang) return;
 
 			const redirectUrl = buildBangUrl(bang, searchQuery);
@@ -179,7 +157,8 @@ const addBangsListener = async () => {
 };
 
 export default defineBackground(async () => {
-	void loadBangsData();
-
-	addBangsListener();
+	addBangsListener({
+		bangsData: await loadBangsData(),
+		active: await items.bangs_active.getValue(),
+	});
 });
