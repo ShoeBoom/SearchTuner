@@ -1,12 +1,11 @@
 import googledomains from "@/assets/googledomains";
-import { createAtom } from "@/utils/atom";
-import { items } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
 const BANGS_URL = "https://shoeboom.github.io/SearchTuner/bangs.json";
 
 async function loadBangsData() {
+	console.log("Loading bangs data");
 	try {
 		const res = await fetch(BANGS_URL);
 		const data = (await res.json()) as BangsData;
@@ -149,27 +148,13 @@ const addBangsListener = async (props: {
 	});
 };
 
-const script = async () => {
-	const [active, setActive] = createAtom<boolean>(
-		await items.bangs_active.getValue(),
-	);
-	const [bangsData, setBangsData] = createAtom<BangsData | null>(null);
-	items.bangs_active.watch(async (newActive) => {
-		setActive(newActive);
-		if (newActive) {
-			setBangsData(await loadBangsData());
-		}
+export default defineBackground(() => {
+	const active = () => isBangsActive() ?? false;
+	const [bangsData] = createResource(active, async () => {
+		return await loadBangsData();
 	});
-	if (active()) {
-		setBangsData(await loadBangsData());
-	}
-
 	addBangsListener({
-		bangsData,
+		bangsData: () => bangsData() ?? null,
 		active,
 	});
-};
-
-export default defineBackground(() => {
-	script();
 });
