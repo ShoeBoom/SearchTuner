@@ -1,5 +1,5 @@
 import $ from "jquery";
-import googledomains from "@/assets/googledomains";
+import { getGoogleDomains } from "@/assets/googledomains";
 import Popup from "@/entrypoints/content/components/popup";
 import { getResults, type Results } from "@/utils/filter";
 import { items } from "@/utils/storage";
@@ -111,9 +111,6 @@ function script(rankings: RankingsV2 | null) {
 	sortResults(searches, rankings);
 	addPopupContainers(searches);
 }
-const getGoogleDomains = () => {
-	return googledomains.map((domain) => `*://*${domain}/search*`);
-};
 
 const getConfig = async () => {
 	const [rankings_active, rankings] = await Promise.all([

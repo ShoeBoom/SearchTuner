@@ -1,11 +1,12 @@
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
-import googledomains from "@/assets/googledomains";
+import { getGoogleDomains } from "@/assets/googledomains";
 import { isBangsActive } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
 const BANGS_URL = "https://shoeboom.github.io/SearchTuner/bangs.json";
+const googleSearchPatterns = getGoogleDomains();
 
 async function loadBangsData() {
 	console.log("Loading bangs data");
@@ -80,63 +81,49 @@ function buildBangUrl(bang: KagiBangsSchemaInput[number], searchQuery: string) {
 	return url;
 }
 
-function isGoogleSearchUrl(url: string): boolean {
-	console.log("Checking if URL is Google search URL:", url);
-	try {
-		const parsed = new URL(url);
-		return (
-			googledomains.some((domain) =>
-				parsed.hostname.endsWith(domain.slice(1)),
-			) && parsed.pathname === "/search"
-		);
-	} catch {
-		return false;
-	}
-}
-
-const addBangsListener = async (props: {
+const addBangsListener = (props: {
 	bangsData: () => BangsData | null;
 	active: () => boolean;
 }) => {
-	return browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
-		if (props.active() === false) return;
-		// Only handle top-level navigation
-		if (details.frameId !== 0) return;
+	return browser.webRequest.onBeforeRequest.addListener(
+		(details): undefined => {
+			if (props.active() === false) return;
+			if (details.frameId !== 0) return;
+			try {
+				const bangsData = props.bangsData();
+				if (!bangsData) return;
 
-		try {
-			if (!isGoogleSearchUrl(details.url)) return;
-			const bangsData = props.bangsData();
-			if (!bangsData) return;
+				const url = new URL(details.url);
+				const query = url.searchParams.get("q");
 
-			const url = new URL(details.url);
-			const query = url.searchParams.get("q");
+				if (!query) return;
 
-			if (!query) return;
+				const bangParsed = parseBang(query);
+				if (!bangParsed) return;
 
-			const bangParsed = parseBang(query);
-			if (!bangParsed) return;
+				const { trigger, searchQuery } = bangParsed;
+				const bangIndex = bangsData.triggerIndex[trigger.toLowerCase()];
 
-			const { trigger, searchQuery } = bangParsed;
-			const bangIndex = bangsData.triggerIndex[trigger.toLowerCase()];
+				if (bangIndex === undefined) return;
 
-			if (bangIndex === undefined) return;
+				const bang = bangsData.bangs[bangIndex];
+				if (!bang) return;
 
-			const bang = bangsData.bangs[bangIndex];
-			if (!bang) return;
+				const redirectUrl = buildBangUrl(bang, searchQuery);
+				if (redirectUrl) {
+					console.log(
+						`[SearchTuner] Bang redirect: !${trigger} -> ${redirectUrl}`,
+					);
 
-			const redirectUrl = buildBangUrl(bang, searchQuery);
-			if (redirectUrl) {
-				console.log(
-					`[SearchTuner] Bang redirect: !${trigger} -> ${redirectUrl}`,
-				);
-
-				// Redirect the tab
-				await browser.tabs.update(details.tabId, { url: redirectUrl });
+					// Redirect the tab
+					browser.tabs.update(details.tabId, { url: redirectUrl });
+				}
+			} catch (error) {
+				console.error("[SearchTuner] Error processing bang:", error);
 			}
-		} catch (error) {
-			console.error("[SearchTuner] Error processing bang:", error);
-		}
-	});
+		},
+		{ urls: googleSearchPatterns, types: ["main_frame"] },
+	);
 };
 
 export default defineBackground(() => {

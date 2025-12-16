@@ -1,9 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "wxt";
-// import googledomains from "./src/assets/googledomains";
-
-// const getGoogleDomainPatterns = () =>
-// 	googledomains.map((domain) => `*://*${domain}/*`);
+import { getGoogleDomains } from "./src/assets/googledomains";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -20,7 +17,7 @@ export default defineConfig({
 		],
 	},
 	manifest: {
-		permissions: ["storage", "webNavigation"],
-		// host_permissions: getGoogleDomainPatterns(),
+		permissions: ["storage", "webRequest"],
+		host_permissions: getGoogleDomains(),
 	},
 });
