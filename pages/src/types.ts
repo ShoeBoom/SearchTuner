@@ -52,6 +52,7 @@ const formatSchema = z
 	.array(
 		z.enum([
 			"open_base_path",
+			"open_snap_domain",
 			"url_encode_placeholder",
 			"url_encode_space_to_plus",
 		]),
