@@ -1,3 +1,4 @@
+import { browser } from "#imports";
 import { GitHub } from "@/component/icons/Github";
 
 const About = () => {

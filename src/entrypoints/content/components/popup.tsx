@@ -7,6 +7,7 @@ import {
 	Show,
 } from "solid-js";
 import { RankEditor, RankIcon, StrengthSlider } from "@/component/rank";
+import type { Results } from "@/utils/filter";
 import { syncedRankings } from "@/utils/storage";
 
 export function usePopup() {

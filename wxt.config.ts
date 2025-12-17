@@ -5,6 +5,7 @@ import { getGoogleDomains } from "./src/assets/googledomains";
 // See https://wxt.dev/api/config.html
 export default defineConfig({
 	modules: ["@wxt-dev/module-solid", "@wxt-dev/auto-icons"],
+	imports: false,
 	vite: () => ({
 		plugins: [tailwindcss()],
 	}),

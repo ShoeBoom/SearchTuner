@@ -1,6 +1,8 @@
 import clsx from "clsx";
 import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
-import type { JSX } from "solid-js";
+import { type JSX, Show } from "solid-js";
+import { render } from "solid-js/web";
+import { browser } from "#imports";
 import logo from "@/assets/icon.webp";
 import { isBangsActive, isRankingsActive, items } from "@/utils/storage";
 

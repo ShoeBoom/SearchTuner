@@ -1,8 +1,11 @@
 import $ from "jquery";
+import { render } from "solid-js/web";
+import { defineContentScript } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
 import Popup from "@/entrypoints/content/components/popup";
 import { getResults, type Results } from "@/utils/filter";
-import { items } from "@/utils/storage";
+import { items, type RankingsV2 } from "@/utils/storage";
+import { getPageTheme } from "@/utils/theme";
 
 const RERANK_WEIGHTS = {
 	weak: 1,

@@ -1,5 +1,6 @@
 import { A, HashRouter, Route, useNavigate } from "@solidjs/router";
 import { ArrowUpDown, Info, Settings } from "lucide-solid";
+import { render } from "solid-js/web";
 import logo from "@/assets/icon.webp";
 import { RankingsTable } from "@/entrypoints/pages/components/rankingsTable";
 import About from "./components/About";

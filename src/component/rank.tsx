@@ -8,7 +8,7 @@ import {
 	ShieldPlus,
 } from "lucide-solid";
 import type { JSX } from "solid-js";
-import { type RankingsV2, syncedRankings } from "@/utils/storage";
+import { items, type RankingsV2, syncedRankings } from "@/utils/storage";
 
 const rankIcons: ReadonlyMap<
 	RankingsV2[string]["type"],
