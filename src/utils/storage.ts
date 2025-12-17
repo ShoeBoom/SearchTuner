@@ -92,3 +92,9 @@ export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
 export const bangsData = useSettings(items.bangs_data);
+
+export const getBang = (trigger: string, data: BangsData) => {
+	const index = data.triggerIndex[trigger];
+	if (!index) return null;
+	return data.bangs[index];
+};
