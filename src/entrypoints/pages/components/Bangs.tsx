@@ -24,17 +24,20 @@ const Bangs = () => {
 				</thead>
 				<tbody>
 					<For each={bangs()}>
-						{(bang) => (
-							<tr
-								class="hover:bg-foreground/10 [&>td]:py-2"
-								style={{ "content-visibility": "auto" }}
-							>
-								<td class="text-center">{bang.s}</td>
-								<td class="text-center">{bang.t}</td>
-								<td class="text-center">{bang.d}</td>
-								<td class="text-center">{bang.c ?? "-"}</td>
-							</tr>
-						)}
+						{(bang) => {
+							const allTriggers = [bang.t, ...(bang.ts ?? [])];
+							return (
+								<tr
+									class="hover:bg-foreground/10 [&>td]:py-2"
+									style={{ "content-visibility": "auto" }}
+								>
+									<td class="text-center">{bang.s}</td>
+									<td class="text-center">{allTriggers.join(", ")}</td>
+									<td class="text-center">{bang.d}</td>
+									<td class="text-center">{bang.c ?? "-"}</td>
+								</tr>
+							);
+						}}
 					</For>
 				</tbody>
 			</table>
