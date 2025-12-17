@@ -1,5 +1,5 @@
 const Bangs = () => {
-	return <div>Bangs</div>;
+	return <div class="text-2xl">Bangs</div>;
 };
 
 export default Bangs;
