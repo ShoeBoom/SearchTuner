@@ -7,7 +7,13 @@ const Bangs = () => {
 
 	return (
 		<div>
-			<table class="w-full table-auto">
+			<table class="w-full table-fixed">
+				<colgroup>
+					<col style={{ width: "25%" }} />
+					<col style={{ width: "25%" }} />
+					<col style={{ width: "25%" }} />
+					<col style={{ width: "25%" }} />
+				</colgroup>
 				<thead class="border-b">
 					<tr>
 						<th class="pb-2 font-semibold text-sm">Site</th>
@@ -19,7 +25,10 @@ const Bangs = () => {
 				<tbody>
 					<For each={bangs()}>
 						{(bang) => (
-							<tr class="hover:bg-foreground/10 [&>td]:py-2">
+							<tr
+								class="hover:bg-foreground/10 [&>td]:py-2"
+								style={{ "content-visibility": "auto" }}
+							>
 								<td class="text-center">{bang.s}</td>
 								<td class="text-center">{bang.t}</td>
 								<td class="text-center">{bang.d}</td>
