@@ -63,8 +63,6 @@ function App() {
 	return (
 		<Show when={isRankingsActive() !== null && isBangsActive() !== null}>
 			<Content
-				// toggleRankingsActive={toggleRankingsActive}
-				// toggleBangsActive={toggleBangsActive}
 				isRankingsActive={() => isRankingsActive() ?? true}
 				isBangsActive={() => isBangsActive() ?? false}
 			/>
