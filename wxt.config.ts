@@ -1,5 +1,6 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "wxt";
+import { getGoogleDomains } from "./src/assets/googledomains";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
@@ -9,13 +10,14 @@ export default defineConfig({
 	}),
 	srcDir: "src",
 	webExt: {
-		startUrls: ["https://www.google.com/search?q=apple"],
+		startUrls: ["https://www.google.com/search?q=!w+apple"],
 		openDevtools: true,
 		chromiumArgs: [
 			"--auto-open-devtools-for-tabs", // https://developer.chrome.com/docs/devtools/open#auto
 		],
 	},
 	manifest: {
-		permissions: ["storage"],
+		permissions: ["storage", "webRequest"],
+		host_permissions: getGoogleDomains(),
 	},
 });

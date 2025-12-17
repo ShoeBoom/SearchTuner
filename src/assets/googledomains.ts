@@ -1,6 +1,6 @@
 // copied from https://www.google.com/supported_domains
 
-export default [
+const googledomains = [
 	".google.com",
 	".google.ad",
 	".google.ae",
@@ -189,3 +189,7 @@ export default [
 	".google.co.zw",
 	".google.cat",
 ] as const;
+
+export const getGoogleDomains = () => {
+	return googledomains.map((domain) => `*://*${domain}/search*`);
+};

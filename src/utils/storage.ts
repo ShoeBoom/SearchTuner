@@ -46,7 +46,16 @@ const rankings_active = storage.defineItem<boolean>("local:rankings_active", {
 	version: 1,
 });
 
-export const items = { rankings, rankings_active };
+void rankings_active.setMeta({ v: 1 });
+
+const bangs_active = storage.defineItem<boolean>("local:bangs_active", {
+	fallback: false,
+	version: 1,
+});
+
+void bangs_active.setMeta({ v: 1 });
+
+export const items = { rankings, rankings_active, bangs_active };
 
 type StorageItem<
 	T,
@@ -70,3 +79,4 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
+export const isBangsActive = useSettings(items.bangs_active);
