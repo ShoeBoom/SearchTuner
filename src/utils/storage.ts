@@ -1,3 +1,4 @@
+import type { BangsData } from "@@/pages/src/build_bangs";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
 
@@ -55,7 +56,17 @@ const bangs_active = storage.defineItem<boolean>("local:bangs_active", {
 
 void bangs_active.setMeta({ v: 1 });
 
-export const items = { rankings, rankings_active, bangs_active };
+const bangs_data = storage.defineItem<{ data: BangsData } | null>(
+	"local:bangs_data",
+	{
+		fallback: null,
+		version: 1,
+	},
+);
+
+void bangs_data.setMeta({ v: 1 });
+
+export const items = { rankings, rankings_active, bangs_active, bangs_data };
 
 type StorageItem<
 	T,
@@ -80,3 +91,4 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
+export const bangsData = useSettings(items.bangs_data);
