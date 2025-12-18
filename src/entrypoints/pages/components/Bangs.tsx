@@ -2,7 +2,6 @@ import { For } from "solid-js";
 import { bangsData } from "@/utils/storage";
 
 const Bangs = () => {
-	// const data = );
 	const bangs = () => bangsData()?.data?.bangs ?? [];
 
 	return (
