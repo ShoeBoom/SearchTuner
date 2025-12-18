@@ -2,6 +2,11 @@ name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Dry run the release"
+        required: false
+        default: "false"
 
 jobs:
   submit:
@@ -27,7 +32,7 @@ jobs:
 
       - name: Submit to stores
         run: |
-          pnpm wxt submit \
+          pnpm wxt submit ${inputs.dry-run == "true" && "--dry-run"} \
             --chrome-zip .output/searchtuner-*-chrome.zip \
             --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip
         env:
