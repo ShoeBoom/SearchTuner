@@ -33,7 +33,7 @@ jobs:
 
       - name: Submit to stores
         run: |
-          pnpm wxt submit ${inputs.dry-run == "true" && "--dry-run"} \
+          pnpm wxt submit ${inputs.dry-run && "--dry-run"} \
             --chrome-zip .output/searchtuner-*-chrome.zip \
             --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip
         env:
