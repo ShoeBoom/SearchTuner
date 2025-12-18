@@ -1,7 +1,7 @@
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { isBangsActive } from "@/utils/storage";
+import { getBang, isBangsActive, items } from "@/utils/storage";
 import type { BangsData } from "../../pages/src/build_bangs";
 import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
@@ -10,8 +10,11 @@ const googleSearchPatterns = getGoogleDomains();
 
 async function loadBangsData() {
 	console.log("Loading bangs data");
+	const cached = await items.bangs_data.getValue();
+	if (cached) return cached.data;
 	const res = await fetch(BANGS_URL);
 	const data = (await res.json()) as BangsData;
+	await items.bangs_data.setValue({ data });
 	return data;
 }
 
@@ -23,12 +26,13 @@ function parseBang(query: string, bangsData: BangsData) {
 		(match) => match[1].toLowerCase(),
 	);
 
-	const firstValid = matches.find((bang) => bangsData.triggerIndex[bang]);
+	const firstValid = matches.find((bang) => getBang(bang, bangsData) !== null);
 	if (!firstValid) return null;
-	const index = bangsData.triggerIndex[firstValid];
+	const bang = getBang(firstValid, bangsData);
+	if (!bang) return null;
 	return {
 		trigger: firstValid,
-		data: bangsData.bangs[index],
+		data: bang,
 	};
 }
 
