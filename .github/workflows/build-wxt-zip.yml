@@ -1,9 +1,7 @@
 name: Build WXT ZIP
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build-zip:
@@ -42,4 +40,3 @@ jobs:
           include-hidden-files: true
           path: .output/firefox-mv2
           if-no-files-found: error
-      
