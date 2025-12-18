@@ -95,6 +95,6 @@ export const bangsData = useSettings(items.bangs_data);
 
 export const getBang = (trigger: string, data: BangsData) => {
 	const index = data.triggerIndex[trigger];
-	if (!index) return null;
+	if (index === undefined) return null;
 	return data.bangs[index];
 };
