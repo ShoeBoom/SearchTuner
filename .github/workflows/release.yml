@@ -6,7 +6,8 @@ on:
       dry-run:
         description: "Dry run the release"
         required: false
-        default: "false"
+        type: boolean
+        default: false
 
 jobs:
   submit:
