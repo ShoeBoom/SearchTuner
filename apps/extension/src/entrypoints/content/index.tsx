@@ -109,12 +109,6 @@ function showMain() {
 	if (style) style.remove();
 }
 
-function script(rankings: RankingsV2 | null) {
-	const searches = getResults();
-	sortResults(searches, rankings);
-	addPopupContainers(searches);
-}
-
 const getConfig = async () => {
 	const [rankings_active, rankings] = await Promise.all([
 		items.rankings_active.getValue(),
@@ -128,8 +122,9 @@ function main(config: {
 	rankings: RankingsV2 | null;
 }) {
 	if (!config.rankings_active) return;
-
-	script(config.rankings);
+	const searches = getResults();
+	sortResults(searches, config.rankings);
+	addPopupContainers(searches);
 }
 
 function runOnBody(condition: () => boolean, callback: () => void) {
