@@ -5,7 +5,7 @@ import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
 import { getBang, isBangsActive, items } from "@/utils/storage";
 
-const BANGS_URL = "https://shoeboom.github.io/SearchTuner/bangs.json";
+const BANGS_URL = "https://search.shoeboom.dev/bangs.json";
 const googleSearchPatterns = getGoogleDomains();
 
 async function loadBangsData() {
