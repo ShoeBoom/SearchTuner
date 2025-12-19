@@ -33,7 +33,8 @@ jobs:
 
       - name: Submit to stores
         run: |
-          pnpm --filter SearchTuner submit ${{ inputs.dry-run == true && '--dry-run' }} \
+          cd apps/extension && \
+          pnpm submit ${{ inputs.dry-run == true && '--dry-run' }} \
             --chrome-zip .output/searchtuner-*-chrome.zip \
             --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip
         env:
