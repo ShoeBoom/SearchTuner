@@ -1,9 +1,9 @@
+import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
+import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
 import { getBang, isBangsActive, items } from "@/utils/storage";
-import type { BangsData } from "../../pages/src/build_bangs";
-import type { KagiBangsSchemaInput } from "../../pages/src/types";
 
 const BANGS_URL = "https://shoeboom.github.io/SearchTuner/bangs.json";
 const googleSearchPatterns = getGoogleDomains();

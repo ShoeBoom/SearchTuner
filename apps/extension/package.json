@@ -18,6 +18,7 @@
 		"pages:build-bangs": "cd pages && tsx src/build_bangs.ts"
 	},
 	"dependencies": {
+		"@searchtuner/bangs": "workspace:*",
 		"@solidjs/router": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"clsx": "catalog:",

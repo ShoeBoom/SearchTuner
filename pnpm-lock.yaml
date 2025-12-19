@@ -12,6 +12,9 @@ catalogs:
     '@tailwindcss/vite':
       specifier: ^4.1.14
       version: 4.1.14
+    '@total-typescript/tsconfig':
+      specifier: ^1.0.4
+      version: 1.0.4
     '@types/jquery':
       specifier: ^3.5.33
       version: 3.5.33
@@ -72,8 +75,21 @@ importers:
         specifier: ^5.9.2
         version: 5.9.3
 
+  apps/bangs:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
+    devDependencies:
+      '@total-typescript/tsconfig':
+        specifier: 'catalog:'
+        version: 1.0.4
+
   apps/extension:
     dependencies:
+      '@searchtuner/bangs':
+        specifier: workspace:*
+        version: link:../bangs
       '@solidjs/router':
         specifier: 'catalog:'
         version: 0.15.3(solid-js@1.9.9)
@@ -132,6 +148,9 @@ importers:
 
   apps/site:
     dependencies:
+      '@searchtuner/bangs':
+        specifier: workspace:*
+        version: link:../bangs
       astro:
         specifier: ^5.16.6
         version: 5.16.6(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)(typescript@5.9.3)
@@ -916,6 +935,9 @@ packages:
     resolution: {integrity: sha512-BoFUoU0XqgCUS1UXWhmDJroKKhNXeDzD7/XwabjkDIAbMnc4ULn5e2FuEuBbhZ6ENZoSYzKlzvZ44Yr6EUDUSA==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7
+
+  '@total-typescript/tsconfig@1.0.4':
+    resolution: {integrity: sha512-fO4ctMPGz1kOFOQ4RCPBRBfMy3gDn+pegUfrGyUFRMv/Rd0ZM3/SHH3hFCYG4u6bPLG8OlmOGcBLDexvyr3A5w==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -3934,6 +3956,8 @@ snapshots:
       '@tailwindcss/oxide': 4.1.14
       tailwindcss: 4.1.14
       vite: 7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6)
+
+  '@total-typescript/tsconfig@1.0.4': {}
 
   '@types/babel__core@7.20.5':
     dependencies:

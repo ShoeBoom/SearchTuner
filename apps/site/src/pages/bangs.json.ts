@@ -1,5 +1,5 @@
+import { data } from "@searchtuner/bangs/lib/build_bangs";
 import type { APIRoute } from "astro";
-import { data } from "../lib/build_bangs";
 export const GET: APIRoute = () => {
 	return new Response(JSON.stringify(data), {
 		headers: {

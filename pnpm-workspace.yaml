@@ -5,6 +5,7 @@ packages:
 catalog:
   '@solidjs/router': ^0.15.3
   '@tailwindcss/vite': ^4.1.14
+  '@total-typescript/tsconfig': ^1.0.4
   '@types/jquery': ^3.5.33
   '@types/lodash': ^4.17.20
   '@types/node': ^24.10.1
