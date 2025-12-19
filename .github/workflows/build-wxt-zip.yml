@@ -20,7 +20,7 @@ jobs:
         run: pnpm install
 
       - name: Build Chrome
-        run: pnpm build
+        run: pnpm build --filter extension
 
       - name: Build Firefox
         run: pnpm build:firefox
