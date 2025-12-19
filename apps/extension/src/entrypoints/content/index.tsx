@@ -82,6 +82,10 @@ function sortResults(results: Results, rankings: RankingsV2 | null) {
 
 function addPopupContainers(searches: Results) {
 	const theme = getPageTheme();
+	const template = document.createElement("div");
+	template.classList.add("searchtuner-container");
+	template.setAttribute("data-theme", theme);
+
 	searches.forEach((search) => {
 		// Ensure the parent is positioned relatively so absolute works
 		const parent = search.element[0];
@@ -89,9 +93,7 @@ function addPopupContainers(searches: Results) {
 			parent.style.position = "relative";
 		}
 
-		const container = document.createElement("div");
-		container.classList.add("searchtuner-container");
-		container.setAttribute("data-theme", theme);
+		const container = template.cloneNode(true);
 		parent.appendChild(container);
 		render(() => <Popup {...search} />, container);
 	});
@@ -109,12 +111,6 @@ function showMain() {
 	if (style) style.remove();
 }
 
-function script(rankings: RankingsV2 | null) {
-	const searches = getResults();
-	sortResults(searches, rankings);
-	addPopupContainers(searches);
-}
-
 const getConfig = async () => {
 	const [rankings_active, rankings] = await Promise.all([
 		items.rankings_active.getValue(),
@@ -128,8 +124,9 @@ function main(config: {
 	rankings: RankingsV2 | null;
 }) {
 	if (!config.rankings_active) return;
-
-	script(config.rankings);
+	const searches = getResults();
+	sortResults(searches, config.rankings);
+	addPopupContainers(searches);
 }
 
 function runOnBody(condition: () => boolean, callback: () => void) {
@@ -160,7 +157,7 @@ export default defineContentScript({
 		configPromise.then((config) => {
 			if (!config.rankings_active) showMain();
 		});
-		const timeout = setTimeout(() => showMain(), 2000);
+		const timeout = setTimeout(() => showMain(), 1000);
 		document.addEventListener("DOMContentLoaded", () => {
 			runOnBody(
 				() => !!$("div#rso").length,
