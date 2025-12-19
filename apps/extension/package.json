@@ -14,7 +14,8 @@
 		"submit": "wxt submit",
 		"compile": "tsc --noEmit",
 		"convert-icon": "tsx scripts/convert_icon_webp.ts",
-		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts"
+		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
+		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@searchtuner/bangs": "workspace:*",
