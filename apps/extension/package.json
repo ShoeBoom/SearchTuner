@@ -1,0 +1,43 @@
+{
+	"name": "SearchTuner",
+	"description": "Rerank your Google Search results",
+	"private": true,
+	"version": "0.1.11",
+	"type": "module",
+	"scripts": {
+		"dev": "wxt",
+		"dev:firefox": "wxt -b firefox",
+		"build": "wxt build",
+		"build:firefox": "wxt build -b firefox",
+		"zip": "wxt zip",
+		"zip:firefox": "wxt zip -b firefox",
+		"submit": "wxt submit",
+		"compile": "tsc --noEmit",
+		"convert-icon": "tsx scripts/convert_icon_webp.ts",
+		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
+		"check": "biome check --fix",
+		"pages:build-bangs": "cd pages && tsx src/build_bangs.ts"
+	},
+	"dependencies": {
+		"@solidjs/router": "catalog:",
+		"@tailwindcss/vite": "catalog:",
+		"clsx": "catalog:",
+		"jquery": "catalog:",
+		"lodash": "catalog:",
+		"lucide-solid": "catalog:",
+		"neverthrow": "catalog:",
+		"solid-js": "catalog:",
+		"tailwindcss": "catalog:",
+		"zod": "catalog:"
+	},
+	"devDependencies": {
+		"@types/jquery": "catalog:",
+		"@types/lodash": "catalog:",
+		"@types/node": "catalog:",
+		"@wxt-dev/auto-icons": "catalog:",
+		"@wxt-dev/module-solid": "catalog:",
+		"sharp": "catalog:",
+		"tsx": "catalog:",
+		"wxt": "catalog:"
+	}
+}

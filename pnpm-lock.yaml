@@ -4,70 +4,130 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@solidjs/router':
+      specifier: ^0.15.3
+      version: 0.15.3
+    '@tailwindcss/vite':
+      specifier: ^4.1.14
+      version: 4.1.14
+    '@types/jquery':
+      specifier: ^3.5.33
+      version: 3.5.33
+    '@types/lodash':
+      specifier: ^4.17.20
+      version: 4.17.20
+    '@types/node':
+      specifier: ^24.10.1
+      version: 24.10.1
+    '@wxt-dev/auto-icons':
+      specifier: ^1.1.0
+      version: 1.1.0
+    '@wxt-dev/module-solid':
+      specifier: ^1.1.4
+      version: 1.1.4
+    clsx:
+      specifier: ^2.1.1
+      version: 2.1.1
+    jquery:
+      specifier: ^3.7.1
+      version: 3.7.1
+    lodash:
+      specifier: ^4.17.21
+      version: 4.17.21
+    lucide-solid:
+      specifier: ^0.545.0
+      version: 0.545.0
+    neverthrow:
+      specifier: ^8.2.0
+      version: 8.2.0
+    sharp:
+      specifier: ^0.34.4
+      version: 0.34.4
+    solid-js:
+      specifier: ^1.9.9
+      version: 1.9.9
+    tailwindcss:
+      specifier: ^4.1.14
+      version: 4.1.14
+    tsx:
+      specifier: ^4.20.6
+      version: 4.20.6
+    wxt:
+      specifier: ^0.20.11
+      version: 0.20.11
+    zod:
+      specifier: ^4.1.12
+      version: 4.1.12
+
 importers:
 
   .:
-    dependencies:
-      '@solidjs/router':
-        specifier: ^0.15.3
-        version: 0.15.3(solid-js@1.9.9)
-      '@tailwindcss/vite':
-        specifier: ^4.1.14
-        version: 4.1.14(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      jquery:
-        specifier: ^3.7.1
-        version: 3.7.1
-      lodash:
-        specifier: ^4.17.21
-        version: 4.17.21
-      lucide-solid:
-        specifier: ^0.545.0
-        version: 0.545.0(solid-js@1.9.9)
-      neverthrow:
-        specifier: ^8.2.0
-        version: 8.2.0
-      solid-js:
-        specifier: ^1.9.9
-        version: 1.9.9
-      tailwindcss:
-        specifier: ^4.1.14
-        version: 4.1.14
-      zod:
-        specifier: ^4.1.12
-        version: 4.1.12
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.8
         version: 2.3.8
-      '@types/jquery':
-        specifier: ^3.5.33
-        version: 3.5.33
-      '@types/lodash':
-        specifier: ^4.17.20
-        version: 4.17.20
-      '@types/node':
-        specifier: ^24.10.1
-        version: 24.10.1
-      '@wxt-dev/auto-icons':
-        specifier: ^1.1.0
-        version: 1.1.0(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
-      '@wxt-dev/module-solid':
-        specifier: ^1.1.4
-        version: 1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
-      sharp:
-        specifier: ^0.34.4
-        version: 0.34.4
-      tsx:
-        specifier: ^4.20.6
-        version: 4.20.6
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+
+  apps/extension:
+    dependencies:
+      '@solidjs/router':
+        specifier: 'catalog:'
+        version: 0.15.3(solid-js@1.9.9)
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.1.14(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))
+      clsx:
+        specifier: 'catalog:'
+        version: 2.1.1
+      jquery:
+        specifier: 'catalog:'
+        version: 3.7.1
+      lodash:
+        specifier: 'catalog:'
+        version: 4.17.21
+      lucide-solid:
+        specifier: 'catalog:'
+        version: 0.545.0(solid-js@1.9.9)
+      neverthrow:
+        specifier: 'catalog:'
+        version: 8.2.0
+      solid-js:
+        specifier: 'catalog:'
+        version: 1.9.9
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.1.14
+      zod:
+        specifier: 'catalog:'
+        version: 4.1.12
+    devDependencies:
+      '@types/jquery':
+        specifier: 'catalog:'
+        version: 3.5.33
+      '@types/lodash':
+        specifier: 'catalog:'
+        version: 4.17.20
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      '@wxt-dev/auto-icons':
+        specifier: 'catalog:'
+        version: 1.1.0(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
+      '@wxt-dev/module-solid':
+        specifier: 'catalog:'
+        version: 1.1.4(solid-js@1.9.9)(vite@7.1.9(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(tsx@4.20.6))(wxt@0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6))
+      sharp:
+        specifier: 'catalog:'
+        version: 0.34.4
+      tsx:
+        specifier: 'catalog:'
+        version: 4.20.6
       wxt:
-        specifier: ^0.20.11
+        specifier: 'catalog:'
         version: 0.20.11(@types/node@24.10.1)(jiti@2.6.1)(lightningcss@1.30.1)(rollup@4.52.4)(tsx@4.20.6)
 
 packages:

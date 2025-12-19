@@ -5,3 +5,31 @@ onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - esbuild
   - sharp
+
+catalog:
+  '@solidjs/router': ^0.15.3
+  '@tailwindcss/vite': ^4.1.14
+  clsx: ^2.1.1
+  jquery: ^3.7.1
+  lodash: ^4.17.21
+  lucide-solid: ^0.545.0
+  neverthrow: ^8.2.0
+  solid-js: ^1.9.9
+  tailwindcss: ^4.1.14
+  zod: ^4.1.12
+  '@types/jquery': ^3.5.33
+  '@types/lodash': ^4.17.20
+  '@types/node': ^24.10.1
+  '@wxt-dev/auto-icons': ^1.1.0
+  '@wxt-dev/module-solid': ^1.1.4
+  sharp: ^0.34.4
+  tsx: ^4.20.6
+  wxt: ^0.20.11
+
+packages:
+  - 'packages/**'
+  - 'apps/**'
+
+catalogMode: strict
+
+cleanupUnusedCatalogs: true
