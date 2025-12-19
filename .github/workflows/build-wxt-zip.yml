@@ -20,10 +20,10 @@ jobs:
         run: pnpm install
 
       - name: Build Chrome
-        run: pnpm build --filter extension
+        run: pnpm --filter SearchTuner build
 
       - name: Build Firefox
-        run: pnpm build:firefox
+        run: pnpm --filter SearchTuner build:firefox
 
       - name: Upload Chrome artifact
         uses: actions/upload-artifact@v4
