@@ -1,5 +1,5 @@
 ---
-
+import "../styles/global.css";
 ---
 
 <html lang="en">
@@ -8,9 +8,60 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Search Tuner</title>
 	</head>
-	<body>
-		<h1>Astro</h1>
+	<body class="font-sans bg-slate-900 text-slate-50 m-0 leading-relaxed">
+		<div class="max-w-[1000px] mx-auto px-8 py-8 text-center">
+			<header class="flex items-center justify-center gap-4 mb-16 pt-8">
+				<img src="/favicon.svg" alt="Search Tuner Logo" class="w-12 h-12" />
+				<h1 class="text-4xl font-bold m-0 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+					Search Tuner
+				</h1>
+			</header>
+
+			<main>
+				<div class="mb-16">
+					<p class="text-xl text-slate-400 max-w-[600px] mx-auto my-4 mb-8">
+						Supercharge your search experience with powerful shortcuts and customization.
+					</p>
+					
+					<div class="flex justify-center gap-6 flex-wrap mb-16">
+						<a 
+							href="https://chromewebstore.google.com/detail/searchtuner/fnhmeghaldogkojfjcedfnhnegbnnkfg" 
+							target="_blank" 
+							rel="noopener noreferrer"
+							class="transition-transform duration-200 hover:scale-105"
+						>
+							<img src="/chrome-store.svg" alt="Download on Chrome Web Store" class="h-[60px]" />
+						</a>
+						<a 
+							href="https://addons.mozilla.org/en-US/firefox/addon/searchtuner/" 
+							target="_blank" 
+							rel="noopener noreferrer"
+							class="transition-transform duration-200 hover:scale-105"
+						>
+							<img src="/firefox-store.svg" alt="Download on Firefox Add-ons" class="h-[60px]" />
+						</a>
+					</div>
+				</div>
+
+				<div class="relative pb-[56.25%] h-0 overflow-hidden max-w-[800px] mx-auto rounded-xl shadow-2xl bg-slate-800">
+					<iframe 
+						width="560" 
+						height="315" 
+						src="https://www.youtube.com/embed/6HelFq6s_wk" 
+						title="Search Tuner Demo" 
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+						allowfullscreen
+						class="absolute top-0 left-0 w-full h-full border-none"
+					>
+					</iframe>
+				</div>
+			</main>
+
+			<footer class="mt-16 py-8 text-slate-400 text-sm">
+				<p>&copy; {new Date().getFullYear()} Search Tuner. All rights reserved.</p>
+			</footer>
+		</div>
 	</body>
 </html>
