@@ -15,7 +15,8 @@
 		"compile": "tsc --noEmit",
 		"convert-icon": "tsx scripts/convert_icon_webp.ts",
 		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
-		"check-types": "tsc --noEmit"
+		"check-types": "tsc --noEmit",
+		"clean": "rm -rf .output .wxt node_modules"
 	},
 	"dependencies": {
 		"@searchtuner/bangs": "workspace:*",
