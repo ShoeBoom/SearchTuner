@@ -12,6 +12,8 @@
 	},
 	"dependencies": {
 		"@searchtuner/bangs": "workspace:*",
-		"astro": "^5.16.6"
+		"@tailwindcss/vite": "catalog:",
+		"astro": "^5.16.6",
+		"tailwindcss": "catalog:"
 	}
 }
