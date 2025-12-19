@@ -157,7 +157,7 @@ export default defineContentScript({
 		configPromise.then((config) => {
 			if (!config.rankings_active) showMain();
 		});
-		const timeout = setTimeout(() => showMain(), 2000);
+		const timeout = setTimeout(() => showMain(), 1000);
 		document.addEventListener("DOMContentLoaded", () => {
 			runOnBody(
 				() => !!$("div#rso").length,
