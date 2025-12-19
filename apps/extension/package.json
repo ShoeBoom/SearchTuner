@@ -16,7 +16,7 @@
 		"convert-icon": "tsx scripts/convert_icon_webp.ts",
 		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
 		"check-types": "tsc --noEmit",
-		"clean": "rm -rf .output .wxt node_modules"
+		"clean": "rm -rf .output .wxt node_modules src/assets/icon.webp"
 	},
 	"dependencies": {
 		"@searchtuner/bangs": "workspace:*",
