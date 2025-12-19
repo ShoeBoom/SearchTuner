@@ -30,7 +30,7 @@ jobs:
         with:
           name: searchtuner-chrome
           include-hidden-files: true
-          path: .output/chrome-mv3
+          path: apps/extension/.output/chrome-mv3
           if-no-files-found: error
 
       - name: Upload Firefox artifact
@@ -38,5 +38,5 @@ jobs:
         with:
           name: searchtuner-firefox
           include-hidden-files: true
-          path: .output/firefox-mv2
+          path: apps/extension/.output/firefox-mv2
           if-no-files-found: error
