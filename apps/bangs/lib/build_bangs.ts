@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import { checkBangsMapper } from "./checker";
 import { schema } from "./types";
 
@@ -57,11 +56,9 @@ bangs.forEach((bang, index) => {
 	});
 });
 
-const data = {
+export const data = {
 	bangs: schema.encode(bangs),
 	triggerIndex: Object.fromEntries(triggerIndex.entries()),
 };
 
 export type BangsData = typeof data;
-
-fs.writeFileSync("public/bangs.json", JSON.stringify(data));

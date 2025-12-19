@@ -2,45 +2,15 @@
 	"name": "SearchTuner",
 	"description": "Rerank your Google Search results",
 	"private": true,
-	"version": "0.1.11",
 	"type": "module",
 	"scripts": {
-		"dev": "wxt",
-		"dev:firefox": "wxt -b firefox",
-		"build": "wxt build",
-		"build:firefox": "wxt build -b firefox",
-		"zip": "wxt zip",
-		"zip:firefox": "wxt zip -b firefox",
-		"submit": "wxt submit",
-		"compile": "tsc --noEmit",
-		"convert-icon": "tsx scripts/convert_icon_webp.ts",
-		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
 		"check": "biome check --fix",
-		"pages:build-bangs": "cd pages && tsx src/build_bangs.ts"
-	},
-	"dependencies": {
-		"@solidjs/router": "^0.15.3",
-		"@tailwindcss/vite": "^4.1.14",
-		"clsx": "^2.1.1",
-		"jquery": "^3.7.1",
-		"lodash": "^4.17.21",
-		"lucide-solid": "^0.545.0",
-		"neverthrow": "^8.2.0",
-		"solid-js": "^1.9.9",
-		"tailwindcss": "^4.1.14",
-		"zod": "^4.1.12"
+		"clean": "rm -rf node_modules && pnpm -r clean",
+		"build-all": "pnpm -r build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.8",
-		"@types/jquery": "^3.5.33",
-		"@types/lodash": "^4.17.20",
-		"@types/node": "^24.10.1",
-		"@wxt-dev/auto-icons": "^1.1.0",
-		"@wxt-dev/module-solid": "^1.1.4",
-		"sharp": "^0.34.4",
-		"tsx": "^4.20.6",
-		"typescript": "^5.9.2",
-		"wxt": "^0.20.11"
+		"typescript": "^5.9.2"
 	},
 	"packageManager": "pnpm@10.15.1"
 }

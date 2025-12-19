@@ -20,17 +20,17 @@ jobs:
         run: pnpm install
 
       - name: Build Chrome
-        run: pnpm build
+        run: pnpm --filter SearchTuner build
 
       - name: Build Firefox
-        run: pnpm build:firefox
+        run: pnpm --filter SearchTuner build:firefox
 
       - name: Upload Chrome artifact
         uses: actions/upload-artifact@v4
         with:
           name: searchtuner-chrome
           include-hidden-files: true
-          path: .output/chrome-mv3
+          path: apps/extension/.output/chrome-mv3
           if-no-files-found: error
 
       - name: Upload Firefox artifact
@@ -38,5 +38,5 @@ jobs:
         with:
           name: searchtuner-firefox
           include-hidden-files: true
-          path: .output/firefox-mv2
+          path: apps/extension/.output/firefox-mv2
           if-no-files-found: error

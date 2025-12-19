@@ -1,4 +1,4 @@
-import type { BangsData } from "@@/pages/src/build_bangs";
+import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
 
