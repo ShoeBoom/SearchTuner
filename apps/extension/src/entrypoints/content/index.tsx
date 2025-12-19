@@ -82,6 +82,10 @@ function sortResults(results: Results, rankings: RankingsV2 | null) {
 
 function addPopupContainers(searches: Results) {
 	const theme = getPageTheme();
+	const template = document.createElement("div");
+	template.classList.add("searchtuner-container");
+	template.setAttribute("data-theme", theme);
+
 	searches.forEach((search) => {
 		// Ensure the parent is positioned relatively so absolute works
 		const parent = search.element[0];
@@ -89,9 +93,7 @@ function addPopupContainers(searches: Results) {
 			parent.style.position = "relative";
 		}
 
-		const container = document.createElement("div");
-		container.classList.add("searchtuner-container");
-		container.setAttribute("data-theme", theme);
+		const container = template.cloneNode(true);
 		parent.appendChild(container);
 		render(() => <Popup {...search} />, container);
 	});
