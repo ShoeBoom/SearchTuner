@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
-import { type JSX, Show } from "solid-js";
+import { createMemo, type JSX, Show } from "solid-js";
 import { render } from "solid-js/web";
 import { browser } from "#imports";
 import logo from "@/assets/icon.webp";
@@ -62,12 +62,21 @@ const toggleBangsActive = async () => {
 };
 
 function App() {
+	const config = createMemo(() => {
+		const rankings = isRankingsActive();
+		const bangs = isBangsActive();
+		if (rankings === null || bangs === null) return undefined;
+		return { rankings, bangs };
+	});
+
 	return (
-		<Show when={isRankingsActive() !== null && isBangsActive() !== null}>
-			<Content
-				isRankingsActive={() => isRankingsActive() ?? true}
-				isBangsActive={() => isBangsActive() ?? false}
-			/>
+		<Show when={config()}>
+			{(cfg) => (
+				<Content
+					isRankingsActive={() => cfg().rankings}
+					isBangsActive={() => cfg().bangs}
+				/>
+			)}
 		</Show>
 	);
 }
