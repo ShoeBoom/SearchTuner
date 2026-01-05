@@ -2,7 +2,7 @@
 	"name": "SearchTuner",
 	"description": "Rerank your Google Search results",
 	"private": true,
-	"version": "0.1.13",
+	"version": "0.1.14",
 	"type": "module",
 	"scripts": {
 		"dev": "wxt",
@@ -22,6 +22,7 @@
 		"@searchtuner/bangs": "workspace:*",
 		"@solidjs/router": "catalog:",
 		"@tailwindcss/vite": "catalog:",
+		"arkregex": "catalog:",
 		"clsx": "catalog:",
 		"jquery": "catalog:",
 		"lodash": "catalog:",

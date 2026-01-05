@@ -3,7 +3,7 @@ import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { getBang, isBangsActive, items } from "@/utils/storage";
+import { getBang, isBangsActive, items, quickBangsData } from "@/utils/storage";
 
 const BANGS_URL = "https://search.shoeboom.dev/bangs.json";
 const googleSearchPatterns = getGoogleDomains();
@@ -18,22 +18,54 @@ async function loadBangsData() {
 	return data;
 }
 
-// Parse bang from query - supports both "!w query" and "query !w" formats
-function parseBang(query: string, bangsData: BangsData) {
+// Parse bang from query - supports "!w query", "query !w", and quick bangs at start/end
+function parseBang(
+	query: string,
+	bangsData: BangsData,
+	quickBangs: string[] = [],
+) {
 	const trimmed = query.trim();
 
-	const matches = Array.from(trimmed.matchAll(/(?<=^|\s)!(\S+)(?=\s|$)/g)).map(
-		(match) => match[1].toLowerCase(),
-	);
+	// Regular !bang syntax: matches !trigger anywhere in query
+	const bangMatches = Array.from(
+		trimmed.matchAll(/(?<=^|\s)!(\S+)(?=\s|$)/g),
+	).map((match) => ({ trigger: match[1].toLowerCase(), match: match[0] }));
 
-	const firstValid = matches.find((bang) => getBang(bang, bangsData) !== null);
-	if (!firstValid) return null;
-	const bang = getBang(firstValid, bangsData);
-	if (!bang) return null;
-	return {
-		trigger: firstValid,
-		data: bang,
-	};
+	const validBang = bangMatches.find(
+		({ trigger }) => getBang(trigger, bangsData) !== null,
+	);
+	if (validBang) {
+		const bang = getBang(validBang.trigger, bangsData);
+		if (bang) {
+			return {
+				trigger: validBang.trigger,
+				match: validBang.match,
+				data: bang,
+			};
+		}
+	}
+
+	// Quick bangs: check first and last word
+	const words = trimmed.split(/\s+/);
+	const firstWord = words[0];
+	const lastWord = words.length > 1 ? words[words.length - 1] : undefined;
+
+	for (const word of [firstWord, lastWord]) {
+		if (!word) continue;
+		const lowerWord = word.toLowerCase();
+		if (quickBangs.some((qb) => qb.toLowerCase() === lowerWord)) {
+			const bang = getBang(lowerWord, bangsData);
+			if (bang) {
+				return {
+					trigger: lowerWord,
+					match: word,
+					data: bang,
+				};
+			}
+		}
+	}
+
+	return null;
 }
 
 // Build the redirect URL from a bang and search query
@@ -77,6 +109,7 @@ function buildBangUrl(bang: KagiBangsSchemaInput[number], searchQuery: string) {
 
 const addBangsListener = (props: {
 	bangsData: () => BangsData | null;
+	quickBangs: () => string[];
 	active: () => boolean;
 }) => {
 	return browser.webRequest.onBeforeRequest.addListener(
@@ -92,16 +125,17 @@ const addBangsListener = (props: {
 
 				if (!query) return;
 
-				const bang = parseBang(query, bangsData);
+				const quickBangs = props.quickBangs();
+				const bang = parseBang(query, bangsData, quickBangs);
 				if (!bang) return;
 
-				const redirectUrl = buildBangUrl(
-					bang.data,
-					query.replace(`!${bang.trigger}`, "").trim(),
-				);
+				// Remove the matched trigger from the query
+				const searchQuery = query.replace(bang.match, " ").trim();
+
+				const redirectUrl = buildBangUrl(bang.data, searchQuery);
 				if (redirectUrl) {
 					console.log(
-						`[SearchTuner] Bang redirect: !${bang.trigger} -> ${redirectUrl}`,
+						`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`,
 					);
 
 					// Redirect the tab
@@ -121,8 +155,10 @@ export default defineBackground(() => {
 		const [bangsData] = createResource(active, async () => {
 			return await loadBangsData();
 		});
+
 		addBangsListener({
 			bangsData: () => bangsData() ?? null,
+			quickBangs: () => quickBangsData() ?? [],
 			active,
 		});
 	});
