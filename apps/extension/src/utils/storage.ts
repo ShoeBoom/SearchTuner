@@ -66,7 +66,21 @@ const bangs_data = storage.defineItem<{ data: BangsData } | null>(
 
 void bangs_data.setMeta({ v: 1 });
 
-export const items = { rankings, rankings_active, bangs_active, bangs_data };
+const quick_bangs = storage.defineItem<string[]>("sync:quick_bangs", {
+	init: () => [],
+	fallback: [],
+	version: 1,
+});
+
+void quick_bangs.setMeta({ v: 1 });
+
+export const items = {
+	rankings,
+	rankings_active,
+	bangs_active,
+	bangs_data,
+	quick_bangs,
+};
 
 type StorageItem<
 	T,
@@ -92,6 +106,7 @@ export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
 export const bangsData = useSettings(items.bangs_data);
+export const quickBangsData = useSettings(items.quick_bangs);
 
 export const getBang = (trigger: string, data: BangsData) => {
 	const index = data.triggerIndex[trigger];
