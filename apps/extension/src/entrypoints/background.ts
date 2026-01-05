@@ -54,14 +54,16 @@ function parseBang(
 		);
 		const quickMatch = quickBangPattern.exec(trimmed);
 		if (quickMatch) {
-			const trigger = (quickMatch[1] ?? quickMatch[2] ?? "").toLowerCase();
-			const bang = getBang(trigger, bangsData);
-			if (bang) {
-				return {
-					trigger,
-					match: quickMatch[0],
-					data: bang,
-				};
+			const trigger = (quickMatch[1] ?? quickMatch[2])?.toLowerCase();
+			if (trigger) {
+				const bang = getBang(trigger, bangsData);
+				if (bang) {
+					return {
+						trigger,
+						match: quickMatch[0],
+						data: bang,
+					};
+				}
 			}
 		}
 	}
