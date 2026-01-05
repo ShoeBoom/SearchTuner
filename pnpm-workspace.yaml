@@ -11,6 +11,7 @@ catalog:
   '@types/node': ^24.10.1
   '@wxt-dev/auto-icons': ^1.1.0
   '@wxt-dev/module-solid': ^1.1.4
+  arkregex: ^0.0.5
   clsx: ^2.1.1
   jquery: ^3.7.1
   lodash: ^4.17.21
