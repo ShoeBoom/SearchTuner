@@ -28,14 +28,12 @@ jobs:
 
       - name: Zip extensions
         run: |
-          pnpm --filter SearchTuner zip
           pnpm --filter SearchTuner zip:firefox
 
       - name: Submit to stores
         run: |
           cd apps/extension && \
           pnpm submit ${{ inputs.dry-run == true && '--dry-run' }} \
-            --chrome-zip .output/searchtuner-*-chrome.zip \
             --firefox-zip .output/*-firefox.zip --firefox-sources-zip .output/*-sources.zip
         env:
           CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
