@@ -1,6 +1,5 @@
 import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
 import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
-import { regex } from "arkregex";
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
@@ -46,21 +45,21 @@ function parseBang(
 		}
 	}
 
-	// Quick bangs: match trigger at start (^trigger\s) or end (\s+trigger$)
+	// Quick bangs: check first and last word
 	if (quickBangs.length > 0) {
-		const quickBangPattern = regex(
-			`(?:^(${quickBangs.join("|")})(?=\\s|$))|(?:(?<=^|\\s)(${quickBangs.join("|")})$)`,
-			"i",
-		);
-		const quickMatch = quickBangPattern.exec(trimmed);
-		if (quickMatch) {
-			const trigger = (quickMatch[1] ?? quickMatch[2])?.toLowerCase();
-			if (trigger) {
-				const bang = getBang(trigger, bangsData);
+		const words = trimmed.split(/\s+/);
+		const firstWord = words[0];
+		const lastWord = words.length > 1 ? words[words.length - 1] : undefined;
+
+		for (const word of [firstWord, lastWord]) {
+			if (!word) continue;
+			const lowerWord = word.toLowerCase();
+			if (quickBangs.some((qb) => qb.toLowerCase() === lowerWord)) {
+				const bang = getBang(lowerWord, bangsData);
 				if (bang) {
 					return {
-						trigger,
-						match: quickMatch[0],
+						trigger: lowerWord,
+						match: word,
 						data: bang,
 					};
 				}
