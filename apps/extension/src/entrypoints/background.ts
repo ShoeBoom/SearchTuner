@@ -46,23 +46,21 @@ function parseBang(
 	}
 
 	// Quick bangs: check first and last word
-	if (quickBangs.length > 0) {
-		const words = trimmed.split(/\s+/);
-		const firstWord = words[0];
-		const lastWord = words.length > 1 ? words[words.length - 1] : undefined;
+	const words = trimmed.split(/\s+/);
+	const firstWord = words[0];
+	const lastWord = words.length > 1 ? words[words.length - 1] : undefined;
 
-		for (const word of [firstWord, lastWord]) {
-			if (!word) continue;
-			const lowerWord = word.toLowerCase();
-			if (quickBangs.some((qb) => qb.toLowerCase() === lowerWord)) {
-				const bang = getBang(lowerWord, bangsData);
-				if (bang) {
-					return {
-						trigger: lowerWord,
-						match: word,
-						data: bang,
-					};
-				}
+	for (const word of [firstWord, lastWord]) {
+		if (!word) continue;
+		const lowerWord = word.toLowerCase();
+		if (quickBangs.some((qb) => qb.toLowerCase() === lowerWord)) {
+			const bang = getBang(lowerWord, bangsData);
+			if (bang) {
+				return {
+					trigger: lowerWord,
+					match: word,
+					data: bang,
+				};
 			}
 		}
 	}
