@@ -1,9 +1,10 @@
 import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
 import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
+import { regex } from "arkregex";
 import { createResource, createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { getBang, isBangsActive, items } from "@/utils/storage";
+import { getBang, isBangsActive, items, quickBangsData } from "@/utils/storage";
 
 const BANGS_URL = "https://search.shoeboom.dev/bangs.json";
 const googleSearchPatterns = getGoogleDomains();
@@ -47,13 +48,13 @@ function parseBang(
 
 	// Quick bangs: match trigger at start (^trigger\s) or end (\s+trigger$)
 	if (quickBangs.length > 0) {
-		const quickBangPattern = new RegExp(
+		const quickBangPattern = regex(
 			`(?:^(${quickBangs.join("|")})(?=\\s|$))|(?:(?<=^|\\s)(${quickBangs.join("|")})$)`,
 			"i",
 		);
-		const quickMatch = trimmed.match(quickBangPattern);
+		const quickMatch = quickBangPattern.exec(trimmed);
 		if (quickMatch) {
-			const trigger = (quickMatch[1] ?? quickMatch[2]).toLowerCase();
+			const trigger = (quickMatch[1] ?? quickMatch[2] ?? "").toLowerCase();
 			const bang = getBang(trigger, bangsData);
 			if (bang) {
 				return {
@@ -149,29 +150,16 @@ const addBangsListener = (props: {
 	);
 };
 
-async function loadQuickBangs() {
-	return (await items.quick_bangs.getValue()) ?? [];
-}
-
 export default defineBackground(() => {
 	createRoot(() => {
 		const active = () => isBangsActive() ?? false;
 		const [bangsData] = createResource(active, async () => {
 			return await loadBangsData();
 		});
-		const [quickBangs] = createResource(active, async () => {
-			return await loadQuickBangs();
-		});
-
-		// Watch for quick bangs changes
-		items.quick_bangs.watch(() => {
-			// Refetch when quick bangs change
-			loadQuickBangs();
-		});
 
 		addBangsListener({
 			bangsData: () => bangsData() ?? null,
-			quickBangs: () => quickBangs() ?? [],
+			quickBangs: () => quickBangsData() ?? [],
 			active,
 		});
 	});
