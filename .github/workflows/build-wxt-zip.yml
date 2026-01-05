@@ -1,6 +1,9 @@
 name: Build WXT ZIP
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
