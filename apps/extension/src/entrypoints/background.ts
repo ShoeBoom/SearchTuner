@@ -41,6 +41,7 @@ function parseBang(
 				trigger: validBang.trigger,
 				match: validBang.match,
 				data: bang,
+				searchQuery: trimmed.replace(validBang.match, " ").trim(),
 			};
 		}
 	}
@@ -50,16 +51,33 @@ function parseBang(
 	const firstWord = words[0];
 	const lastWord = words.length > 1 ? words[words.length - 1] : undefined;
 
-	for (const word of [firstWord, lastWord]) {
-		if (!word) continue;
-		const lowerWord = word.toLowerCase();
-		if (quickBangs.some((qb) => qb.toLowerCase() === lowerWord)) {
-			const bang = getBang(lowerWord, bangsData);
+	// Check first word
+	if (firstWord) {
+		const lowerFirst = firstWord.toLowerCase();
+		if (quickBangs.some((qb) => qb.toLowerCase() === lowerFirst)) {
+			const bang = getBang(lowerFirst, bangsData);
 			if (bang) {
 				return {
-					trigger: lowerWord,
-					match: word,
+					trigger: lowerFirst,
+					match: firstWord,
 					data: bang,
+					searchQuery: words.slice(1).join(" "),
+				};
+			}
+		}
+	}
+
+	// Check last word
+	if (lastWord) {
+		const lowerLast = lastWord.toLowerCase();
+		if (quickBangs.some((qb) => qb.toLowerCase() === lowerLast)) {
+			const bang = getBang(lowerLast, bangsData);
+			if (bang) {
+				return {
+					trigger: lowerLast,
+					match: lastWord,
+					data: bang,
+					searchQuery: words.slice(0, -1).join(" "),
 				};
 			}
 		}
@@ -129,10 +147,7 @@ const addBangsListener = (props: {
 				const bang = parseBang(query, bangsData, quickBangs);
 				if (!bang) return;
 
-				// Remove the matched trigger from the query
-				const searchQuery = query.replace(bang.match, " ").trim();
-
-				const redirectUrl = buildBangUrl(bang.data, searchQuery);
+				const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
 				if (redirectUrl) {
 					console.log(
 						`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`,
