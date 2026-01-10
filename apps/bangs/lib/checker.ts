@@ -18,7 +18,7 @@ const noNonKagiRelativeUrl = createChecker((bang) => {
 
 const start = /^\/search\?q=/;
 const templatePart = /\{\{\{s\}\}\}/;
-const filterPart = /(site|inurl|filetype):.*/;
+const filterPart = /(site|inurl|filetype)(%3A|:).*/;
 const joinPart = /\+/;
 const end = /$/;
 const first = `${filterPart.source}${joinPart.source}${templatePart.source}`;
