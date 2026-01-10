@@ -13,8 +13,8 @@
 		"zip:firefox": "wxt zip -b firefox",
 		"submit": "wxt submit",
 		"compile": "tsc --noEmit",
-		"convert-icon": "tsx scripts/convert_icon_webp.ts",
-		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
+		"stprebuild": "tsx scripts/save_bangs.ts && tsx scripts/convert_icon_webp.ts",
+		"postinstall": "wxt prepare && pnpm stprebuild",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf .output .wxt node_modules src/assets/icon.webp"
 	},
