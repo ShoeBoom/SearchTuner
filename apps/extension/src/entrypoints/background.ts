@@ -1,27 +1,15 @@
-import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
 import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
-import { createResource, createRoot } from "solid-js";
+import { createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { getBang, isBangsActive, items, quickBangsData } from "@/utils/storage";
+import { getBang, isBangsActive, quickBangsData } from "@/utils/storage";
 
-const BANGS_URL = "https://search.shoeboom.dev/bangs.json";
 const googleSearchPatterns = getGoogleDomains();
-
-async function loadBangsData() {
-	console.log("Loading bangs data");
-	const cached = await items.bangs_data.getValue();
-	if (cached) return cached.data;
-	const res = await fetch(BANGS_URL);
-	const data = (await res.json()) as BangsData;
-	await items.bangs_data.setValue({ data });
-	return data;
-}
 
 // Parse bang from query - supports "!w query", "query !w", and quick bangs at start/end
 function parseBang(
 	query: string,
-	bangsData: BangsData,
+	// bangsData: BangsData,
 	quickBangs: string[] = [],
 ) {
 	const trimmed = query.trim();
@@ -32,10 +20,10 @@ function parseBang(
 	).map((match) => ({ trigger: match[1].toLowerCase(), match: match[0] }));
 
 	const validBang = bangMatches.find(
-		({ trigger }) => getBang(trigger, bangsData) !== null,
+		({ trigger }) => getBang(trigger) !== null,
 	);
 	if (validBang) {
-		const bang = getBang(validBang.trigger, bangsData);
+		const bang = getBang(validBang.trigger);
 		if (bang) {
 			return {
 				trigger: validBang.trigger,
@@ -55,7 +43,7 @@ function parseBang(
 	if (firstWord) {
 		const lowerFirst = firstWord.toLowerCase();
 		if (quickBangs.some((qb) => qb.toLowerCase() === lowerFirst)) {
-			const bang = getBang(lowerFirst, bangsData);
+			const bang = getBang(lowerFirst);
 			if (bang) {
 				return {
 					trigger: lowerFirst,
@@ -71,7 +59,7 @@ function parseBang(
 	if (lastWord) {
 		const lowerLast = lastWord.toLowerCase();
 		if (quickBangs.some((qb) => qb.toLowerCase() === lowerLast)) {
-			const bang = getBang(lowerLast, bangsData);
+			const bang = getBang(lowerLast);
 			if (bang) {
 				return {
 					trigger: lowerLast,
@@ -126,7 +114,6 @@ function buildBangUrl(bang: KagiBangsSchemaInput[number], searchQuery: string) {
 }
 
 const addBangsListener = (props: {
-	bangsData: () => BangsData | null;
 	quickBangs: () => string[];
 	active: () => boolean;
 }) => {
@@ -135,16 +122,13 @@ const addBangsListener = (props: {
 			if (props.active() === false) return;
 			if (details.frameId !== 0) return;
 			try {
-				const bangsData = props.bangsData();
-				if (!bangsData) return;
-
 				const url = new URL(details.url);
 				const query = url.searchParams.get("q");
 
 				if (!query) return;
 
 				const quickBangs = props.quickBangs();
-				const bang = parseBang(query, bangsData, quickBangs);
+				const bang = parseBang(query, quickBangs);
 				if (!bang) return;
 
 				const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
@@ -167,12 +151,10 @@ const addBangsListener = (props: {
 export default defineBackground(() => {
 	createRoot(() => {
 		const active = () => isBangsActive() ?? false;
-		const [bangsData] = createResource(active, async () => {
-			return await loadBangsData();
-		});
+		// const bangsData = () => data;
 
 		addBangsListener({
-			bangsData: () => bangsData() ?? null,
+			// bangsData: () => bangsData() ?? null,
 			quickBangs: () => quickBangsData() ?? [],
 			active,
 		});

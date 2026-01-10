@@ -1,6 +1,7 @@
+import { data as BANGS_DATA } from "@searchtuner/bangs/lib/build_bangs";
 import { X } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { bangsData, getBang, items, quickBangsData } from "@/utils/storage";
+import { getBang, items, quickBangsData } from "@/utils/storage";
 
 const QuickBangsManager = () => {
 	const [inputValue, setInputValue] = createSignal("");
@@ -8,16 +9,12 @@ const QuickBangsManager = () => {
 	const [selectedIndex, setSelectedIndex] = createSignal(0);
 	const [showSuggestions, setShowSuggestions] = createSignal(false);
 	const quickBangs = () => quickBangsData() ?? [];
-	const bangsList = () => bangsData()?.data ?? null;
 
 	const suggestions = createMemo(() => {
 		const query = inputValue().trim().toLowerCase();
 		if (!query) return [];
 
-		const data = bangsList();
-		if (!data) return [];
-
-		const triggers = Object.keys(data.triggerIndex);
+		const triggers = Object.keys(BANGS_DATA.triggerIndex);
 		const matches = triggers
 			.filter((t) => t.startsWith(query) && !quickBangs().includes(t))
 			.sort((a, b) => a.length - b.length)
@@ -30,14 +27,8 @@ const QuickBangsManager = () => {
 		const triggerToAdd = trigger ?? inputValue().trim().toLowerCase();
 		if (!triggerToAdd) return;
 
-		const data = bangsList();
-		if (!data) {
-			setError("Bangs data not loaded yet");
-			return;
-		}
-
 		// Validate that the trigger exists in bangsData
-		const bang = getBang(triggerToAdd, data);
+		const bang = getBang(triggerToAdd);
 		if (!bang) {
 			setError(`"${triggerToAdd}" is not a valid bang trigger`);
 			return;
@@ -116,10 +107,6 @@ const QuickBangsManager = () => {
 						<ul class="absolute top-full left-0 z-10 mt-1 w-full overflow-hidden rounded border border-foreground/30 bg-background shadow-lg">
 							<For each={suggestions()}>
 								{(trigger, index) => {
-									const bang = () => {
-										const data = bangsList();
-										return data ? getBang(trigger, data) : null;
-									};
 									return (
 										<li
 											class={`cursor-pointer px-3 py-2 text-sm ${
@@ -131,8 +118,10 @@ const QuickBangsManager = () => {
 											onMouseEnter={() => setSelectedIndex(index())}
 										>
 											<span class="font-medium">{trigger}</span>
-											<Show when={bang()}>
-												<span class="ml-2 text-foreground/60">{bang()?.s}</span>
+											<Show when={getBang(trigger) !== null}>
+												<span class="ml-2 text-foreground/60">
+													{getBang(trigger)?.s}
+												</span>
 											</Show>
 										</li>
 									);
@@ -180,8 +169,6 @@ const QuickBangsManager = () => {
 };
 
 const Bangs = () => {
-	const bangs = () => bangsData()?.data?.bangs ?? [];
-
 	return (
 		<div>
 			<QuickBangsManager />
@@ -202,7 +189,7 @@ const Bangs = () => {
 					</tr>
 				</thead>
 				<tbody>
-					<For each={bangs()}>
+					<For each={BANGS_DATA.bangs}>
 						{(bang) => {
 							const allTriggers = [bang.t, ...(bang.ts ?? [])];
 							return (

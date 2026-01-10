@@ -1,4 +1,4 @@
-import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
+import { data as BANGS_DATA } from "@searchtuner/bangs/lib/build_bangs";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
 
@@ -56,16 +56,6 @@ const bangs_active = storage.defineItem<boolean>("local:bangs_active", {
 
 void bangs_active.setMeta({ v: 1 });
 
-const bangs_data = storage.defineItem<{ data: BangsData } | null>(
-	"local:bangs_data",
-	{
-		fallback: null,
-		version: 1,
-	},
-);
-
-void bangs_data.setMeta({ v: 1 });
-
 const quick_bangs = storage.defineItem<string[]>("sync:quick_bangs", {
 	init: () => [],
 	fallback: [],
@@ -78,7 +68,6 @@ export const items = {
 	rankings,
 	rankings_active,
 	bangs_active,
-	bangs_data,
 	quick_bangs,
 };
 
@@ -105,11 +94,11 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
-export const bangsData = useSettings(items.bangs_data);
+// export const bangsData = useSettings(items.bangs_data);
 export const quickBangsData = useSettings(items.quick_bangs);
 
-export const getBang = (trigger: string, data: BangsData) => {
-	const index = data.triggerIndex[trigger];
+export const getBang = (trigger: string) => {
+	const index = BANGS_DATA.triggerIndex[trigger];
 	if (index === undefined) return null;
-	return data.bangs[index];
+	return BANGS_DATA.bangs[index];
 };
