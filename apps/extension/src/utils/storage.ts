@@ -1,6 +1,6 @@
-import { data as BANGS_DATA } from "@searchtuner/bangs/lib/build_bangs";
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
+import BANGS_DATA from "@/../public/bangs.json";
 
 type RankingsV1 = { [domain: string]: 2 | 1 | 0 | -1 | -2 };
 
@@ -94,11 +94,11 @@ const useSettings = <T>(itemDef: StorageItem<T>) => {
 export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
-// export const bangsData = useSettings(items.bangs_data);
 export const quickBangsData = useSettings(items.quick_bangs);
 
 export const getBang = (trigger: string) => {
-	const index = BANGS_DATA.triggerIndex[trigger];
+	const index =
+		BANGS_DATA.triggerIndex[trigger as keyof typeof BANGS_DATA.triggerIndex];
 	if (index === undefined) return null;
 	return BANGS_DATA.bangs[index];
 };

@@ -1,6 +1,6 @@
-import { data as BANGS_DATA } from "@searchtuner/bangs/lib/build_bangs";
 import { X } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
+import BANGS_DATA from "@/../public/bangs.json";
 import { getBang, items, quickBangsData } from "@/utils/storage";
 
 const QuickBangsManager = () => {
