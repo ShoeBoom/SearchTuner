@@ -87,6 +87,12 @@ importers:
       '@total-typescript/tsconfig':
         specifier: 'catalog:'
         version: 1.0.4
+      '@types/node':
+        specifier: 'catalog:'
+        version: 24.10.1
+      tsx:
+        specifier: 'catalog:'
+        version: 4.20.6
 
   apps/extension:
     dependencies:

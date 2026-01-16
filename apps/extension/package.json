@@ -2,7 +2,7 @@
 	"name": "SearchTuner",
 	"description": "Rerank your Google Search results",
 	"private": true,
-	"version": "0.1.15",
+	"version": "0.1.16",
 	"type": "module",
 	"scripts": {
 		"dev": "wxt",
@@ -13,8 +13,8 @@
 		"zip:firefox": "wxt zip -b firefox",
 		"submit": "wxt submit",
 		"compile": "tsc --noEmit",
-		"convert-icon": "tsx scripts/convert_icon_webp.ts",
-		"postinstall": "wxt prepare && tsx scripts/convert_icon_webp.ts",
+		"stprebuild": "tsx scripts/convert_icon_webp.ts",
+		"postinstall": "wxt prepare && pnpm stprebuild",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf .output .wxt node_modules src/assets/icon.webp"
 	},

@@ -1,18 +1,27 @@
 {
 	"name": "@searchtuner/bangs",
 	"version": "1.0.0",
+	"type": "module",
 	"description": "",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"check-types": "tsc --noEmit",
-		"clean": "rm -rf node_modules"
+		"clean": "rm -rf node_modules",
+		"postinstall": "tsx lib/save_bangs.ts"
+	},
+	"exports": {
+		"./types": {
+			"types": "./lib/build_bangs.ts"
+		}
 	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
 	"packageManager": "pnpm@10.15.1",
 	"devDependencies": {
-		"@total-typescript/tsconfig": "catalog:"
+		"@total-typescript/tsconfig": "catalog:",
+		"@types/node": "catalog:",
+		"tsx": "catalog:"
 	},
 	"dependencies": {
 		"zod": "catalog:"
