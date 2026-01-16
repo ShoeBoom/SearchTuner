@@ -34,7 +34,7 @@ export const saveBangs = async () => {
 	const tsContent = `// Auto-generated file - do not edit manually
   import type { BangsData } from "@searchtuner/bangs/types";
 
-export const data: BangsData = ${JsonData} as const;
+export const BANGS_DATA: BangsData = ${JsonData} as const;
 `;
 
 	await writeFile(bangsTsPath, tsContent);

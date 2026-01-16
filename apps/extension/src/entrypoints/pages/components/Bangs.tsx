@@ -1,6 +1,6 @@
 import { X } from "lucide-solid";
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { data as BANGS_DATA } from "@/utils/bangs";
+import { BANGS_DATA } from "@/utils/bangs";
 import { getBang, items, quickBangsData } from "@/utils/storage";
 
 const QuickBangsManager = () => {
