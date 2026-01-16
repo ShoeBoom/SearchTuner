@@ -2,7 +2,13 @@ import type { BangsData } from "@searchtuner/bangs/types";
 import { createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { getBang, isBangsActive, quickBangsData } from "@/utils/storage";
+import {
+	type BangAliases,
+	bangAliasesData,
+	getBang,
+	isBangsActive,
+	quickBangsData,
+} from "@/utils/storage";
 
 const googleSearchPatterns = getGoogleDomains();
 
@@ -11,6 +17,7 @@ function parseBang(
 	query: string,
 	// bangsData: BangsData,
 	quickBangs: string[] = [],
+	aliases: BangAliases = {},
 ) {
 	const trimmed = query.trim();
 
@@ -20,10 +27,10 @@ function parseBang(
 	).map((match) => ({ trigger: match[1].toLowerCase(), match: match[0] }));
 
 	const validBang = bangMatches.find(
-		({ trigger }) => getBang(trigger) !== null,
+		({ trigger }) => getBang(trigger, aliases) !== null,
 	);
 	if (validBang) {
-		const bang = getBang(validBang.trigger);
+		const bang = getBang(validBang.trigger, aliases);
 		if (bang) {
 			return {
 				trigger: validBang.trigger,
@@ -43,7 +50,7 @@ function parseBang(
 	if (firstWord) {
 		const lowerFirst = firstWord.toLowerCase();
 		if (quickBangs.some((qb) => qb.toLowerCase() === lowerFirst)) {
-			const bang = getBang(lowerFirst);
+			const bang = getBang(lowerFirst, aliases);
 			if (bang) {
 				return {
 					trigger: lowerFirst,
@@ -59,7 +66,7 @@ function parseBang(
 	if (lastWord) {
 		const lowerLast = lastWord.toLowerCase();
 		if (quickBangs.some((qb) => qb.toLowerCase() === lowerLast)) {
-			const bang = getBang(lowerLast);
+			const bang = getBang(lowerLast, aliases);
 			if (bang) {
 				return {
 					trigger: lowerLast,
@@ -115,6 +122,7 @@ function buildBangUrl(bang: BangsData["bangs"][number], searchQuery: string) {
 
 const addBangsListener = (props: {
 	quickBangs: () => string[];
+	aliases: () => BangAliases;
 	active: () => boolean;
 }) => {
 	return browser.webRequest.onBeforeRequest.addListener(
@@ -128,7 +136,8 @@ const addBangsListener = (props: {
 				if (!query) return;
 
 				const quickBangs = props.quickBangs();
-				const bang = parseBang(query, quickBangs);
+				const aliases = props.aliases();
+				const bang = parseBang(query, quickBangs, aliases);
 				if (!bang) return;
 
 				const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
@@ -156,6 +165,7 @@ export default defineBackground(() => {
 		addBangsListener({
 			// bangsData: () => bangsData() ?? null,
 			quickBangs: () => quickBangsData() ?? [],
+			aliases: () => bangAliasesData() ?? {},
 			active,
 		});
 	});
