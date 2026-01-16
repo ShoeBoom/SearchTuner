@@ -15,7 +15,8 @@ const bangsTsPath = join(
 	"..",
 	"..",
 	"extension",
-	"public",
+	"src",
+	"utils",
 	"bangs.ts",
 );
 const bangsJsonPath = join(
