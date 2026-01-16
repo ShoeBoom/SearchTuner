@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from "solid-js";
 import { storage } from "#imports";
-import BANGS_DATA from "@/../public/bangs.json";
+import { data as BANGS_DATA } from "@/../public/bangs";
 
 type RankingsV1 = { [domain: string]: 2 | 1 | 0 | -1 | -2 };
 
