@@ -1,4 +1,4 @@
-import type { KagiBangsSchemaInput } from "@searchtuner/bangs/lib/types";
+import type { BangsData } from "@searchtuner/bangs/types";
 import { createRoot } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
@@ -75,7 +75,7 @@ function parseBang(
 }
 
 // Build the redirect URL from a bang and search query
-function buildBangUrl(bang: KagiBangsSchemaInput[number], searchQuery: string) {
+function buildBangUrl(bang: BangsData["bangs"][number], searchQuery: string) {
 	let url = bang.u;
 	let query = searchQuery;
 
