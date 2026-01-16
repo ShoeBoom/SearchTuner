@@ -18,15 +18,26 @@ const bangsTsPath = join(
 	"public",
 	"bangs.ts",
 );
+const bangsJsonPath = join(
+	__dirname,
+	"..",
+	"..",
+	"site",
+	"public",
+	"bangs.json",
+);
+
+const JsonData = JSON.stringify(BANGS_DATA);
 
 export const saveBangs = async () => {
 	const tsContent = `// Auto-generated file - do not edit manually
   import type { BangsData } from "@searchtuner/bangs/types";
 
-export const data: BangsData = ${JSON.stringify(BANGS_DATA, null, "\t")} as const;
+export const data: BangsData = ${JsonData} as const;
 `;
 
 	await writeFile(bangsTsPath, tsContent);
+	await writeFile(bangsJsonPath, JsonData);
 	console.log("Bangs saved to", bangsTsPath);
 };
 
