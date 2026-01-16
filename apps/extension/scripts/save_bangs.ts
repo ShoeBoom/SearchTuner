@@ -9,13 +9,17 @@ import { data as BANGS_DATA } from "@searchtuner/bangs/lib/build_bangs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const bangsJsonPath = join(__dirname, "..", "public", "bangs.json");
+const bangsTsPath = join(__dirname, "..", "public", "bangs.ts");
 
 export const saveBangs = async () => {
-	const bangsJson = JSON.stringify(BANGS_DATA);
+	const tsContent = `// Auto-generated file - do not edit manually
+import type { BangsData } from "@searchtuner/bangs/lib/build_bangs";
 
-	await writeFile(bangsJsonPath, bangsJson);
+export const data: BangsData = ${JSON.stringify(BANGS_DATA, null, "\t")} as const;
+`;
+
+	await writeFile(bangsTsPath, tsContent);
 };
 
 void saveBangs();
-console.log("Bangs saved to", bangsJsonPath);
+console.log("Bangs saved to", bangsTsPath);
