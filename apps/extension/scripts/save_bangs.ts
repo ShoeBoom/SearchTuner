@@ -18,3 +18,4 @@ export const saveBangs = async () => {
 };
 
 void saveBangs();
+console.log("Bangs saved to", bangsJsonPath);
