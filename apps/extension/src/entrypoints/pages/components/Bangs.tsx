@@ -1,12 +1,7 @@
 import { ArrowRight, X } from "lucide-solid";
-import { createMemo, createSignal, For, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { BANGS_DATA } from "@/utils/bangs";
-import {
-	bangAliasesData,
-	getBang,
-	items,
-	quickBangsData,
-} from "@/utils/storage";
+import { bangAliasesData, items, quickBangsData } from "@/utils/storage";
 
 const QuickBangsManager = () => {
 	const [inputValue, setInputValue] = createSignal("");
@@ -88,16 +83,6 @@ const BangAliasesManager = () => {
 	const [targetInput, setTargetInput] = createSignal("");
 	const [error, setError] = createSignal<string | null>(null);
 	const aliases = () => bangAliasesData() ?? {};
-
-	const datalistTriggers = createMemo(() => {
-		const query = targetInput().trim().toLowerCase();
-		if (!query) return [];
-
-		return Object.keys(BANGS_DATA.triggerIndex)
-			.filter((trigger) => trigger.startsWith(query))
-			.sort((a, b) => a.length - b.length)
-			.slice(0, 5);
-	});
 
 	const addAlias = async (targetTrigger?: string) => {
 		const alias = aliasInput().trim().toLowerCase();
@@ -196,10 +181,8 @@ const BangAliasesManager = () => {
 						class="w-full rounded border border-foreground/30 bg-transparent px-3 py-2 text-sm focus:border-foreground/50 focus:outline-none"
 					/>
 					<datalist id="bang-target-triggers">
-						<For each={datalistTriggers()}>
-							{(trigger) => (
-								<option value={trigger} label={getBang(trigger)?.s ?? ""} />
-							)}
+						<For each={Object.keys(BANGS_DATA.triggerIndex)}>
+							{(trigger) => <option value={trigger} />}
 						</For>
 					</datalist>
 				</div>
