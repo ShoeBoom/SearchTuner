@@ -1,10 +1,16 @@
 import { A, HashRouter, Route, useNavigate } from "@solidjs/router";
-import { ArrowUpDown, Hash, Info, Settings } from "lucide-solid";
+import {
+	ArrowUpDown,
+	Hash,
+	Info,
+	Settings as SettingsIcon,
+} from "lucide-solid";
 import { render } from "solid-js/web";
 import logo from "@/assets/icon.webp";
 import { RankingsTable } from "@/entrypoints/pages/components/rankingsTable";
 import About from "./components/About";
 import Bangs from "./components/Bangs";
+import Settings from "./components/Settings";
 
 function App() {
 	return (
@@ -18,7 +24,7 @@ function App() {
 							Rankings
 						</A>
 						<A href="/settings" class="flex items-center gap-2">
-							<Settings />
+							<SettingsIcon />
 							Settings
 						</A>
 						<A href="/bangs" class="flex items-center gap-2">
@@ -44,10 +50,7 @@ function App() {
 					return <></>;
 				}}
 			/>
-			<Route
-				path="/settings"
-				component={() => <div class="text-2xl">Settings</div>}
-			/>
+			<Route path="/settings" component={Settings} />
 			<Route path="/rankings" component={RankingsTable} />
 			<Route path="/about" component={About} />
 			<Route path="/bangs" component={Bangs} />
