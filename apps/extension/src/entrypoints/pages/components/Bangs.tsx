@@ -87,21 +87,16 @@ const BangAliasesManager = () => {
 	const [aliasInput, setAliasInput] = createSignal("");
 	const [targetInput, setTargetInput] = createSignal("");
 	const [error, setError] = createSignal<string | null>(null);
-	const [selectedIndex, setSelectedIndex] = createSignal(0);
-	const [showSuggestions, setShowSuggestions] = createSignal(false);
 	const aliases = () => bangAliasesData() ?? {};
 
-	const suggestions = createMemo(() => {
+	const datalistTriggers = createMemo(() => {
 		const query = targetInput().trim().toLowerCase();
 		if (!query) return [];
 
-		const triggers = Object.keys(BANGS_DATA.triggerIndex);
-		const matches = triggers
-			.filter((t) => t.startsWith(query))
+		return Object.keys(BANGS_DATA.triggerIndex)
+			.filter((trigger) => trigger.startsWith(query))
 			.sort((a, b) => a.length - b.length)
 			.slice(0, 5);
-
-		return matches;
 	});
 
 	const addAlias = async (targetTrigger?: string) => {
@@ -137,8 +132,6 @@ const BangAliasesManager = () => {
 		setAliasInput("");
 		setTargetInput("");
 		setError(null);
-		setShowSuggestions(false);
-		setSelectedIndex(0);
 	};
 
 	const removeAlias = async (alias: string) => {
@@ -147,28 +140,8 @@ const BangAliasesManager = () => {
 		await items.bang_aliases.setValue(newAliases);
 	};
 
-	const selectSuggestion = (trigger: string) => {
-		setTargetInput(trigger);
-		setShowSuggestions(false);
-		void addAlias(trigger);
-	};
-
 	const handleKeyDown = (e: KeyboardEvent) => {
-		const suggs = suggestions();
-		if (suggs.length > 0 && showSuggestions()) {
-			if (e.key === "ArrowDown") {
-				e.preventDefault();
-				setSelectedIndex((i) => Math.min(i + 1, suggs.length - 1));
-			} else if (e.key === "ArrowUp") {
-				e.preventDefault();
-				setSelectedIndex((i) => Math.max(i - 1, 0));
-			} else if (e.key === "Enter") {
-				e.preventDefault();
-				selectSuggestion(suggs[selectedIndex()]);
-			} else if (e.key === "Escape") {
-				setShowSuggestions(false);
-			}
-		} else if (e.key === "Enter") {
+		if (e.key === "Enter") {
 			void addAlias();
 		}
 	};
@@ -216,41 +189,19 @@ const BangAliasesManager = () => {
 						onInput={(e) => {
 							setTargetInput(e.currentTarget.value);
 							setError(null);
-							setShowSuggestions(true);
-							setSelectedIndex(0);
 						}}
 						onKeyDown={handleKeyDown}
-						onFocus={() => setShowSuggestions(true)}
-						onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
 						placeholder="Target bang (e.g., yt)"
+						list="bang-target-triggers"
 						class="w-full rounded border border-foreground/30 bg-transparent px-3 py-2 text-sm focus:border-foreground/50 focus:outline-none"
 					/>
-					<Show when={showSuggestions() && suggestions().length > 0}>
-						<ul class="absolute top-full left-0 z-10 mt-1 w-full overflow-hidden rounded border border-foreground/30 bg-background shadow-lg">
-							<For each={suggestions()}>
-								{(trigger, index) => {
-									return (
-										<li
-											class={`cursor-pointer px-3 py-2 text-sm ${
-												index() === selectedIndex()
-													? "bg-foreground/20"
-													: "hover:bg-foreground/10"
-											}`}
-											onMouseDown={() => selectSuggestion(trigger)}
-											onMouseEnter={() => setSelectedIndex(index())}
-										>
-											<span class="font-medium">{trigger}</span>
-											<Show when={getBang(trigger) !== null}>
-												<span class="ml-2 text-foreground/60">
-													{getBang(trigger)?.s}
-												</span>
-											</Show>
-										</li>
-									);
-								}}
-							</For>
-						</ul>
-					</Show>
+					<datalist id="bang-target-triggers">
+						<For each={datalistTriggers()}>
+							{(trigger) => (
+								<option value={trigger} label={getBang(trigger)?.s ?? ""} />
+							)}
+						</For>
+					</datalist>
 				</div>
 				<button
 					onClick={() => void addAlias()}
