@@ -13,12 +13,13 @@
 		"zip:firefox": "wxt zip -b firefox",
 		"submit": "wxt submit",
 		"compile": "tsc --noEmit",
-		"stprebuild": "tsx scripts/save_bangs.ts && tsx scripts/convert_icon_webp.ts",
+		"stprebuild": "tsx scripts/convert_icon_webp.ts",
 		"postinstall": "wxt prepare && pnpm stprebuild",
 		"check-types": "tsc --noEmit",
 		"clean": "rm -rf .output .wxt node_modules src/assets/icon.webp"
 	},
 	"dependencies": {
+		"@searchtuner/bangs": "workspace:*",
 		"@solidjs/router": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"arkregex": "catalog:",
