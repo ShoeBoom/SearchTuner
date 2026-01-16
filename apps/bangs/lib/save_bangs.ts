@@ -32,7 +32,7 @@ const JsonData = JSON.stringify(BANGS_DATA);
 
 export const saveBangs = async () => {
 	const tsContent = `// Auto-generated file - do not edit manually
-  import type { BangsData } from "@searchtuner/bangs/types";
+import type { BangsData } from "@searchtuner/bangs/types";
 
 export const BANGS_DATA: BangsData = ${JsonData} as const;
 `;
