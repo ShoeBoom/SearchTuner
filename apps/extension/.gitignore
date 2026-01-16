@@ -34,3 +34,4 @@ src/assets/icon.webp
 # env
 .env
 *.env.local
+src/assets/bangs.ts
