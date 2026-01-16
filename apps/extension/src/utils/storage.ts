@@ -64,11 +64,24 @@ const quick_bangs = storage.defineItem<string[]>("sync:quick_bangs", {
 
 void quick_bangs.setMeta({ v: 1 });
 
+// Bang aliases: maps custom alias -> existing bang trigger
+// e.g., { "y": "yt" } means "y" will trigger YouTube instead of Yahoo
+export type BangAliases = Record<string, string>;
+
+const bang_aliases = storage.defineItem<BangAliases>("sync:bang_aliases", {
+	init: () => ({}),
+	fallback: {},
+	version: 1,
+});
+
+void bang_aliases.setMeta({ v: 1 });
+
 export const items = {
 	rankings,
 	rankings_active,
 	bangs_active,
 	quick_bangs,
+	bang_aliases,
 };
 
 type StorageItem<
@@ -95,10 +108,18 @@ export const syncedRankings = useSettings(items.rankings);
 export const isRankingsActive = useSettings(items.rankings_active);
 export const isBangsActive = useSettings(items.bangs_active);
 export const quickBangsData = useSettings(items.quick_bangs);
+export const bangAliasesData = useSettings(items.bang_aliases);
 
-export const getBang = (trigger: string) => {
+// Get bang by trigger, checking aliases first (aliases take priority over existing bangs)
+export const getBang = (trigger: string, aliases: BangAliases = {}) => {
+	// Check if this trigger is an alias - aliases take priority
+	const aliasedTrigger = aliases[trigger];
+	const effectiveTrigger = aliasedTrigger ?? trigger;
+
 	const index =
-		BANGS_DATA.triggerIndex[trigger as keyof typeof BANGS_DATA.triggerIndex];
+		BANGS_DATA.triggerIndex[
+			effectiveTrigger as keyof typeof BANGS_DATA.triggerIndex
+		];
 	if (index === undefined) return null;
 	return BANGS_DATA.bangs[index];
 };
