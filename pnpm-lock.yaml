@@ -90,9 +90,6 @@ importers:
 
   apps/extension:
     dependencies:
-      '@searchtuner/bangs':
-        specifier: workspace:*
-        version: link:../bangs
       '@solidjs/router':
         specifier: 'catalog:'
         version: 0.15.3(solid-js@1.9.9)

@@ -19,7 +19,6 @@
 		"clean": "rm -rf .output .wxt node_modules src/assets/icon.webp"
 	},
 	"dependencies": {
-		"@searchtuner/bangs": "workspace:*",
 		"@solidjs/router": "catalog:",
 		"@tailwindcss/vite": "catalog:",
 		"arkregex": "catalog:",
