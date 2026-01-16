@@ -1,4 +1,4 @@
-import { ArrowRight, X } from "lucide-solid";
+import { ArrowRight, ChevronDown, ChevronRight, X } from "lucide-solid";
 import { createSignal, For, Show } from "solid-js";
 import { BANGS_DATA } from "@/utils/bangs";
 import { bangAliasesData, items, quickBangsData } from "@/utils/storage";
@@ -246,46 +246,72 @@ const BangAliasesManager = () => {
 	);
 };
 
+const AllBangsTable = () => {
+	const [isTableExpanded, setIsTableExpanded] = createSignal(false);
+
+	return (
+		<div class="rounded-lg border border-foreground/20">
+			<button
+				onClick={() => setIsTableExpanded(!isTableExpanded())}
+				class="flex w-full items-center gap-2 p-4 text-left hover:bg-foreground/5"
+			>
+				<Show when={isTableExpanded()} fallback={<ChevronRight size={20} />}>
+					<ChevronDown size={20} />
+				</Show>
+				<h3 class="font-semibold text-lg">All Bangs</h3>
+				<span class="text-foreground/50 text-sm">
+					({BANGS_DATA.bangs.length} bangs)
+				</span>
+			</button>
+
+			<Show when={isTableExpanded()}>
+				<div class="border-foreground/20 border-t p-4">
+					<table class="w-full table-fixed">
+						<colgroup>
+							<col style={{ width: "25%" }} />
+							<col style={{ width: "25%" }} />
+							<col style={{ width: "25%" }} />
+							<col style={{ width: "25%" }} />
+						</colgroup>
+						<thead class="border-b">
+							<tr>
+								<th class="pb-2 font-semibold text-sm">Site</th>
+								<th class="pb-2 font-semibold text-sm">Trigger</th>
+								<th class="pb-2 font-semibold text-sm">Domain</th>
+								<th class="pb-2 font-semibold text-sm">Category</th>
+							</tr>
+						</thead>
+						<tbody>
+							<For each={BANGS_DATA.bangs}>
+								{(bang) => {
+									const allTriggers = [bang.t, ...(bang.ts ?? [])];
+									return (
+										<tr
+											class="hover:bg-foreground/10 [&>td]:py-2"
+											style={{ "content-visibility": "auto" }}
+										>
+											<td class="text-center">{bang.s}</td>
+											<td class="text-center">{allTriggers.join(", ")}</td>
+											<td class="text-center">{bang.d}</td>
+											<td class="text-center">{bang.c ?? "-"}</td>
+										</tr>
+									);
+								}}
+							</For>
+						</tbody>
+					</table>
+				</div>
+			</Show>
+		</div>
+	);
+};
+
 const Bangs = () => {
 	return (
 		<div>
 			<QuickBangsManager />
 			<BangAliasesManager />
-
-			<table class="w-full table-fixed">
-				<colgroup>
-					<col style={{ width: "25%" }} />
-					<col style={{ width: "25%" }} />
-					<col style={{ width: "25%" }} />
-					<col style={{ width: "25%" }} />
-				</colgroup>
-				<thead class="border-b">
-					<tr>
-						<th class="pb-2 font-semibold text-sm">Site</th>
-						<th class="pb-2 font-semibold text-sm">Trigger</th>
-						<th class="pb-2 font-semibold text-sm">Domain</th>
-						<th class="pb-2 font-semibold text-sm">Category</th>
-					</tr>
-				</thead>
-				<tbody>
-					<For each={BANGS_DATA.bangs}>
-						{(bang) => {
-							const allTriggers = [bang.t, ...(bang.ts ?? [])];
-							return (
-								<tr
-									class="hover:bg-foreground/10 [&>td]:py-2"
-									style={{ "content-visibility": "auto" }}
-								>
-									<td class="text-center">{bang.s}</td>
-									<td class="text-center">{allTriggers.join(", ")}</td>
-									<td class="text-center">{bang.d}</td>
-									<td class="text-center">{bang.c ?? "-"}</td>
-								</tr>
-							);
-						}}
-					</For>
-				</tbody>
-			</table>
+			<AllBangsTable />
 		</div>
 	);
 };
