@@ -89,6 +89,31 @@ type StorageItem<
 	F extends Record<string, unknown> = Record<string, never>,
 > = ReturnType<typeof storage.defineItem<T, F>>;
 
+type ItemObserver<T> = {
+	get: () => T;
+	unsubscribe: () => void;
+};
+
+export const observeItem = <T>(
+	itemDef: StorageItem<T>,
+	fallback: T,
+): ItemObserver<T> => {
+	let current = fallback;
+
+	void itemDef.getValue().then((initialValue) => {
+		current = initialValue ?? fallback;
+	});
+
+	const unsubscribe = itemDef.watch((newVal) => {
+		current = newVal ?? fallback;
+	});
+
+	return {
+		get: () => current,
+		unsubscribe,
+	};
+};
+
 const useSettings = <T>(itemDef: StorageItem<T>) => {
 	const [value, setValue] = createSignal<T | null>(null);
 	onMount(async () => {
