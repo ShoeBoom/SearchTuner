@@ -1,13 +1,7 @@
 import type { BangsData } from "@searchtuner/bangs/types";
-import { createRoot, onCleanup } from "solid-js";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import {
-	type BangAliases,
-	getBang,
-	items,
-	observeItem,
-} from "@/utils/storage";
+import { type BangAliases, getBang, items, observeItem } from "@/utils/storage";
 
 const googleSearchPatterns = getGoogleDomains();
 
@@ -157,21 +151,15 @@ const addBangsListener = (props: {
 };
 
 export default defineBackground(() => {
-	createRoot(() => {
-		const activeObserver = observeItem(items.bangs_active, false);
-		const quickBangsObserver = observeItem(items.quick_bangs, [] as string[]);
-		const aliasesObserver = observeItem(items.bang_aliases, {} as BangAliases);
+	// createRoot(() => {
+	const activeObserver = observeItem(items.bangs_active, false);
+	const quickBangsObserver = observeItem(items.quick_bangs, [] as string[]);
+	const aliasesObserver = observeItem(items.bang_aliases, {} as BangAliases);
 
-		onCleanup(() => {
-			activeObserver.unsubscribe();
-			quickBangsObserver.unsubscribe();
-			aliasesObserver.unsubscribe();
-		});
-
-		addBangsListener({
-			quickBangs: quickBangsObserver.get,
-			aliases: aliasesObserver.get,
-			active: activeObserver.get,
-		});
+	addBangsListener({
+		quickBangs: quickBangsObserver.get,
+		aliases: aliasesObserver.get,
+		active: activeObserver.get,
 	});
+	// });
 });
