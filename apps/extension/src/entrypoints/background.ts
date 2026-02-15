@@ -151,7 +151,6 @@ const addBangsListener = (props: {
 };
 
 export default defineBackground(() => {
-	// createRoot(() => {
 	const activeObserver = observeItem(items.bangs_active, false);
 	const quickBangsObserver = observeItem(items.quick_bangs, [] as string[]);
 	const aliasesObserver = observeItem(items.bang_aliases, {} as BangAliases);
@@ -161,5 +160,4 @@ export default defineBackground(() => {
 		aliases: aliasesObserver.get,
 		active: activeObserver.get,
 	});
-	// });
 });
