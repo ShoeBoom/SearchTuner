@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { render } from "solid-js/web";
-import { defineContentScript } from "#imports";
+import { browser, defineContentScript } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
 import Popup from "@/entrypoints/content/components/popup";
 import { getResults, type Results } from "@/utils/filter";
@@ -12,6 +12,7 @@ const RERANK_WEIGHTS = {
 	normal: 3,
 	strong: 5,
 } as const;
+const GOOGLE_SEARCH_PING = "searchtuner:google-search";
 
 function orderedResults(results: Results, rankings: RankingsV2 | null) {
 	const totalResults = results.length;
@@ -151,6 +152,14 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
+		// Wake background on each Google search page as a fallback path.
+		void browser.runtime
+			.sendMessage({
+				type: GOOGLE_SEARCH_PING,
+				url: window.location.href,
+			})
+			.catch(() => undefined);
+
 		hideMain();
 		const configPromise = getConfig();
 		// backup to show main if the config is not active
