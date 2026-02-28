@@ -114,37 +114,42 @@ function buildBangUrl(bang: BangsData["bangs"][number], searchQuery: string) {
 }
 
 const addBangsListener = (props: {
-	quickBangs: () => string[];
-	aliases: () => BangAliases;
-	active: () => boolean;
+	quickBangs: () => Promise<string[]>;
+	aliases: () => Promise<BangAliases>;
+	active: () => Promise<boolean>;
 }) => {
 	return browser.webRequest.onBeforeRequest.addListener(
 		(details): undefined => {
-			if (props.active() === false) return;
 			if (details.frameId !== 0) return;
-			try {
-				const url = new URL(details.url);
-				const query = url.searchParams.get("q");
+			void (async () => {
+				try {
+					const url = new URL(details.url);
+					const query = url.searchParams.get("q");
+					if (!query) return;
 
-				if (!query) return;
+					const isActive = await props.active();
+					if (isActive === false) return;
 
-				const quickBangs = props.quickBangs();
-				const aliases = props.aliases();
-				const bang = parseBang(query, quickBangs, aliases);
-				if (!bang) return;
+					const [quickBangs, aliases] = await Promise.all([
+						props.quickBangs(),
+						props.aliases(),
+					]);
+					const bang = parseBang(query, quickBangs, aliases);
+					if (!bang) return;
 
-				const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
-				if (redirectUrl) {
-					console.log(
-						`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`,
-					);
+					const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
+					if (redirectUrl && details.tabId >= 0) {
+						console.log(
+							`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`,
+						);
 
-					// Redirect the tab
-					browser.tabs.update(details.tabId, { url: redirectUrl });
+						// Redirect the tab
+						await browser.tabs.update(details.tabId, { url: redirectUrl });
+					}
+				} catch (error) {
+					console.error("[SearchTuner] Error processing bang:", error);
 				}
-			} catch (error) {
-				console.error("[SearchTuner] Error processing bang:", error);
-			}
+			})();
 		},
 		{ urls: googleSearchPatterns, types: ["main_frame"] },
 	);
@@ -156,8 +161,8 @@ export default defineBackground(() => {
 	const aliasesObserver = observeItem(items.bang_aliases, {} as BangAliases);
 
 	addBangsListener({
-		quickBangs: quickBangsObserver.get,
-		aliases: aliasesObserver.get,
-		active: activeObserver.get,
+		quickBangs: quickBangsObserver.getAsync,
+		aliases: aliasesObserver.getAsync,
+		active: activeObserver.getAsync,
 	});
 });
