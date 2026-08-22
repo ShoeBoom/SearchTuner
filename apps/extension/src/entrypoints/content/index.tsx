@@ -149,7 +149,7 @@ const getConfig = async () => {
 	return { rankings_active, rankings };
 };
 
-function main(config: {
+async function main(config: {
 	rankings_active: boolean;
 	rankings: RankingsV2 | null;
 }) {
@@ -162,7 +162,7 @@ function main(config: {
 		console.warn(`${LOG_PREFIX} rankings are disabled; skipping page`);
 		return;
 	}
-	const searches = getResults();
+	const searches = await getResults();
 	sortResults(searches, config.rankings);
 	addPopupContainers(searches);
 	console.log(`${LOG_PREFIX} main complete`, {
