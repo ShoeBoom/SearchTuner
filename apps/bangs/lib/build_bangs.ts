@@ -14,6 +14,9 @@ const IGNORE_T: ReadonlySet<string> = new Set([
 	"tr",
 	"translate",
 	"ktr",
+	// regex $1/$2 bangs; URL builder only supports {{{s}}}
+	"rsr",
+	"xec",
 	// these params are not supported by google search
 	"safeon",
 	"safeoff",
