@@ -65,11 +65,17 @@ function extractDomains() {
 
 function parseBlock(element: JQuery) {
 	const selectors = RESULT_SELECTORS.find(({ root }) => element.is(root));
-	const href = selectors
-		? element.find(selectors.url).first().attr("href")
-		: undefined;
+	if (!selectors) {
+		return err({
+			error: "could_not_parse_domain" as const,
+			element,
+		});
+	}
 
-	if (!selectors || href === undefined) {
+	const href = element.find(selectors.url).first().attr("href");
+	const domain = href ? getHostname(href) : null;
+
+	if (!domain) {
 		return err({
 			error: "could_not_parse_domain" as const,
 			element,
@@ -77,7 +83,7 @@ function parseBlock(element: JQuery) {
 	}
 
 	return ok({
-		domain: getHostnames(href),
+		domain,
 		text: element.find(selectors.title).first().text(),
 		elementType: "result" as const,
 		// Rich result cards are safe to block individually, but moving them would
@@ -89,13 +95,10 @@ function parseBlock(element: JQuery) {
 	});
 }
 
-function getHostnames(url: string) {
+function getHostname(url: string) {
 	try {
-		if (url.startsWith("/") || url.startsWith("#")) {
-			throw new Error("Invalid URL");
-		}
-		return new URL(url).hostname;
+		return new URL(url).hostname || null;
 	} catch {
-		throw new Error("Invalid URL");
+		return null;
 	}
 }
