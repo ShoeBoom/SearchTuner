@@ -1,47 +1,53 @@
 import $ from "jquery";
 import { err, ok } from "neverthrow";
 
-// for refrence see https://github.com/benbusby/whoogle-search/blob/e4cabe3e5b9aa55cc14f845bb3e194d83d46ed1c/app/filter.py
-// https://github.com/searxng/searxng/blob/885d02c8c3a3ae54177eab81e672abe65a76acf5/searx/engines/google.py
+// Keep these in sync with uBlacklist's desktop Google web selectors.
+// https://github.com/ublacklist/builtin/blob/master/serpinfo/google.yml
+const RESULT_SELECTORS = [
+	{
+		type: "result",
+		root: ".vt6azd:not(.g-blk), .Ww4FFb",
+		url: ":is(.yuRUbf, .xe8e1b) a",
+		title: "h3",
+	},
+	{ type: "card", root: ".vCUuC", url: "a", title: ".Yt787" },
+	{
+		type: "card",
+		root: ".sHEJob",
+		url: 'a[href^="http"]',
+		title: ".OSrXXb",
+	},
+	{
+		type: "card",
+		root: "[data-news-cluster-id]",
+		url: "a",
+		title: '[role="heading"][aria-level="3"]',
+	},
+	{ type: "card", root: ".eejeod", url: "a", title: "h3" },
+	{
+		type: "card",
+		root: ".ivg-i:not(.my5z3d)",
+		url: ".EZAeBe",
+		title: ".OSrXXb",
+	},
+	{
+		type: "card",
+		root: ".ivg-i.my5z3d",
+		url: ".LBcIee",
+		title: ".ddBkwd",
+	},
+] as const;
 
-const ITEM_PINNED_RESULT_CLASS = "BYM4Nd";
-const JSCONTROLLER_RESULT = "SC7lYd";
-
-const JSNAME_LINK_ID = "UWckNb";
-
-// const BLOCK_TITLES: string[] = [
-//   "People also ask",
-//   "Related searches",
-//   "Videos",
-//   "Top stories",
-//   "Images",
-//   "News",
-// ];
-
-// Extend jQuery with custom methods
-// declare global {
-//   interface JQuery {
-//     log(): JQuery;
-//   }
-// }
-
-// // Add the log method to jQuery
-// $.fn.log = function (this: JQuery<HTMLElement>) {
-//   // Convert jQuery object to array and spread it for console.log
-//   console.log.apply(console, this as any);
-//   return this;
-// };
+const RESULT_ROOT_SELECTOR = RESULT_SELECTORS.map(({ root }) => root).join(
+	", ",
+);
 
 export function getResults() {
-	const searches = extractDomains()
+	return extractDomains()
 		.map((s) => {
-			if (s.isErr() || s.value.elementType !== "result") {
-				return null;
-			}
-			return s.value;
+			return s.isOk() ? s.value : null;
 		})
 		.filter((s) => s !== null);
-	return searches;
 }
 
 export type Results = ReturnType<typeof getResults>;
@@ -50,15 +56,11 @@ function extractDomains() {
 	// Get the main results container
 	const $rso = $("div#rso");
 	if ($rso.length === 0) {
-		console.error("Could not find result container #rso");
 		return [];
 	}
 
-	// Filter out unwanted sections
 	const blocks = $rso
-		.find(
-			`[jscontroller="${JSCONTROLLER_RESULT}"], .${ITEM_PINNED_RESULT_CLASS}`,
-		)
+		.find(RESULT_ROOT_SELECTOR)
 		.map((_, element) => $(element))
 		.toArray();
 
@@ -68,51 +70,57 @@ function extractDomains() {
 }
 
 function parseBlock(element: JQuery) {
-	const href = element
-		.find("a")
-		.filter(`[jsname="${JSNAME_LINK_ID}"]`)
-		.map((_, element) => ({
-			href: $(element).attr("href"),
-			text: $(element).find("h3").text(),
-		}))
-		.get();
+	const selectors = RESULT_SELECTORS.find(({ root }) => element.is(root));
+	if (!selectors) {
+		return err({
+			error: "could_not_parse_domain" as const,
+			element,
+		});
+	}
 
-	const isResult = element.is(`[jscontroller="${JSCONTROLLER_RESULT}"]`);
-	const isPinnedResult = element.is(`.${ITEM_PINNED_RESULT_CLASS}`);
+	const link = element
+		.find(selectors.url)
+		.filter((_, link) => link.closest(RESULT_ROOT_SELECTOR) === element[0])
+		.first();
+	const href = link.attr("href");
+	const hrefDomain = href ? getHostname(href) : null;
+	const cite = link.find("cite").first().text();
+	const citeDomain =
+		selectors.type === "result" ? getCitedHostname(cite) : null;
+	const domain = hrefDomain ?? citeDomain;
 
-	if (isResult || isPinnedResult) {
-		if (href[0]?.href === undefined) {
-			return err({
-				error: "could_not_parse_domain" as const,
-				element,
-			});
-		}
-		return ok({
-			domain: getHostnames(href[0].href),
-			text: href[0].text,
-			elementType: "result" as const,
+	if (!domain) {
+		return err({
+			error: "could_not_parse_domain" as const,
 			element,
 		});
-	} else if (href.length === 0) {
-		return ok({
-			elementType: "empty" as const,
-			element,
-		});
-	} else {
-		return ok({
-			elementType: "special" as const,
-			element,
-		});
+	}
+
+	return ok({
+		domain,
+		domainSource: hrefDomain ? ("href" as const) : ("cite" as const),
+		text: element.find(selectors.title).first().text(),
+		// Rich result cards are safe to block individually, but moving them would
+		// pull them out of their containing news, image, or video module.
+		canReorder:
+			selectors.type === "result" &&
+			element.parents(RESULT_ROOT_SELECTOR).length === 0,
+		element,
+	});
+}
+
+function getHostname(url: string) {
+	try {
+		return new URL(url).hostname || null;
+	} catch {
+		return null;
 	}
 }
 
-function getHostnames(url: string) {
-	try {
-		if (url.startsWith("/") || url.startsWith("#")) {
-			throw new Error("Invalid URL");
-		}
-		return new URL(url).hostname;
-	} catch {
-		throw new Error("Invalid URL");
-	}
+function getCitedHostname(cite: string) {
+	const [origin] = cite.trim().split(/\s+[›·]\s+/);
+	if (!origin) return null;
+
+	const hostname = getHostname(origin) ?? getHostname(`https://${origin}`);
+	return hostname?.includes(".") ? hostname : null;
 }

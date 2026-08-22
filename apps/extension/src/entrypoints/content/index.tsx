@@ -33,7 +33,6 @@ function orderedResults(results: Results, rankings: RankingsV2 | null) {
 				case "lower":
 					return { ...result, ord: order - weight, rank };
 				case "block":
-					result.element.remove();
 					return null;
 				// return { ...result, ord: order - 9999, rank };
 				default:
@@ -76,8 +75,20 @@ function reorderResults(
 }
 
 function sortResults(results: Results, rankings: RankingsV2 | null) {
-	const rankedResults = orderedResults(results, rankings);
+	const visibleResults = results.filter((result) => {
+		if (rankings?.[result.domain]?.type === "block") {
+			result.element.remove();
+			return false;
+		}
+		return true;
+	});
+
+	const reorderableResults = visibleResults.filter(
+		(result) => result.canReorder,
+	);
+	const rankedResults = orderedResults(reorderableResults, rankings);
 	reorderResults(rankedResults);
+	return visibleResults;
 }
 
 function addPopupContainers(searches: Results) {
@@ -125,8 +136,8 @@ function main(config: {
 }) {
 	if (!config.rankings_active) return;
 	const searches = getResults();
-	sortResults(searches, config.rankings);
-	addPopupContainers(searches);
+	const visibleSearches = sortResults(searches, config.rankings);
+	addPopupContainers(visibleSearches);
 }
 
 function runOnBody(condition: () => boolean, callback: () => void) {
@@ -165,6 +176,9 @@ export default defineContentScript({
 					clearTimeout(timeout);
 					configPromise
 						.then((config) => main(config))
+						.catch((error) => {
+							console.error("[SearchTuner] main failed", error);
+						})
 						.finally(() => showMain());
 				},
 			);
