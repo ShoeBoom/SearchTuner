@@ -33,7 +33,6 @@ function orderedResults(results: Results, rankings: RankingsV2 | null) {
 				case "lower":
 					return { ...result, ord: order - weight, rank };
 				case "block":
-					result.element.remove();
 					return null;
 				// return { ...result, ord: order - 9999, rank };
 				default:
@@ -76,8 +75,15 @@ function reorderResults(
 }
 
 function sortResults(results: Results, rankings: RankingsV2 | null) {
-	const rankedResults = orderedResults(results, rankings);
-	reorderResults(rankedResults.filter((result) => result.canReorder));
+	results
+		.filter((result) => rankings?.[result.domain]?.type === "block")
+		.forEach((result) => {
+			result.element.remove();
+		});
+
+	const reorderableResults = results.filter((result) => result.canReorder);
+	const rankedResults = orderedResults(reorderableResults, rankings);
+	reorderResults(rankedResults);
 }
 
 function addPopupContainers(searches: Results) {

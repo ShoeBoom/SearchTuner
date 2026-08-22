@@ -5,31 +5,42 @@ import { err, ok } from "neverthrow";
 // https://github.com/ublacklist/builtin/blob/master/serpinfo/google.yml
 const RESULT_SELECTORS = [
 	{
+		type: "result",
 		root: ".vt6azd:not(.g-blk), .Ww4FFb",
 		url: ":is(.yuRUbf, .xe8e1b) a",
 		title: "h3",
 	},
-	{ root: ".vCUuC", url: "a", title: ".Yt787" },
-	{ root: ".sHEJob", url: 'a[href^="http"]', title: ".OSrXXb" },
+	{ type: "card", root: ".vCUuC", url: "a", title: ".Yt787" },
 	{
+		type: "card",
+		root: ".sHEJob",
+		url: 'a[href^="http"]',
+		title: ".OSrXXb",
+	},
+	{
+		type: "card",
 		root: "[data-news-cluster-id]",
 		url: "a",
 		title: '[role="heading"][aria-level="3"]',
 	},
-	{ root: ".eejeod", url: "a", title: "h3" },
+	{ type: "card", root: ".eejeod", url: "a", title: "h3" },
 	{
+		type: "card",
 		root: ".ivg-i:not(.my5z3d)",
 		url: ".EZAeBe",
 		title: ".OSrXXb",
 	},
-	{ root: ".ivg-i.my5z3d", url: ".LBcIee", title: ".ddBkwd" },
+	{
+		type: "card",
+		root: ".ivg-i.my5z3d",
+		url: ".LBcIee",
+		title: ".ddBkwd",
+	},
 ] as const;
 
 const RESULT_ROOT_SELECTOR = RESULT_SELECTORS.map(({ root }) => root).join(
 	", ",
 );
-
-const REORDERABLE_RESULT_SELECTOR = '[jscontroller="SC7lYd"], .BYM4Nd';
 
 export function getResults() {
 	const searches = extractDomains()
@@ -89,8 +100,8 @@ function parseBlock(element: JQuery) {
 		// Rich result cards are safe to block individually, but moving them would
 		// pull them out of their containing news, image, or video module.
 		canReorder:
-			element.is(REORDERABLE_RESULT_SELECTOR) &&
-			element.parents(REORDERABLE_RESULT_SELECTOR).length === 0,
+			selectors.type === "result" &&
+			element.parents(selectors.root).length === 0,
 		element,
 	});
 }
