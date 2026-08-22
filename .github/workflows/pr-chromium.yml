@@ -1,0 +1,100 @@
+name: Build Chromium extension for testing
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-chromium-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build test extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Chromium extension
+        run: pnpm --filter SearchTuner build
+
+      - name: Upload Chromium extension
+        id: artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: searchtuner-chromium-pr-${{ github.event.pull_request.number }}
+          path: apps/extension/.output/chrome-mv3
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Add installation comment
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v8
+        env:
+          ARTIFACT_URL: ${{ steps.artifact.outputs.artifact-url }}
+        with:
+          script: |
+            const marker = "<!-- searchtuner-chromium-artifact -->";
+            const body = [
+              marker,
+              "## Test the Chromium extension",
+              "",
+              `1. [Download the extension artifact](${process.env.ARTIFACT_URL}) and unzip it.`,
+              "2. Open `chrome://extensions` and enable **Developer mode**.",
+              "3. Select **Load unpacked** and choose the unzipped folder.",
+              "",
+              "The artifact is automatically deleted after 7 days.",
+            ].join("\n");
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const previousComment = comments.find(
+              (comment) => comment.user?.type === "Bot" && comment.body?.includes(marker),
+            );
+
+            if (previousComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: previousComment.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Add installation instructions
+        env:
+          ARTIFACT_URL: ${{ steps.artifact.outputs.artifact-url }}
+        run: |
+          {
+            echo "## Test the Chromium extension"
+            echo
+            echo "1. [Download the extension artifact]($ARTIFACT_URL) and unzip it."
+            echo '2. Open `chrome://extensions` and enable **Developer mode**.'
+            echo '3. Select **Load unpacked** and choose the unzipped folder.'
+            echo
+            echo "The artifact is automatically deleted after 7 days."
+          } >> "$GITHUB_STEP_SUMMARY"
