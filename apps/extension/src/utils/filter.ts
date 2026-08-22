@@ -80,11 +80,11 @@ function parseBlock(element: JQuery) {
 
 	const link = element
 		.find(selectors.url)
-		.filter((_, link) => $(link).closest(RESULT_ROOT_SELECTOR).is(element))
+		.filter((_, link) => link.closest(RESULT_ROOT_SELECTOR) === element[0])
 		.first();
 	const href = link.attr("href");
 	const hrefDomain = href ? getHostname(href) : null;
-	const cite = element.find("cite").first().text();
+	const cite = link.find("cite").first().text();
 	const citeDomain =
 		selectors.type === "result" ? getCitedHostname(cite) : null;
 	const domain = hrefDomain ?? citeDomain;
