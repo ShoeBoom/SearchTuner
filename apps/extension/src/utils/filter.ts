@@ -44,8 +44,8 @@ const RESULT_ROOT_SELECTOR = RESULT_SELECTORS.map(({ root }) => root).join(
 	", ",
 );
 
-export async function getResults() {
-	const extracted = await extractDomains();
+export function getResults() {
+	const extracted = extractDomains();
 	const searches = extracted
 		.map((s) => {
 			return s.isOk() ? s.value : null;
@@ -69,9 +69,9 @@ export async function getResults() {
 	return searches;
 }
 
-export type Results = Awaited<ReturnType<typeof getResults>>;
+export type Results = ReturnType<typeof getResults>;
 
-async function extractDomains() {
+function extractDomains() {
 	// Get the main results container
 	const $rso = $("div#rso");
 	if ($rso.length === 0) {
@@ -102,12 +102,12 @@ async function extractDomains() {
 		elements: blocks.map((block) => block[0]),
 	});
 
-	const results = await Promise.all(blocks.map(parseBlock));
+	const results = blocks.map(parseBlock);
 
 	return results;
 }
 
-async function parseBlock(element: JQuery) {
+function parseBlock(element: JQuery) {
 	const selectors = RESULT_SELECTORS.find(({ root }) => element.is(root));
 	if (!selectors) {
 		console.warn(`${LOG_PREFIX} rejected block: no matching definition`, {
@@ -124,14 +124,10 @@ async function parseBlock(element: JQuery) {
 	const cite = element.find("cite").first().text();
 	const citeDomain =
 		selectors.type === "result" ? getCitedHostname(cite) : null;
-	const redirectDomain =
-		href && !hrefDomain && !citeDomain
-			? await getGoogleRedirectHostname(href)
-			: null;
-	const domain = hrefDomain ?? citeDomain ?? redirectDomain;
+	const domain = hrefDomain ?? citeDomain;
 
 	if (!domain) {
-		console.warn(`${LOG_PREFIX} rejected block: invalid or missing URL`, {
+		console.debug(`${LOG_PREFIX} skipped block: no visible domain`, {
 			type: selectors.type,
 			rootSelector: selectors.root,
 			urlSelector: selectors.url,
@@ -148,11 +144,7 @@ async function parseBlock(element: JQuery) {
 
 	return ok({
 		domain,
-		domainSource: hrefDomain
-			? ("href" as const)
-			: citeDomain
-				? ("cite" as const)
-				: ("redirect" as const),
+		domainSource: hrefDomain ? ("href" as const) : ("cite" as const),
 		text: element.find(selectors.title).first().text(),
 		// Rich result cards are safe to block individually, but moving them would
 		// pull them out of their containing news, image, or video module.
@@ -177,51 +169,4 @@ function getCitedHostname(cite: string) {
 
 	const hostname = getHostname(origin) ?? getHostname(`https://${origin}`);
 	return hostname?.includes(".") ? hostname : null;
-}
-
-async function getGoogleRedirectHostname(href: string) {
-	let redirectUrl: URL;
-	try {
-		redirectUrl = new URL(href, location.href);
-	} catch {
-		return null;
-	}
-
-	if (
-		redirectUrl.origin !== location.origin ||
-		!["/goto", "/url"].includes(redirectUrl.pathname)
-	) {
-		return null;
-	}
-
-	const parameterDomain = ["url", "q"]
-		.map((parameter) => redirectUrl.searchParams.get(parameter))
-		.map((url) => (url ? getHostname(url) : null))
-		.find((hostname) => hostname !== null);
-	if (parameterDomain) return parameterDomain;
-
-	try {
-		// Current Google variants encrypt outbound hrefs. The same-origin redirect
-		// page still exposes the destination as a normal link.
-		const response = await fetch(redirectUrl, { credentials: "include" });
-		const responseDomain = getHostname(response.url);
-		if (responseDomain && responseDomain !== location.hostname) {
-			return responseDomain;
-		}
-
-		const redirectDocument = new DOMParser().parseFromString(
-			await response.text(),
-			"text/html",
-		);
-		const destination = redirectDocument
-			.querySelector<HTMLAnchorElement>('a[href^="http"]')
-			?.getAttribute("href");
-		return destination ? getHostname(destination) : null;
-	} catch (error) {
-		console.warn(`${LOG_PREFIX} could not resolve Google redirect`, {
-			href,
-			error,
-		});
-		return null;
-	}
 }
