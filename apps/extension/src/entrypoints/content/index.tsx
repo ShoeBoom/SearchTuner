@@ -77,7 +77,7 @@ function reorderResults(
 
 function sortResults(results: Results, rankings: RankingsV2 | null) {
 	const rankedResults = orderedResults(results, rankings);
-	reorderResults(rankedResults);
+	reorderResults(rankedResults.filter((result) => result.canReorder));
 }
 
 function addPopupContainers(searches: Results) {

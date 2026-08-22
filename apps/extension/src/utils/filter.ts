@@ -1,36 +1,35 @@
 import $ from "jquery";
 import { err, ok } from "neverthrow";
 
-// for refrence see https://github.com/benbusby/whoogle-search/blob/e4cabe3e5b9aa55cc14f845bb3e194d83d46ed1c/app/filter.py
-// https://github.com/searxng/searxng/blob/885d02c8c3a3ae54177eab81e672abe65a76acf5/searx/engines/google.py
+// Keep these in sync with uBlacklist's desktop Google web selectors.
+// https://github.com/ublacklist/builtin/blob/master/serpinfo/google.yml
+const RESULT_SELECTORS = [
+	{
+		root: ".vt6azd:not(.g-blk), .Ww4FFb",
+		url: ":is(.yuRUbf, .xe8e1b) a",
+		title: "h3",
+	},
+	{ root: ".vCUuC", url: "a", title: ".Yt787" },
+	{ root: ".sHEJob", url: 'a[href^="http"]', title: ".OSrXXb" },
+	{
+		root: "[data-news-cluster-id]",
+		url: "a",
+		title: '[role="heading"][aria-level="3"]',
+	},
+	{ root: ".eejeod", url: "a", title: "h3" },
+	{
+		root: ".ivg-i:not(.my5z3d)",
+		url: ".EZAeBe",
+		title: ".OSrXXb",
+	},
+	{ root: ".ivg-i.my5z3d", url: ".LBcIee", title: ".ddBkwd" },
+] as const;
 
-const ITEM_PINNED_RESULT_CLASS = "BYM4Nd";
-const JSCONTROLLER_RESULT = "SC7lYd";
+const RESULT_ROOT_SELECTOR = RESULT_SELECTORS.map(({ root }) => root).join(
+	", ",
+);
 
-const JSNAME_LINK_ID = "UWckNb";
-
-// const BLOCK_TITLES: string[] = [
-//   "People also ask",
-//   "Related searches",
-//   "Videos",
-//   "Top stories",
-//   "Images",
-//   "News",
-// ];
-
-// Extend jQuery with custom methods
-// declare global {
-//   interface JQuery {
-//     log(): JQuery;
-//   }
-// }
-
-// // Add the log method to jQuery
-// $.fn.log = function (this: JQuery<HTMLElement>) {
-//   // Convert jQuery object to array and spread it for console.log
-//   console.log.apply(console, this as any);
-//   return this;
-// };
+const REORDERABLE_RESULT_SELECTOR = '[jscontroller="SC7lYd"], .BYM4Nd';
 
 export function getResults() {
 	const searches = extractDomains()
@@ -54,11 +53,8 @@ function extractDomains() {
 		return [];
 	}
 
-	// Filter out unwanted sections
 	const blocks = $rso
-		.find(
-			`[jscontroller="${JSCONTROLLER_RESULT}"], .${ITEM_PINNED_RESULT_CLASS}`,
-		)
+		.find(RESULT_ROOT_SELECTOR)
 		.map((_, element) => $(element))
 		.toArray();
 
@@ -68,42 +64,29 @@ function extractDomains() {
 }
 
 function parseBlock(element: JQuery) {
-	const href = element
-		.find("a")
-		.filter(`[jsname="${JSNAME_LINK_ID}"]`)
-		.map((_, element) => ({
-			href: $(element).attr("href"),
-			text: $(element).find("h3").text(),
-		}))
-		.get();
+	const selectors = RESULT_SELECTORS.find(({ root }) => element.is(root));
+	const href = selectors
+		? element.find(selectors.url).first().attr("href")
+		: undefined;
 
-	const isResult = element.is(`[jscontroller="${JSCONTROLLER_RESULT}"]`);
-	const isPinnedResult = element.is(`.${ITEM_PINNED_RESULT_CLASS}`);
-
-	if (isResult || isPinnedResult) {
-		if (href[0]?.href === undefined) {
-			return err({
-				error: "could_not_parse_domain" as const,
-				element,
-			});
-		}
-		return ok({
-			domain: getHostnames(href[0].href),
-			text: href[0].text,
-			elementType: "result" as const,
-			element,
-		});
-	} else if (href.length === 0) {
-		return ok({
-			elementType: "empty" as const,
-			element,
-		});
-	} else {
-		return ok({
-			elementType: "special" as const,
+	if (!selectors || href === undefined) {
+		return err({
+			error: "could_not_parse_domain" as const,
 			element,
 		});
 	}
+
+	return ok({
+		domain: getHostnames(href),
+		text: element.find(selectors.title).first().text(),
+		elementType: "result" as const,
+		// Rich result cards are safe to block individually, but moving them would
+		// pull them out of their containing news, image, or video module.
+		canReorder:
+			element.is(REORDERABLE_RESULT_SELECTOR) &&
+			element.parents(REORDERABLE_RESULT_SELECTOR).length === 0,
+		element,
+	});
 }
 
 function getHostnames(url: string) {
