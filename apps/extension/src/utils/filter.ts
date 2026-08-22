@@ -1,6 +1,8 @@
 import $ from "jquery";
 import { err, ok } from "neverthrow";
 
+const LOG_PREFIX = "[SearchTuner]";
+
 // Keep these in sync with uBlacklist's desktop Google web selectors.
 // https://github.com/ublacklist/builtin/blob/master/serpinfo/google.yml
 const RESULT_SELECTORS = [
@@ -43,7 +45,8 @@ const RESULT_ROOT_SELECTOR = RESULT_SELECTORS.map(({ root }) => root).join(
 );
 
 export function getResults() {
-	const searches = extractDomains()
+	const extracted = extractDomains();
+	const searches = extracted
 		.map((s) => {
 			if (s.isErr() || s.value.elementType !== "result") {
 				return null;
@@ -51,6 +54,20 @@ export function getResults() {
 			return s.value;
 		})
 		.filter((s) => s !== null);
+
+	console.log(`${LOG_PREFIX} parsed results`, {
+		extracted: extracted.length,
+		returned: searches.length,
+		reorderable: searches.filter((result) => result.canReorder).length,
+		cards: searches.filter((result) => !result.canReorder).length,
+		results: searches.map((result) => ({
+			domain: result.domain,
+			text: result.text,
+			canReorder: result.canReorder,
+			element: result.element[0],
+		})),
+	});
+
 	return searches;
 }
 
@@ -60,14 +77,32 @@ function extractDomains() {
 	// Get the main results container
 	const $rso = $("div#rso");
 	if ($rso.length === 0) {
-		console.error("Could not find result container #rso");
+		console.error(`${LOG_PREFIX} could not find result container #rso`);
 		return [];
 	}
+
+	const selectorCounts = RESULT_SELECTORS.map((selectors) => ({
+		type: selectors.type,
+		root: selectors.root,
+		url: selectors.url,
+		matches: $rso.find(selectors.root).length,
+	}));
+	console.log(`${LOG_PREFIX} selector scan`, {
+		url: location.href,
+		rso: $rso[0],
+		combinedSelector: RESULT_ROOT_SELECTOR,
+		selectorCounts,
+	});
+	console.table(selectorCounts);
 
 	const blocks = $rso
 		.find(RESULT_ROOT_SELECTOR)
 		.map((_, element) => $(element))
 		.toArray();
+	console.log(`${LOG_PREFIX} matched DOM blocks`, {
+		count: blocks.length,
+		elements: blocks.map((block) => block[0]),
+	});
 
 	const results = blocks.map(parseBlock);
 
@@ -77,6 +112,9 @@ function extractDomains() {
 function parseBlock(element: JQuery) {
 	const selectors = RESULT_SELECTORS.find(({ root }) => element.is(root));
 	if (!selectors) {
+		console.warn(`${LOG_PREFIX} rejected block: no matching definition`, {
+			element: element[0],
+		});
 		return err({
 			error: "could_not_parse_domain" as const,
 			element,
@@ -87,6 +125,14 @@ function parseBlock(element: JQuery) {
 	const domain = href ? getHostname(href) : null;
 
 	if (!domain) {
+		console.warn(`${LOG_PREFIX} rejected block: invalid or missing URL`, {
+			type: selectors.type,
+			rootSelector: selectors.root,
+			urlSelector: selectors.url,
+			href,
+			link: element.find(selectors.url).first()[0],
+			element: element[0],
+		});
 		return err({
 			error: "could_not_parse_domain" as const,
 			element,

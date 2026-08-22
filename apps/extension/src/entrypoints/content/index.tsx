@@ -7,6 +7,8 @@ import { getResults, type Results } from "@/utils/filter";
 import { items, type RankingsV2 } from "@/utils/storage";
 import { getPageTheme } from "@/utils/theme";
 
+const LOG_PREFIX = "[SearchTuner]";
+
 const RERANK_WEIGHTS = {
 	weak: 1,
 	normal: 3,
@@ -75,6 +77,14 @@ function reorderResults(
 }
 
 function sortResults(results: Results, rankings: RankingsV2 | null) {
+	console.log(`${LOG_PREFIX} sorting`, {
+		total: results.length,
+		reorderable: results.filter((result) => result.canReorder).length,
+		blocked: results.filter(
+			(result) => rankings?.[result.domain]?.type === "block",
+		).length,
+	});
+
 	results
 		.filter((result) => rankings?.[result.domain]?.type === "block")
 		.forEach((result) => {
@@ -87,12 +97,21 @@ function sortResults(results: Results, rankings: RankingsV2 | null) {
 }
 
 function addPopupContainers(searches: Results) {
+	console.log(`${LOG_PREFIX} decorating results`, {
+		count: searches.length,
+		results: searches.map((search) => ({
+			domain: search.domain,
+			text: search.text,
+			element: search.element[0],
+		})),
+	});
+
 	const theme = getPageTheme();
 	const template = document.createElement("div");
 	template.classList.add("searchtuner-container");
 	template.setAttribute("data-theme", theme);
 
-	searches.forEach((search) => {
+	searches.forEach((search, index) => {
 		// Ensure the parent is positioned relatively so absolute works
 		const parent = search.element[0];
 		if (getComputedStyle(parent).position === "static") {
@@ -102,6 +121,11 @@ function addPopupContainers(searches: Results) {
 		const container = template.cloneNode(true);
 		parent.appendChild(container);
 		render(() => <Popup {...search} />, container);
+		console.log(`${LOG_PREFIX} decorated result ${index + 1}`, {
+			domain: search.domain,
+			result: parent,
+			container,
+		});
 	});
 }
 
@@ -129,19 +153,34 @@ function main(config: {
 	rankings_active: boolean;
 	rankings: RankingsV2 | null;
 }) {
-	if (!config.rankings_active) return;
+	console.log(`${LOG_PREFIX} main`, {
+		url: location.href,
+		rankingsActive: config.rankings_active,
+		rankingCount: config.rankings ? Object.keys(config.rankings).length : 0,
+	});
+	if (!config.rankings_active) {
+		console.warn(`${LOG_PREFIX} rankings are disabled; skipping page`);
+		return;
+	}
 	const searches = getResults();
 	sortResults(searches, config.rankings);
 	addPopupContainers(searches);
+	console.log(`${LOG_PREFIX} main complete`, {
+		results: searches.length,
+		decorations: document.querySelectorAll(".searchtuner-container").length,
+	});
 }
 
 function runOnBody(condition: () => boolean, callback: () => void) {
 	if (condition()) {
+		console.log(`${LOG_PREFIX} #rso was already present`);
 		callback();
 	} else {
+		console.log(`${LOG_PREFIX} waiting for #rso`);
 		const observer = new MutationObserver((_mutations, obs) => {
 			performance.mark("ST_mutationObserver");
 			if (condition()) {
+				console.log(`${LOG_PREFIX} found #rso after DOM mutation`);
 				obs.disconnect(); // Stop observing once element is found
 				callback();
 			}
@@ -157,20 +196,31 @@ export default defineContentScript({
 	matches: getGoogleDomains(),
 	runAt: "document_start",
 	main() {
+		console.log(`${LOG_PREFIX} content script started`, {
+			url: location.href,
+			readyState: document.readyState,
+		});
 		hideMain();
 		const configPromise = getConfig();
+		configPromise.then((config) => {
+			console.log(`${LOG_PREFIX} loaded config`, config);
+		});
 		// backup to show main if the config is not active
 		configPromise.then((config) => {
 			if (!config.rankings_active) showMain();
 		});
 		const timeout = setTimeout(() => showMain(), 1000);
 		document.addEventListener("DOMContentLoaded", () => {
+			console.log(`${LOG_PREFIX} DOMContentLoaded`);
 			runOnBody(
 				() => !!$("div#rso").length,
 				() => {
 					clearTimeout(timeout);
 					configPromise
 						.then((config) => main(config))
+						.catch((error) => {
+							console.error(`${LOG_PREFIX} main failed`, error);
+						})
 						.finally(() => showMain());
 				},
 			);
