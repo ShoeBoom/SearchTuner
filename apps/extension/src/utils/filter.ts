@@ -4,7 +4,7 @@ import { err, ok } from "neverthrow";
 // for refrence see https://github.com/benbusby/whoogle-search/blob/e4cabe3e5b9aa55cc14f845bb3e194d83d46ed1c/app/filter.py
 // https://github.com/searxng/searxng/blob/885d02c8c3a3ae54177eab81e672abe65a76acf5/searx/engines/google.py
 
-const ITEM_PINNED_RESULT_CLASS = "BYM4Nd";
+const ITEM_PINNED_RESULT_CLASS = "kbSIic";
 const JSCONTROLLER_RESULT = "SC7lYd";
 
 const JSNAME_LINK_ID = "UWckNb";
