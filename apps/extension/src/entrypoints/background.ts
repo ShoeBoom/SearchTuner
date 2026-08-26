@@ -1,9 +1,10 @@
 import type { BangsData } from "@searchtuner/bangs/types";
 import { browser, defineBackground } from "#imports";
 import { getGoogleDomains } from "@/assets/googledomains";
-import { type BangAliases, getBang, items, observeItem } from "@/utils/storage";
+import { type BangAliases, getBang, items } from "@/utils/storage";
 
 const googleSearchPatterns = getGoogleDomains();
+const GOOGLE_SEARCH_PING = "searchtuner:google-search";
 
 // Parse bang from query - supports "!w query", "query !w", and quick bangs at start/end
 function parseBang(
@@ -113,51 +114,101 @@ function buildBangUrl(bang: BangsData["bangs"][number], searchQuery: string) {
 	return url;
 }
 
-const addBangsListener = (props: {
-	quickBangs: () => string[];
-	aliases: () => BangAliases;
-	active: () => boolean;
-}) => {
-	return browser.webRequest.onBeforeRequest.addListener(
-		(details): undefined => {
-			if (props.active() === false) return;
-			if (details.frameId !== 0) return;
-			try {
-				const url = new URL(details.url);
-				const query = url.searchParams.get("q");
-
-				if (!query) return;
-
-				const quickBangs = props.quickBangs();
-				const aliases = props.aliases();
-				const bang = parseBang(query, quickBangs, aliases);
-				if (!bang) return;
-
-				const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
-				if (redirectUrl) {
-					console.log(
-						`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`,
-					);
-
-					// Redirect the tab
-					browser.tabs.update(details.tabId, { url: redirectUrl });
-				}
-			} catch (error) {
-				console.error("[SearchTuner] Error processing bang:", error);
-			}
-		},
-		{ urls: googleSearchPatterns, types: ["main_frame"] },
-	);
+const getBangConfig = async () => {
+	const [active, quickBangs, aliases] = await Promise.all([
+		items.bangs_active.getValue(),
+		items.quick_bangs.getValue(),
+		items.bang_aliases.getValue(),
+	]);
+	return {
+		active: active ?? false,
+		quickBangs: quickBangs ?? [],
+		aliases: aliases ?? ({} as BangAliases),
+	};
 };
 
-export default defineBackground(() => {
-	const activeObserver = observeItem(items.bangs_active, false);
-	const quickBangsObserver = observeItem(items.quick_bangs, [] as string[]);
-	const aliasesObserver = observeItem(items.bang_aliases, {} as BangAliases);
+const processBangForRequest = async (details: {
+	url: string;
+	tabId: number;
+	frameId: number;
+}) => {
+	if (details.frameId !== 0 || details.tabId < 0) return;
 
-	addBangsListener({
-		quickBangs: quickBangsObserver.get,
-		aliases: aliasesObserver.get,
-		active: activeObserver.get,
+	try {
+		const url = new URL(details.url);
+		const query = url.searchParams.get("q");
+		if (!query) return;
+
+		const config = await getBangConfig();
+		if (config.active === false) return;
+
+		const bang = parseBang(query, config.quickBangs, config.aliases);
+		if (!bang) return;
+
+		const redirectUrl = buildBangUrl(bang.data, bang.searchQuery);
+		if (!redirectUrl) return;
+
+		console.log(`[SearchTuner] Bang redirect: ${bang.match} -> ${redirectUrl}`);
+		await browser.tabs.update(details.tabId, { url: redirectUrl });
+	} catch (error) {
+		console.error("[SearchTuner] Error processing bang:", error);
+	}
+};
+
+type GoogleSearchPingMessage = {
+	type: typeof GOOGLE_SEARCH_PING;
+	url?: string;
+};
+
+const isGoogleSearchPingMessage = (
+	message: unknown,
+): message is GoogleSearchPingMessage => {
+	if (typeof message !== "object" || message === null) return false;
+	if (!("type" in message)) return false;
+	return message.type === GOOGLE_SEARCH_PING;
+};
+
+const onBeforeRequest: Parameters<
+	typeof browser.webRequest.onBeforeRequest.addListener
+>[0] = (details): undefined => {
+	void processBangForRequest({
+		url: details.url,
+		tabId: details.tabId,
+		frameId: details.frameId,
 	});
-});
+	return;
+};
+
+const onMessage: Parameters<typeof browser.runtime.onMessage.addListener>[0] = (
+	message,
+	sender,
+): void => {
+	if (!isGoogleSearchPingMessage(message)) return;
+
+	const tabId = sender.tab?.id;
+	if (typeof tabId !== "number" || tabId < 0) return;
+
+	const requestedUrl =
+		typeof message.url === "string" ? message.url : sender.tab?.url;
+	if (!requestedUrl) return;
+
+	void processBangForRequest({
+		url: requestedUrl,
+		tabId,
+		frameId: 0,
+	});
+};
+
+// Register listeners at module top-level so MV3 can wake the worker reliably.
+try {
+	browser.webRequest.onBeforeRequest.addListener(onBeforeRequest, {
+		urls: googleSearchPatterns,
+		types: ["main_frame"],
+	});
+} catch {}
+
+try {
+	browser.runtime.onMessage.addListener(onMessage);
+} catch {}
+
+export default defineBackground(() => {});

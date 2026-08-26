@@ -91,6 +91,7 @@ type StorageItem<
 
 type ItemObserver<T> = {
 	get: () => T;
+	getAsync: () => Promise<T>;
 	unsubscribe: () => void;
 };
 
@@ -99,17 +100,32 @@ export const observeItem = <T>(
 	fallback: T,
 ): ItemObserver<T> => {
 	let current = fallback;
+	let loaded = false;
 
-	void itemDef.getValue().then((initialValue) => {
-		current = initialValue ?? fallback;
-	});
+	const initialLoad = itemDef
+		.getValue()
+		.then((initialValue) => {
+			current = initialValue ?? fallback;
+			loaded = true;
+			return current;
+		})
+		.catch((error) => {
+			loaded = true;
+			console.error("[SearchTuner] Failed to hydrate storage item:", error);
+			return current;
+		});
 
 	const unsubscribe = itemDef.watch((newVal) => {
 		current = newVal ?? fallback;
+		loaded = true;
 	});
 
 	return {
 		get: () => current,
+		getAsync: async () => {
+			if (!loaded) await initialLoad;
+			return current;
+		},
 		unsubscribe,
 	};
 };
